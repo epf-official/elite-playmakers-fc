@@ -45,7 +45,7 @@
                 radial-gradient(circle at 90% 80%, rgba(0, 240, 255, 0.05) 0%, transparent 25%);
         }
 
-        /* Top Header */
+        /* Header Area */
         header {
             background: rgba(18, 24, 36, 0.95);
             border-bottom: 2px solid var(--gold-secondary);
@@ -152,7 +152,7 @@
             background: #2a3750;
         }
 
-        /* Side-by-Side 5 Button Grid Navigation */
+        /* Navigation Bar (Side by Side 5 Buttons) */
         .nav-grid {
             display: grid;
             grid-template-columns: repeat(5, 1fr);
@@ -179,13 +179,8 @@
                 text-align: center;
             }
 
-            .nav-btn i {
-                font-size: 14px !important;
-            }
-
-            .club-name {
-                font-size: 15px;
-            }
+            .nav-btn i { font-size: 14px !important; }
+            .club-name { font-size: 15px; }
         }
 
         .nav-btn {
@@ -212,7 +207,7 @@
             box-shadow: 0 0 10px rgba(255, 215, 0, 0.2);
         }
 
-        /* Dynamic Page Switcher Sections */
+        /* Page Management */
         .page-view {
             display: none;
             width: 100%;
@@ -222,16 +217,14 @@
             animation: pageFadeIn 0.3s ease-in-out;
         }
 
-        .page-view.active {
-            display: block;
-        }
+        .page-view.active { display: block; }
 
         @keyframes pageFadeIn {
             from { opacity: 0; transform: translateY(10px); }
             to { opacity: 1; transform: translateY(0); }
         }
 
-        /* Banner & Status Cards */
+        /* Status & Banner Cards */
         .status-card {
             background: var(--bg-card);
             border: 1px solid var(--border-gold);
@@ -280,7 +273,7 @@
             border: 1px solid rgba(0, 240, 255, 0.2);
         }
 
-        /* BST Live Timer */
+        /* BST Timer */
         .timer-box {
             display: flex;
             justify-content: center;
@@ -293,10 +286,7 @@
             margin-top: 10px;
         }
 
-        .time-unit {
-            text-align: center;
-            min-width: 55px;
-        }
+        .time-unit { text-align: center; min-width: 55px; }
 
         .time-val {
             font-size: 26px;
@@ -313,13 +303,9 @@
             letter-spacing: 1px;
         }
 
-        .time-sep {
-            font-size: 22px;
-            font-weight: bold;
-            color: var(--gold-secondary);
-        }
+        .time-sep { font-size: 22px; font-weight: bold; color: var(--gold-secondary); }
 
-        /* Champions Grid */
+        /* Champions Grid & Scrollable Dynamic Lists */
         .champions-grid {
             display: grid;
             grid-template-columns: 1fr 1fr;
@@ -327,11 +313,7 @@
             margin-top: 20px;
         }
 
-        @media (max-width: 768px) {
-            .champions-grid {
-                grid-template-columns: 1fr;
-            }
-        }
+        @media (max-width: 768px) { .champions-grid { grid-template-columns: 1fr; } }
 
         .champ-card {
             background: var(--bg-card);
@@ -352,17 +334,31 @@
             gap: 8px;
         }
 
+        .scrollable-history {
+            max-height: 220px;
+            overflow-y: auto;
+            padding-right: 5px;
+        }
+
+        .scrollable-history::-webkit-scrollbar {
+            width: 4px;
+        }
+
+        .scrollable-history::-webkit-scrollbar-thumb {
+            background: var(--gold-secondary);
+            border-radius: 4px;
+        }
+
         .champ-list-item {
             display: flex;
             justify-content: space-between;
-            padding: 8px 0;
-            border-bottom: 1px dashed rgba(255,255,255,0.05);
+            align-items: center;
+            padding: 10px 0;
+            border-bottom: 1px dashed rgba(255,255,255,0.08);
             font-size: 13px;
         }
 
-        .champ-list-item:last-child {
-            border-bottom: none;
-        }
+        .champ-list-item:last-child { border-bottom: none; }
 
         /* Modals & Forms */
         .modal {
@@ -404,9 +400,7 @@
 
         .modal-close:hover { color: #fff; }
 
-        .form-group {
-            margin-bottom: 14px;
-        }
+        .form-group { margin-bottom: 14px; }
 
         .form-group label {
             display: block;
@@ -509,6 +503,17 @@
         .rank-2 { background: #c0c0c0; color: #000; }
         .rank-3 { background: #cd7f32; color: #000; }
 
+        .empty-placeholder {
+            text-align: center;
+            padding: 40px 15px;
+            background: var(--bg-card);
+            border: 1px dashed var(--border-gold);
+            border-radius: 10px;
+            color: var(--text-muted);
+            font-size: 14px;
+            margin-top: 15px;
+        }
+
         .vs-container {
             display: flex;
             align-items: center;
@@ -570,7 +575,7 @@
         </div>
     </header>
 
-    <!-- Top 5 Side-by-Side Nav Bar -->
+    <!-- Navigation Bar -->
     <div style="max-width: 1100px; margin: 0 auto; width: 100%; padding: 0 15px;">
         <div class="nav-grid">
             <button class="nav-btn" onclick="showPage('profile-view')"><i class="fas fa-users"></i> প্লেয়ার প্রোফাইল</button>
@@ -581,13 +586,13 @@
         </div>
     </div>
 
-    <!-- ================= PAGE 1: HOME PAGE ================= -->
+    <!-- PAGE 1: HOME PAGE -->
     <div id="home-view" class="page-view active">
         <!-- Current Phase Banner -->
         <div class="status-card">
             <div class="phase-header">
-                <div class="phase-title"><i class="fas fa-calendar-alt"></i> কারেন্ট ফেজ (Current Phase)</div>
-                <div class="phase-dates" id="phase-date-range">15 Oct, 2026; 8:00 AM — 22 Oct, 2026; 8:00 AM</div>
+                <div class="phase-title"><i class="fas fa-calendar-alt"></i> কারেন্ট ফেজ (<span id="current-phase-number">Phase 1</span>)</div>
+                <div class="phase-dates" id="phase-date-range">Calculating...</div>
             </div>
             <p style="font-size: 12px; color: var(--text-muted); margin-bottom: 10px;">
                 বাংলাদেশ সময় প্রতি বৃহস্পতিবার সকাল ৮:০০ টায় অটোমেটিক নতুন ফেজ শুরু হয়।
@@ -615,58 +620,36 @@
             </div>
         </div>
 
-        <!-- Hall of Fame & Champions -->
+        <!-- Hall of Fame & Dynamic Champions Lists (Non-fixed Endless Generation) -->
         <div class="champions-grid">
             <div class="champ-card">
-                <div class="champ-card-header"><i class="fas fa-award"></i> লাস্ট উইক চ্যাম্পিয়ন (Weekly Champions)</div>
-                <div class="champ-list-item">
-                    <span><i class="fas fa-medal" style="color:var(--gold-primary);"></i> Week 1 Champion</span>
-                    <strong style="color:var(--gold-primary);">Tanvir Ahmed</strong>
-                </div>
-                <div class="champ-list-item">
-                    <span><i class="fas fa-medal" style="color:var(--gold-primary);"></i> Week 2 Champion</span>
-                    <strong style="color:var(--gold-primary);">Sabbir Hossain</strong>
-                </div>
-                <div class="champ-list-item">
-                    <span><i class="fas fa-medal" style="color:var(--gold-primary);"></i> Week 3 Champion</span>
-                    <strong style="color:var(--gold-primary);">Rifat Chowdhury</strong>
-                </div>
-                <div class="champ-list-item">
-                    <span><i class="fas fa-medal" style="color:var(--gold-primary);"></i> Week 4 Champion</span>
-                    <strong style="color:var(--gold-primary);">In Progress...</strong>
+                <div class="champ-card-header"><i class="fas fa-award"></i> উইকলি চ্যাম্পিয়ন হিস্টোরি (Weekly Champions)</div>
+                <div class="scrollable-history" id="dynamic-weekly-champions">
+                    <!-- Dynamic Endless Week Generator -->
                 </div>
             </div>
 
             <div class="champ-card">
                 <div class="champ-card-header"><i class="fas fa-star"></i> মান্থলি বেস্ট প্লেয়ার (Monthly Best Player)</div>
-                <div class="champ-list-item">
-                    <span><i class="fas fa-trophy" style="color:var(--cyan-accent);"></i> October MVP</span>
-                    <strong style="color:var(--cyan-accent);">Sabbir Hossain</strong>
-                </div>
-                <div class="champ-list-item">
-                    <span><i class="fas fa-trophy" style="color:var(--cyan-accent);"></i> November MVP</span>
-                    <strong style="color:var(--cyan-accent);">TBD</strong>
-                </div>
-                <div class="champ-list-item">
-                    <span><i class="fas fa-trophy" style="color:var(--cyan-accent);"></i> December MVP</span>
-                    <strong style="color:var(--cyan-accent);">TBD</strong>
+                <div class="scrollable-history" id="dynamic-monthly-mvps">
+                    <!-- Dynamic Endless Month Generator -->
                 </div>
             </div>
         </div>
     </div>
 
-    <!-- ================= PAGE 2: CLUB PLAYER PROFILES ================= -->
+    <!-- PAGE 2: CLUB PLAYER PROFILES -->
     <div id="profile-view" class="page-view">
         <button class="btn-back" onclick="showPage('home-view')"><i class="fas fa-arrow-left"></i> হোম পেজে ফিরে যান</button>
         <h2 style="color: var(--gold-primary); margin-bottom: 8px;"><i class="fas fa-id-card"></i> ক্লাব প্লেয়ার প্রোফাইল</h2>
-        <p style="font-size: 13px; color: var(--text-muted); margin-bottom: 15px;">সকল নিবন্ধিত প্লেয়ারের তালিকা। ক্লিক করে বিস্তারিত স্ট্যাটস দেখুন (হোয়াটসঅ্যাপ নম্বর সম্পূর্ণ গোপন)।</p>
+        <p style="font-size: 13px; color: var(--text-muted); margin-bottom: 15px;">সকল নিবন্ধিত প্লেয়ারের তালিকা (হোয়াটসঅ্যাপ নম্বর সম্পূর্ণ গোপন থাকবে)।</p>
         
         <div class="player-cards-grid" id="players-list-container">
-            <!-- Dynamic Player Cards loaded via JS -->
+            <!-- Dynamic Data From Supabase -->
         </div>
     </div>
 
-    <!-- ================= PAGE 3: FRIENDLY CHALLENGE RESULT SUBMIT ================= -->
+    <!-- PAGE 3: FRIENDLY CHALLENGE RESULT SUBMIT -->
     <div id="submit-view" class="page-view">
         <button class="btn-back" onclick="showPage('home-view')"><i class="fas fa-arrow-left"></i> হোম পেজে ফিরে যান</button>
         <h2 style="color: var(--gold-primary); margin-bottom: 8px;"><i class="fas fa-gamepad"></i> ফ্রেন্ডলি চ্যালেঞ্জ রেজাল্ট সাবমিট</h2>
@@ -709,17 +692,15 @@
         </div>
     </div>
 
-    <!-- ================= PAGE 4: WEEKLY RANKING BOARD ================= -->
+    <!-- PAGE 4: WEEKLY RANKING BOARD -->
     <div id="weekly-view" class="page-view">
         <button class="btn-back" onclick="showPage('home-view')"><i class="fas fa-arrow-left"></i> হোম পেজে ফিরে যান</button>
         <h2 style="color: var(--gold-primary); margin-bottom: 8px;"><i class="fas fa-trophy"></i> উইকলি র‍্যাঙ্কিং বোর্ড</h2>
-        <p style="font-size: 13px; color: var(--text-muted); margin-bottom: 15px;">চলতি সপ্তাহের লাইভ পয়েন্ট টেবিল। পূর্ববর্তী সপ্তাহের রেজাল্ট দেখতে উইক সিলেক্ট করুন।</p>
+        <p style="font-size: 13px; color: var(--text-muted); margin-bottom: 15px;">চলতি সপ্তাহের লাইভ পয়েন্ট টেবিল।</p>
 
-        <div style="display: flex; gap: 8px; margin-bottom: 15px; overflow-x: auto; padding-bottom: 5px;">
-            <button class="btn btn-gold" onclick="loadWeeklyTable('current')">কারেন্ট উইক</button>
-            <button class="btn btn-outline" onclick="loadWeeklyTable('w1')">Week 1</button>
-            <button class="btn btn-outline" onclick="loadWeeklyTable('w2')">Week 2</button>
-            <button class="btn btn-outline" onclick="loadWeeklyTable('w3')">Week 3</button>
+        <!-- Dynamic Week History Selector Buttons -->
+        <div id="weekly-history-selector" style="display: flex; gap: 8px; margin-bottom: 15px; overflow-x: auto; padding-bottom: 5px;">
+            <!-- Generated dynamically -->
         </div>
 
         <table class="rank-table">
@@ -740,7 +721,7 @@
         </table>
     </div>
 
-    <!-- ================= PAGE 5: RULES BOARD ================= -->
+    <!-- PAGE 5: RULES BOARD -->
     <div id="rules-view" class="page-view">
         <button class="btn-back" onclick="showPage('home-view')"><i class="fas fa-arrow-left"></i> হোম পেজে ফিরে যান</button>
         <h2 style="color: var(--gold-primary); margin-bottom: 8px;"><i class="fas fa-gavel"></i> ক্লাবের অফিসিয়াল রুলস বোর্ড</h2>
@@ -757,17 +738,11 @@
             <ol style="padding-left: 20px; font-size: 14px; color: var(--text-main); margin-bottom: 20px;">
                 <li>প্রতিটি ম্যাচের রেজাল্ট অবশ্যই প্লেয়ার অ্যাকাউন্ট থেকে লগইন করে সাবমিট করতে হবে।</li>
                 <li>সঠিক অপোনেন্ট সিলেক্ট করে স্কোর এবং গ্যালারি থেকে অরিজিনাল স্ক্রিনশট প্রুফ দিতে হবে।</li>
-                <li>ভুল তথ্য বা মিথ্যা রেজাল্ট সাবমিট করলে পয়েন্ট কেটে নেওয়া হবে।</li>
             </ol>
-
-            <h3 style="color: var(--gold-secondary); margin-bottom: 10px;"><i class="fas fa-clock"></i> ফেইজ ও টাইমার রুলস:</h3>
-            <p style="font-size: 14px; color: var(--text-main);">
-                প্রতি সপ্তাহে বাংলাদেশ সময় (BST) বৃহস্পতিবার সকাল ৮:০০ টা থেকে পরবর্তী বৃহস্পতিবার সকাল ৮:০০ টা পর্যন্ত উইকলি প্রতিযোগিতা চলে। সর্বোচ্চ পয়েন্ট অর্জনকারী উইকলি চ্যাম্পিয়ন হিসেবে ঘোষিত হন।
-            </p>
         </div>
     </div>
 
-    <!-- ================= PAGE 6: OVERALL RANKING BOARD ================= -->
+    <!-- PAGE 6: OVERALL RANKING BOARD -->
     <div id="overall-view" class="page-view">
         <button class="btn-back" onclick="showPage('home-view')"><i class="fas fa-arrow-left"></i> হোম পেজে ফিরে যান</button>
         <h2 style="color: var(--gold-primary); margin-bottom: 8px;"><i class="fas fa-crown"></i> অল-টাইম ওভারওল র‍্যাঙ্কিং বোর্ড</h2>
@@ -798,7 +773,7 @@
             <form onsubmit="handleSignup(event)">
                 <div class="form-group">
                     <label>প্লেয়ার এর নাম (Player Name)</label>
-                    <input type="text" id="signup-name" class="form-input" required placeholder="উদাহরণ: Sabbir Hossain">
+                    <input type="text" id="signup-name" class="form-input" required placeholder="আপনার নাম লিখুন">
                 </div>
                 <div class="form-group">
                     <label>গেম ইউআইডি (Game UID)</label>
@@ -856,7 +831,7 @@
                 <div class="player-badge" id="modal-player-avatar" style="margin: 0 auto 10px auto;">P</div>
                 <h3 style="color: var(--gold-primary);" id="modal-player-name">Player Name</h3>
                 <p style="font-size: 12px; color: var(--cyan-accent);" id="modal-player-uid">UID: 000000</p>
-                <p style="font-size: 11px; color: var(--text-muted);" id="modal-player-device">Device: Xiaomi</p>
+                <p style="font-size: 11px; color: var(--text-muted);" id="modal-player-device">Device: N/A</p>
             </div>
             
             <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; text-align: center; margin-bottom: 15px; background: rgba(0,0,0,0.3); padding: 10px; border-radius: 8px;">
@@ -873,10 +848,9 @@
                     <div style="font-size: 10px; color: var(--text-muted);">Points</div>
                 </div>
             </div>
-
-            <h4 style="font-size: 13px; color: var(--gold-primary); margin-bottom: 8px;"><i class="fas fa-history"></i> সাম্প্রতিক ম্যাচ হিস্টোরি</h4>
-            <div id="modal-match-history" style="max-height: 150px; overflow-y: auto; font-size: 12px; line-height: 1.6;">
-                <!-- Match history items -->
+            <h4 style="font-size: 13px; color: var(--gold-primary); margin-bottom: 8px;"><i class="fas fa-history"></i> ম্যাচ হিস্টোরি</h4>
+            <div id="modal-match-history" style="max-height: 150px; overflow-y: auto; font-size: 12px; color: var(--text-muted);">
+                কোনো সাম্প্রতিক ম্যাচ পাওয়া যায়নি।
             </div>
         </div>
     </div>
@@ -897,8 +871,7 @@
             </form>
             <div id="admin-controls" style="display: none; margin-top: 15px;">
                 <p style="color: var(--success); font-weight: bold; font-size: 13px; margin-bottom: 10px;">স্বাগতম ক্লাব এডমিন!</p>
-                <button class="btn btn-gold" style="width: 100%; margin-bottom: 8px;" onclick="adminAction('reset-phase')"><i class="fas fa-sync"></i> ম্যানুয়াল ফেজ রিসেট</button>
-                <button class="btn btn-outline" style="width: 100%; margin-bottom: 8px;" onclick="adminAction('export-db')"><i class="fas fa-download"></i> প্লেয়ার ডেটা ব্যাকআপ এক্সপোর্ট</button>
+                <button class="btn btn-gold" style="width: 100%; margin-bottom: 8px;" onclick="alert('ফেজ রিসেট সম্পন্ন হয়েছে!')"><i class="fas fa-sync"></i> ম্যানুয়াল ফেজ রিসেট</button>
             </div>
         </div>
     </div>
@@ -906,27 +879,32 @@
     <!-- Footer -->
     <footer>
         <div>&copy; 2026 Elite Playmakers FC (Let Players FC). All Rights Reserved.</div>
-        <div style="font-size: 10px; color: #555; margin-top: 4px;">Powered by VIP Dark Engine & Supabase</div>
-        
-        <!-- Secret Admin Trigger (Double Tap Area) -->
+        <div style="font-size: 10px; color: #555; margin-top: 4px;">Powered by VIP Dark Engine & Dynamic Time Progression</div>
         <div class="secret-admin-trigger" id="admin-trigger-zone" title="Secret Admin Zone"></div>
     </footer>
 
-    <!-- JavaScript Engine -->
+    <!-- JavaScript Dynamic Endless Engine -->
     <script>
-        // Data Store
-        let mockPlayers = [
-            { id: 1, name: "Tanvir Ahmed", uid: "8849201", device: "iPhone 13 Pro", matches: 12, wins: 9, draws: 2, losses: 1, points: 33 },
-            { id: 2, name: "Sabbir Hossain", uid: "5829104", device: "Redmi Note 12", matches: 10, wins: 7, draws: 1, losses: 2, points: 25 },
-            { id: 3, name: "Rifat Chowdhury", uid: "9921048", device: "Samsung S22 Ultra", matches: 8, wins: 5, draws: 2, losses: 1, points: 20 },
-            { id: 4, name: "Naimur Rahman", uid: "1049285", device: "Realme GT Master", matches: 6, wins: 3, draws: 1, losses: 2, points: 13 }
-        ];
+        // Supabase Setup
+        const SUPABASE_URL = 'YOUR_SUPABASE_PROJECT_URL';
+        const SUPABASE_ANON_KEY = 'YOUR_SUPABASE_ANON_KEY';
+        
+        let supabaseClient = null;
+        if (SUPABASE_URL !== 'YOUR_SUPABASE_PROJECT_URL' && typeof supabase !== 'undefined') {
+            supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+        }
 
+        // Global Stores
+        let registeredPlayers = [];
+        let hallOfFameData = {}; // Stores winners indexed by week or month
         let loggedInPlayer = null;
         let tapCount = 0;
         let tapTimer = null;
 
-        // Navigation Page Switcher (Handles Multi-page Feel inside Single HTML)
+        // Base Anchor Start Date: Thursday, 15 October 2026, 08:00 AM BST (UTC+6)
+        const ANCHOR_START_DATE = new Date(Date.UTC(2026, 9, 15, 2, 0, 0)); // UTC equivalent for 8 AM BST
+
+        // Navigation Engine
         function showPage(pageId) {
             document.querySelectorAll('.page-view').forEach(p => p.classList.remove('active'));
             const target = document.getElementById(pageId);
@@ -936,46 +914,143 @@
             }
 
             if (pageId === 'profile-view') renderPlayerCards();
-            if (pageId === 'weekly-view') loadWeeklyTable('current');
-            if (pageId === 'overall-view') loadOverallTable();
+            if (pageId === 'weekly-view') renderWeeklyTable();
+            if (pageId === 'overall-view') renderOverallTable();
             if (pageId === 'submit-view') setupSubmitPage();
         }
 
-        // Modal Handlers
         function openModal(id) { document.getElementById(id).style.display = 'flex'; }
         function closeModal(id) { document.getElementById(id).style.display = 'none'; }
 
-        // Render Player Profiles
+        // Dynamic Week & Date Calculator Engine
+        function getPhaseInfo() {
+            const now = new Date();
+            const timeDiff = now.getTime() - ANCHOR_START_DATE.getTime();
+            
+            let weekIndex = 1;
+            if (timeDiff > 0) {
+                weekIndex = Math.floor(timeDiff / (7 * 24 * 60 * 60 * 1000)) + 1;
+            }
+
+            // Start date of current calculated phase week
+            const phaseStart = new Date(ANCHOR_START_DATE.getTime() + (weekIndex - 1) * 7 * 24 * 60 * 60 * 1000);
+            const phaseEnd = new Date(phaseStart.getTime() + 7 * 24 * 60 * 60 * 1000);
+
+            return {
+                currentWeek: weekIndex,
+                startDate: phaseStart,
+                endDate: phaseEnd
+            };
+        }
+
+        // Render Dynamic Endless Champions Lists (No Hardcoded Weeks or Months)
+        function renderDynamicChampions() {
+            const phase = getPhaseInfo();
+            const weeklyContainer = document.getElementById('dynamic-weekly-champions');
+            const monthlyContainer = document.getElementById('dynamic-monthly-mvps');
+
+            // 1. Dynamic Weekly List (Loop from Week 1 up to current dynamic week)
+            let weeklyHTML = '';
+            for (let w = phase.currentWeek; w >= 1; w--) {
+                if (w === phase.currentWeek) {
+                    weeklyHTML += `
+                        <div class="champ-list-item">
+                            <span><i class="fas fa-medal" style="color:var(--gold-primary);"></i> Week ${w} Champion</span>
+                            <strong style="color:var(--gold-secondary);">রানিং (In Progress...)</strong>
+                        </div>`;
+                } else {
+                    const winner = hallOfFameData[`week_${w}`] || 'টিবিডি / ডাটা নেই';
+                    weeklyHTML += `
+                        <div class="champ-list-item">
+                            <span><i class="fas fa-medal" style="color:var(--gold-primary);"></i> Week ${w} Champion</span>
+                            <strong style="color:var(--gold-primary);">${winner}</strong>
+                        </div>`;
+                }
+            }
+            weeklyContainer.innerHTML = weeklyHTML;
+
+            // 2. Dynamic Monthly List (Generates Months dynamically based on calendar progression)
+            const monthNames = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
+            const now = new Date();
+            let startYear = 2026;
+            let startMonthIndex = 9; // October (0-indexed)
+
+            let monthlyHTML = '';
+            let currentYear = now.getFullYear();
+            let currentMonthIndex = now.getMonth();
+
+            for (let y = currentYear; y >= startYear; y--) {
+                let mEnd = (y === currentYear) ? currentMonthIndex : 11;
+                let mStart = (y === startYear) ? startMonthIndex : 0;
+
+                for (let m = mEnd; m >= mStart; m--) {
+                    const monthKey = `${monthNames[m]}_${y}`;
+                    const mvpWinner = hallOfFameData[monthKey] || 'টিবিডি (TBD)';
+                    monthlyHTML += `
+                        <div class="champ-list-item">
+                            <span><i class="fas fa-trophy" style="color:var(--cyan-accent);"></i> ${monthNames[m]} ${y} MVP</span>
+                            <strong style="color:var(--cyan-accent);">${mvpWinner}</strong>
+                        </div>`;
+                }
+            }
+            monthlyContainer.innerHTML = monthlyHTML;
+
+            // 3. Dynamic Weekly History Buttons in Ranking Page
+            const historySelector = document.getElementById('weekly-history-selector');
+            let historyBtnHTML = `<button class="btn btn-gold" onclick="renderWeeklyTable(${phase.currentWeek})">কারেন্ট উইক (${phase.currentWeek})</button>`;
+            for (let w = phase.currentWeek - 1; w >= 1; w--) {
+                historyBtnHTML += `<button class="btn btn-outline" onclick="renderWeeklyTable(${w})">Week ${w}</button>`;
+            }
+            historySelector.innerHTML = historyBtnHTML;
+        }
+
+        // Fetch Data from Supabase
+        async function fetchPlayers() {
+            if (supabaseClient) {
+                const { data, error } = await supabaseClient.from('players').select('*');
+                if (!error && data) registeredPlayers = data;
+
+                const { data: fame, error: fameErr } = await supabaseClient.from('hall_of_fame').select('*');
+                if (!fameErr && fame) {
+                    fame.forEach(f => { hallOfFameData[f.title] = f.player_name; });
+                }
+            }
+        }
+
+        // Render Player Cards
         function renderPlayerCards() {
             const container = document.getElementById('players-list-container');
-            container.innerHTML = mockPlayers.map(p => `
-                <div class="player-card" onclick="openPlayerDetail(${p.id})">
-                    <div class="player-badge">${p.name.charAt(0)}</div>
-                    <h3 style="color: var(--gold-primary); font-size: 15px;">${p.name}</h3>
-                    <div style="font-size: 12px; color: var(--cyan-accent); margin-top: 4px;">UID: ${p.uid}</div>
-                    <div style="font-size: 11px; color: var(--text-muted); margin-top: 2px;">Device: ${p.device}</div>
+            if (registeredPlayers.length === 0) {
+                container.innerHTML = `<div class="empty-placeholder" style="grid-column: 1/-1;">
+                    <i class="fas fa-user-slash" style="font-size: 30px; color: var(--gold-primary); margin-bottom: 10px;"></i><br>
+                    এখনো কোনো প্লেয়ার রেজিস্ট্রেশন করেনি। সাইন আপ বাটনে ক্লিক করে প্রথম প্লেয়ার হিসেবে যুক্ত হন!
+                </div>`;
+                return;
+            }
+
+            container.innerHTML = registeredPlayers.map(p => `
+                <div class="player-card" onclick="openPlayerDetail('${p.id || p.game_uid}')">
+                    <div class="player-badge">${p.player_name ? p.player_name.charAt(0).toUpperCase() : 'P'}</div>
+                    <h3 style="color: var(--gold-primary); font-size: 15px;">${p.player_name}</h3>
+                    <div style="font-size: 12px; color: var(--cyan-accent); margin-top: 4px;">UID: ${p.game_uid}</div>
+                    <div style="font-size: 11px; color: var(--text-muted); margin-top: 2px;">Device: ${p.device_name}</div>
                     <div style="font-size: 11px; color: var(--gold-secondary); margin-top: 8px;">
-                        <strong>P:</strong> ${p.points} | <strong>W:</strong> ${p.wins} | <strong>M:</strong> ${p.matches}
+                        <strong>P:</strong> ${p.points || 0} | <strong>W:</strong> ${p.wins || 0} | <strong>M:</strong> ${p.matches_played || 0}
                     </div>
                 </div>
             `).join('');
         }
 
         function openPlayerDetail(playerId) {
-            const p = mockPlayers.find(x => x.id === playerId);
+            const p = registeredPlayers.find(x => (x.id === playerId || x.game_uid === playerId));
             if (!p) return;
-            document.getElementById('modal-player-avatar').innerText = p.name.charAt(0);
-            document.getElementById('modal-player-name').innerText = p.name;
-            document.getElementById('modal-player-uid').innerText = 'Game UID: ' + p.uid;
-            document.getElementById('modal-player-device').innerText = 'Device: ' + p.device;
-            document.getElementById('modal-stat-matches').innerText = p.matches;
-            document.getElementById('modal-stat-wins').innerText = p.wins;
-            document.getElementById('modal-stat-points').innerText = p.points;
-
-            document.getElementById('modal-match-history').innerHTML = `
-                <div style="padding: 4px 0; border-bottom: 1px solid rgba(255,255,255,0.05);">vs Sabbir Hossain - <span style="color:var(--success);">WON 3-1</span></div>
-                <div style="padding: 4px 0; border-bottom: 1px solid rgba(255,255,255,0.05);">vs Rifat Chowdhury - <span style="color:var(--gold-secondary);">DRAW 2-2</span></div>
-            `;
+            document.getElementById('modal-player-avatar').innerText = p.player_name ? p.player_name.charAt(0).toUpperCase() : 'P';
+            document.getElementById('modal-player-name').innerText = p.player_name;
+            document.getElementById('modal-player-uid').innerText = 'Game UID: ' + p.game_uid;
+            document.getElementById('modal-player-device').innerText = 'Device: ' + p.device_name;
+            document.getElementById('modal-stat-matches').innerText = p.matches_played || 0;
+            document.getElementById('modal-stat-wins').innerText = p.wins || 0;
+            document.getElementById('modal-stat-points').innerText = p.points || 0;
             openModal('player-detail-modal');
         }
 
@@ -993,91 +1068,148 @@
                 warning.style.display = 'none';
                 form.style.opacity = '1';
                 form.style.pointerEvents = 'auto';
-                document.getElementById('logged-player-name').innerText = loggedInPlayer.name + ' (You)';
+                document.getElementById('logged-player-name').innerText = loggedInPlayer.player_name + ' (You)';
             }
 
             oppSelect.innerHTML = '<option value="">-- অপোনেন্ট সিলেক্ট করুন --</option>' + 
-                mockPlayers.filter(p => !loggedInPlayer || p.id !== loggedInPlayer.id).map(p => `<option value="${p.id}">${p.name} (${p.uid})</option>`).join('');
+                registeredPlayers.filter(p => !loggedInPlayer || p.game_uid !== loggedInPlayer.game_uid)
+                .map(p => `<option value="${p.game_uid}">${p.player_name} (${p.game_uid})</option>`).join('');
         }
 
-        function handleMatchSubmit(e) {
+        async function handleMatchSubmit(e) {
             e.preventDefault();
-            alert('ম্যাচ রেজাল্ট এবং স্ক্রিনশট সফলভাবে সাবমিট করা হয়েছে!');
+            const opponentUid = document.getElementById('opponent-select').value;
+            const yourScore = document.getElementById('your-score').value;
+            const opponentScore = document.getElementById('opponent-score').value;
+
+            if (supabaseClient) {
+                await supabaseClient.from('match_results').insert([{
+                    submitter_id: loggedInPlayer.id,
+                    opponent_id: opponentUid,
+                    submitter_score: parseInt(yourScore),
+                    opponent_score: parseInt(opponentScore)
+                }]);
+            }
+
+            alert('ম্যাচ রেজাল্ট সফলভাবে জমা দেওয়া হয়েছে!');
             e.target.reset();
             showPage('home-view');
         }
 
-        // Tables
-        function loadWeeklyTable(filter) {
+        function renderWeeklyTable(weekNum) {
             const tbody = document.getElementById('weekly-rank-body');
-            tbody.innerHTML = mockPlayers.map((p, idx) => `
+            if (registeredPlayers.length === 0) {
+                tbody.innerHTML = `<tr><td colspan="7" style="text-align:center; color: var(--text-muted); padding:20px;">এখনো কোনো উইকলি পয়েন্ট ডাটা পাওয়া যায়নি।</td></tr>`;
+                return;
+            }
+            tbody.innerHTML = registeredPlayers.map((p, idx) => `
                 <tr>
                     <td><span class="rank-badge ${idx < 3 ? 'rank-' + (idx+1) : ''}">${idx + 1}</span></td>
-                    <td><strong>${p.name}</strong></td>
-                    <td>${p.matches}</td>
-                    <td>${p.wins}</td>
-                    <td>${p.draws}</td>
-                    <td>${p.losses}</td>
-                    <td style="color: var(--gold-primary); font-weight: bold;">${p.points}</td>
+                    <td><strong>${p.player_name}</strong></td>
+                    <td>${p.matches_played || 0}</td>
+                    <td>${p.wins || 0}</td>
+                    <td>${p.draws || 0}</td>
+                    <td>${p.losses || 0}</td>
+                    <td style="color: var(--gold-primary); font-weight: bold;">${p.points || 0}</td>
                 </tr>
             `).join('');
         }
 
-        function loadOverallTable() {
+        function renderOverallTable() {
             const tbody = document.getElementById('overall-rank-body');
-            tbody.innerHTML = mockPlayers.map((p, idx) => `
+            if (registeredPlayers.length === 0) {
+                tbody.innerHTML = `<tr><td colspan="6" style="text-align:center; color: var(--text-muted); padding:20px;">এখনো কোনো ওভারঅল ডাটা পাওয়া যায়নি।</td></tr>`;
+                return;
+            }
+            tbody.innerHTML = registeredPlayers.map((p, idx) => `
                 <tr>
                     <td><span class="rank-badge ${idx < 3 ? 'rank-' + (idx+1) : ''}">${idx + 1}</span></td>
-                    <td><strong>${p.name}</strong></td>
-                    <td>${p.uid}</td>
-                    <td>${p.matches}</td>
-                    <td>${p.wins}</td>
-                    <td style="color: var(--gold-primary); font-weight: bold;">${p.points * 4}</td>
+                    <td><strong>${p.player_name}</strong></td>
+                    <td>${p.game_uid}</td>
+                    <td>${p.matches_played || 0}</td>
+                    <td>${p.wins || 0}</td>
+                    <td style="color: var(--gold-primary); font-weight: bold;">${p.points || 0}</td>
                 </tr>
             `).join('');
         }
 
-        // Auth
-        function handleSignup(e) {
+        // Signup Handler
+        async function handleSignup(e) {
             e.preventDefault();
             const name = document.getElementById('signup-name').value;
             const uid = document.getElementById('signup-uid').value;
             const device = document.getElementById('signup-device').value;
-            
+            const email = document.getElementById('signup-email').value;
+            const pass = document.getElementById('signup-pass').value;
+            const wa = document.getElementById('signup-wa').value;
+
             const newPlayer = {
-                id: mockPlayers.length + 1,
-                name: name,
-                uid: uid,
-                device: device,
-                matches: 0, wins: 0, draws: 0, losses: 0, points: 0
+                player_name: name,
+                game_uid: uid,
+                device_name: device,
+                email: email,
+                password_hash: pass,
+                whatsapp_number: wa,
+                matches_played: 0, wins: 0, draws: 0, losses: 0, points: 0
             };
-            mockPlayers.push(newPlayer);
-            loggedInPlayer = newPlayer;
+
+            if (supabaseClient) {
+                const { data, error } = await supabaseClient.from('players').insert([newPlayer]).select();
+                if (error) {
+                    alert('রেজিস্ট্রেশনে সমস্যা হয়েছে: ' + error.message);
+                    return;
+                }
+                if (data && data[0]) loggedInPlayer = data[0];
+            } else {
+                registeredPlayers.push(newPlayer);
+                loggedInPlayer = newPlayer;
+            }
+
+            await fetchPlayers();
             updateAuthUI();
             closeModal('signup-modal');
-            alert('রেজিস্ট্রেশন সফল হয়েছে!');
+            alert('রেজিস্ট্রেশন সফল হয়েছে! স্বাগতম ' + name);
         }
 
-        function handleLogin(e) {
+        // Login Handler
+        async function handleLogin(e) {
             e.preventDefault();
-            loggedInPlayer = mockPlayers[0];
+            const email = document.getElementById('login-email').value;
+            const pass = document.getElementById('login-pass').value;
+
+            if (supabaseClient) {
+                const { data, error } = await supabaseClient.from('players').select('*').eq('email', email).eq('password_hash', pass).single();
+                if (error || !data) {
+                    alert('ইমেইল অথবা পাসওয়ার্ড সঠিক নয়!');
+                    return;
+                }
+                loggedInPlayer = data;
+            } else {
+                const found = registeredPlayers.find(p => p.email === email && p.password_hash === pass);
+                if (!found) {
+                    alert('ইমেইল অথবা পাসওয়ার্ড সঠিক নয়!');
+                    return;
+                }
+                loggedInPlayer = found;
+            }
+
             updateAuthUI();
             closeModal('login-modal');
-            alert('স্বাগতম ' + loggedInPlayer.name + '!');
+            alert('স্বাগতম ' + loggedInPlayer.player_name + '!');
         }
 
         function updateAuthUI() {
             const area = document.getElementById('auth-area');
             if (loggedInPlayer) {
                 area.innerHTML = `
-                    <div style="font-size: 12px; color: var(--gold-primary); font-weight: bold;">
-                        <i class="fas fa-user-circle"></i> ${loggedInPlayer.name}
+                    <div style="font-size: 12px; color: var(--gold-primary); font-weight: bold; background: rgba(255,215,0,0.1); padding: 6px 12px; border-radius: 6px; border: 1px solid var(--border-gold);">
+                        <i class="fas fa-user-circle"></i> ${loggedInPlayer.player_name}
                     </div>
                 `;
             }
         }
 
-        // Secret Admin Portal Trigger (Double Tap)
+        // Secret Admin Portal Trigger
         document.getElementById('admin-trigger-zone').addEventListener('click', () => {
             tapCount++;
             clearTimeout(tapTimer);
@@ -1100,38 +1232,40 @@
             }
         }
 
-        function adminAction(type) {
-            alert('এডমিন একশন সম্পূর্ণ হয়েছে!');
-        }
-
         // Dynamic BST Timer Engine
         function startPhaseTimer() {
             function updateTimer() {
+                const phase = getPhaseInfo();
+                document.getElementById('current-phase-number').innerText = `Week ${phase.currentWeek}`;
+
+                const options = { month: 'short', day: 'numeric', year: 'numeric', hour: '2-digit', minute: '2-digit', hour12: true };
+                const startStr = phase.startDate.toLocaleDateString('en-US', options);
+                const endStr = phase.endDate.toLocaleDateString('en-US', options);
+                document.getElementById('phase-date-range').innerText = `${startStr} — ${endStr}`;
+
                 const now = new Date();
-                let target = new Date();
-                target.setHours(8, 0, 0, 0);
-                
-                let dayOffset = (4 - target.getDay() + 7) % 7;
-                if (dayOffset === 0 && now > target) dayOffset = 7;
-                target.setDate(target.getDate() + dayOffset);
+                const diff = phase.endDate - now;
 
-                const diff = target - now;
-                const days = Math.floor(diff / (1000 * 60 * 60 * 24));
-                const hours = Math.floor((diff / (1000 * 60 * 60)) % 24);
-                const mins = Math.floor((diff / (1000 * 60)) % 60);
-                const secs = Math.floor((diff / 1000) % 60);
+                if (diff > 0) {
+                    const days = Math.floor(diff / (1000 * 60 * 60 * 24));
+                    const hours = Math.floor((diff / (1000 * 60 * 60)) % 24);
+                    const mins = Math.floor((diff / (1000 * 60)) % 60);
+                    const secs = Math.floor((diff / 1000) % 60);
 
-                document.getElementById('timer-days').innerText = String(days).padStart(2, '0');
-                document.getElementById('timer-hours').innerText = String(hours).padStart(2, '0');
-                document.getElementById('timer-mins').innerText = String(mins).padStart(2, '0');
-                document.getElementById('timer-secs').innerText = String(secs).padStart(2, '0');
+                    document.getElementById('timer-days').innerText = String(days).padStart(2, '0');
+                    document.getElementById('timer-hours').innerText = String(hours).padStart(2, '0');
+                    document.getElementById('timer-mins').innerText = String(mins).padStart(2, '0');
+                    document.getElementById('timer-secs').innerText = String(secs).padStart(2, '0');
+                }
             }
             updateTimer();
             setInterval(updateTimer, 1000);
         }
 
-        window.onload = function() {
+        window.onload = async function() {
             startPhaseTimer();
+            await fetchPlayers();
+            renderDynamicChampions();
             renderPlayerCards();
         };
     </script>
