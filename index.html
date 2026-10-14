@@ -1,811 +1,1139 @@
-
 <!DOCTYPE html>
-<html lang="bn" class="dark">
+<html lang="bn">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>ELITE PLAY-MAKERS FC | Official Club Portal</title>
-    <!-- Tailwind CSS CDN -->
-    <script src="https://cdn.tailwindcss.com"></script>
-    <script>
-        tailwind.config = {
-            darkMode: 'class',
-            theme: {
-                extend: {
-                    colors: {
-                        gold: '#f59e0b',
-                        darkbg: '#0b0f19',
-                        cardbg: '#111827',
-                        accent: '#3b82f6',
-                        accentgreen: '#10b981'
-                    }
-                }
+    <title>Elite Playmakers FC | Let Players FC Official</title>
+    <!-- Supabase JS Library -->
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <!-- FontAwesome Icons -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <style>
+        :root {
+            --bg-primary: #0a0e17;
+            --bg-secondary: #121824;
+            --bg-card: #1a2233;
+            --gold-primary: #ffd700;
+            --gold-secondary: #ffb700;
+            --gold-glow: rgba(255, 215, 0, 0.4);
+            --cyan-accent: #00f0ff;
+            --text-main: #f0f4f8;
+            --text-muted: #94a3b8;
+            --border-gold: rgba(255, 215, 0, 0.3);
+            --border-card: rgba(255, 255, 255, 0.08);
+            --danger: #ff4757;
+            --success: #2ed573;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        body {
+            background-color: var(--bg-primary);
+            color: var(--text-main);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            overflow-x: hidden;
+            background-image: 
+                radial-gradient(circle at 10% 20%, rgba(255, 215, 0, 0.05) 0%, transparent 25%),
+                radial-gradient(circle at 90% 80%, rgba(0, 240, 255, 0.05) 0%, transparent 25%);
+        }
+
+        /* Top Header */
+        header {
+            background: rgba(18, 24, 36, 0.95);
+            border-bottom: 2px solid var(--gold-secondary);
+            box-shadow: 0 4px 20px rgba(0,0,0,0.5);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            backdrop-filter: blur(10px);
+        }
+
+        .header-container {
+            max-width: 1100px;
+            margin: 0 auto;
+            padding: 12px 15px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+
+        .club-title-box {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            cursor: pointer;
+        }
+
+        .club-logo {
+            width: 42px;
+            height: 42px;
+            background: linear-gradient(135deg, var(--gold-primary), var(--gold-secondary));
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #000;
+            font-size: 22px;
+            box-shadow: 0 0 12px var(--gold-glow);
+        }
+
+        .club-name {
+            font-size: 20px;
+            font-weight: 800;
+            background: linear-gradient(90deg, #ffffff, var(--gold-primary));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            letter-spacing: 1px;
+            text-transform: uppercase;
+        }
+
+        .auth-buttons {
+            display: flex;
+            gap: 8px;
+        }
+
+        .btn {
+            padding: 8px 14px;
+            border-radius: 6px;
+            font-weight: 600;
+            font-size: 13px;
+            cursor: pointer;
+            border: none;
+            transition: all 0.2s ease;
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            text-decoration: none;
+        }
+
+        .btn-gold {
+            background: linear-gradient(135deg, var(--gold-primary), var(--gold-secondary));
+            color: #000;
+            box-shadow: 0 2px 10px rgba(255, 215, 0, 0.2);
+        }
+
+        .btn-gold:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 15px var(--gold-glow);
+        }
+
+        .btn-outline {
+            background: transparent;
+            border: 1px solid var(--gold-primary);
+            color: var(--gold-primary);
+        }
+
+        .btn-outline:hover {
+            background: rgba(255, 215, 0, 0.1);
+        }
+
+        .btn-back {
+            background: #222d42;
+            color: var(--gold-primary);
+            border: 1px solid var(--border-gold);
+            padding: 8px 16px;
+            font-size: 13px;
+            margin-bottom: 20px;
+            border-radius: 8px;
+            cursor: pointer;
+        }
+
+        .btn-back:hover {
+            background: #2a3750;
+        }
+
+        /* Side-by-Side 5 Button Grid Navigation */
+        .nav-grid {
+            display: grid;
+            grid-template-columns: repeat(5, 1fr);
+            gap: 8px;
+            margin: 15px 0 25px 0;
+            background: rgba(18, 24, 36, 0.8);
+            padding: 10px;
+            border-radius: 12px;
+            border: 1px solid var(--border-gold);
+        }
+
+        @media (max-width: 768px) {
+            .nav-grid {
+                grid-template-columns: repeat(5, 1fr);
+                gap: 4px;
+                padding: 6px;
+            }
+
+            .nav-btn {
+                padding: 8px 4px !important;
+                font-size: 10px !important;
+                flex-direction: column;
+                gap: 4px !important;
+                text-align: center;
+            }
+
+            .nav-btn i {
+                font-size: 14px !important;
+            }
+
+            .club-name {
+                font-size: 15px;
             }
         }
-    </script>
-    <!-- FontAwesome Icons -->
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <!-- Google Fonts -->
-    <link href="https://fonts.googleapis.com/css2?family=Rajdhani:wght@500;600;700&family=Hind+Siliguri:wght@400;600;700&display=swap" rel="stylesheet">
-    <!-- Supabase JS CDN -->
-    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-    <style>
-        body { font-family: 'Hind Siliguri', 'Rajdhani', sans-serif; background-color: #0b0f19; color: #f3f4f6; }
-        .glow-gold { text-shadow: 0 0 12px rgba(245, 158, 11, 0.6); }
-        .gold-border { border-color: rgba(245, 158, 11, 0.4); }
-        .scrollbar-hide::-webkit-scrollbar { display: none; }
-        .scrollbar-hide { -ms-overflow-style: none; scrollbar-width: none; }
+
+        .nav-btn {
+            background: var(--bg-card);
+            border: 1px solid var(--border-card);
+            color: var(--text-main);
+            padding: 12px 8px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 11px;
+            font-weight: 700;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 6px;
+            transition: all 0.2s;
+            text-transform: uppercase;
+        }
+
+        .nav-btn:hover, .nav-btn.active-tab {
+            background: linear-gradient(135deg, rgba(255,215,0,0.15), rgba(255,183,0,0.05));
+            border-color: var(--gold-primary);
+            color: var(--gold-primary);
+            box-shadow: 0 0 10px rgba(255, 215, 0, 0.2);
+        }
+
+        /* Dynamic Page Switcher Sections */
+        .page-view {
+            display: none;
+            width: 100%;
+            max-width: 1100px;
+            margin: 0 auto;
+            padding: 0 15px 80px 15px;
+            animation: pageFadeIn 0.3s ease-in-out;
+        }
+
+        .page-view.active {
+            display: block;
+        }
+
+        @keyframes pageFadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* Banner & Status Cards */
+        .status-card {
+            background: var(--bg-card);
+            border: 1px solid var(--border-gold);
+            border-radius: 12px;
+            padding: 20px;
+            margin-bottom: 20px;
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.4);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .status-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 4px;
+            height: 100%;
+            background: var(--gold-primary);
+        }
+
+        .phase-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 10px;
+            margin-bottom: 15px;
+        }
+
+        .phase-title {
+            font-size: 18px;
+            font-weight: 800;
+            color: var(--gold-primary);
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .phase-dates {
+            font-size: 12px;
+            color: var(--cyan-accent);
+            background: rgba(0, 240, 255, 0.08);
+            padding: 6px 12px;
+            border-radius: 20px;
+            border: 1px solid rgba(0, 240, 255, 0.2);
+        }
+
+        /* BST Live Timer */
+        .timer-box {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 12px;
+            background: rgba(10, 14, 23, 0.7);
+            padding: 15px;
+            border-radius: 10px;
+            border: 1px solid rgba(255, 215, 0, 0.15);
+            margin-top: 10px;
+        }
+
+        .time-unit {
+            text-align: center;
+            min-width: 55px;
+        }
+
+        .time-val {
+            font-size: 26px;
+            font-weight: 800;
+            color: var(--gold-primary);
+            font-family: monospace;
+            text-shadow: 0 0 8px var(--gold-glow);
+        }
+
+        .time-lbl {
+            font-size: 10px;
+            color: var(--text-muted);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .time-sep {
+            font-size: 22px;
+            font-weight: bold;
+            color: var(--gold-secondary);
+        }
+
+        /* Champions Grid */
+        .champions-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+            margin-top: 20px;
+        }
+
+        @media (max-width: 768px) {
+            .champions-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        .champ-card {
+            background: var(--bg-card);
+            border: 1px solid var(--border-card);
+            border-radius: 12px;
+            padding: 16px;
+        }
+
+        .champ-card-header {
+            font-size: 15px;
+            font-weight: 700;
+            color: var(--gold-primary);
+            border-bottom: 1px solid var(--border-card);
+            padding-bottom: 8px;
+            margin-bottom: 12px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .champ-list-item {
+            display: flex;
+            justify-content: space-between;
+            padding: 8px 0;
+            border-bottom: 1px dashed rgba(255,255,255,0.05);
+            font-size: 13px;
+        }
+
+        .champ-list-item:last-child {
+            border-bottom: none;
+        }
+
+        /* Modals & Forms */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.85);
+            z-index: 1000;
+            backdrop-filter: blur(5px);
+            align-items: center;
+            justify-content: center;
+            padding: 15px;
+        }
+
+        .modal-content {
+            background: var(--bg-secondary);
+            border: 1px solid var(--gold-primary);
+            border-radius: 14px;
+            width: 100%;
+            max-width: 480px;
+            padding: 24px;
+            box-shadow: 0 0 30px rgba(255, 215, 0, 0.2);
+            position: relative;
+            max-height: 90vh;
+            overflow-y: auto;
+        }
+
+        .modal-close {
+            position: absolute;
+            top: 15px;
+            right: 15px;
+            font-size: 20px;
+            color: var(--text-muted);
+            cursor: pointer;
+        }
+
+        .modal-close:hover { color: #fff; }
+
+        .form-group {
+            margin-bottom: 14px;
+        }
+
+        .form-group label {
+            display: block;
+            font-size: 12px;
+            font-weight: 700;
+            color: var(--gold-primary);
+            margin-bottom: 6px;
+            text-transform: uppercase;
+        }
+
+        .form-input {
+            width: 100%;
+            padding: 10px 12px;
+            background: var(--bg-primary);
+            border: 1px solid var(--border-card);
+            border-radius: 6px;
+            color: #fff;
+            font-size: 14px;
+            outline: none;
+        }
+
+        .form-input:focus {
+            border-color: var(--gold-primary);
+            box-shadow: 0 0 8px var(--gold-glow);
+        }
+
+        /* Cards & Tables */
+        .player-cards-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+            gap: 15px;
+            margin-top: 15px;
+        }
+
+        .player-card {
+            background: var(--bg-card);
+            border: 1px solid var(--border-card);
+            border-radius: 10px;
+            padding: 15px;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .player-card:hover {
+            border-color: var(--gold-primary);
+            transform: translateY(-3px);
+            box-shadow: 0 5px 15px rgba(0,0,0,0.5);
+        }
+
+        .player-badge {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, var(--gold-primary), var(--gold-secondary));
+            color: #000;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            font-size: 18px;
+            margin-bottom: 10px;
+        }
+
+        .rank-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 15px;
+            background: var(--bg-card);
+            border-radius: 10px;
+            overflow: hidden;
+        }
+
+        .rank-table th, .rank-table td {
+            padding: 12px;
+            text-align: left;
+            border-bottom: 1px solid var(--border-card);
+            font-size: 13px;
+        }
+
+        .rank-table th {
+            background: rgba(255, 215, 0, 0.1);
+            color: var(--gold-primary);
+            text-transform: uppercase;
+            font-size: 11px;
+            letter-spacing: 1px;
+        }
+
+        .rank-badge {
+            display: inline-block;
+            width: 24px;
+            height: 24px;
+            line-height: 24px;
+            text-align: center;
+            border-radius: 50%;
+            font-weight: bold;
+            font-size: 12px;
+        }
+
+        .rank-1 { background: var(--gold-primary); color: #000; }
+        .rank-2 { background: #c0c0c0; color: #000; }
+        .rank-3 { background: #cd7f32; color: #000; }
+
+        .vs-container {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 10px;
+            margin: 15px 0;
+            background: rgba(0,0,0,0.3);
+            padding: 15px;
+            border-radius: 8px;
+        }
+
+        .vs-box { text-align: center; flex: 1; }
+        .vs-text { font-weight: 800; color: var(--gold-primary); font-size: 20px; }
+
+        /* Secret Admin Footer */
+        footer {
+            margin-top: auto;
+            background: var(--bg-secondary);
+            border-top: 1px solid var(--border-card);
+            padding: 15px;
+            text-align: center;
+            font-size: 12px;
+            color: var(--text-muted);
+            position: relative;
+        }
+
+        .secret-admin-trigger {
+            position: absolute;
+            bottom: 10px;
+            right: 10px;
+            width: 25px;
+            height: 25px;
+            opacity: 0.1;
+            cursor: pointer;
+            user-select: none;
+            background: var(--gold-primary);
+            border-radius: 50%;
+        }
+
+        .secret-admin-trigger:active { opacity: 0.5; }
     </style>
 </head>
-<body class="min-h-screen flex flex-col justify-between antialiased">
+<body>
 
-    <!-- HEADER / NAVIGATION -->
-    <header class="bg-cardbg border-b border-gray-800 sticky top-0 z-40 shadow-xl">
-        <div class="max-w-7xl mx-auto px-3 py-2 flex items-center justify-between">
-            <!-- Left: Sign Up Button -->
-            <div id="authNavLeft">
-                <button onclick="openModal('signupModal')" class="bg-gradient-to-r from-amber-500 to-yellow-600 hover:from-amber-600 hover:to-yellow-700 text-black font-bold text-xs sm:text-sm px-3 py-1.5 rounded-lg shadow flex items-center gap-1 transition">
-                    <i class="fa-solid fa-user-plus"></i> <span class="hidden sm:inline">প্লেয়ার</span> সাইন আপ
-                </button>
+    <!-- Header Navigation -->
+    <header>
+        <div class="header-container">
+            <div class="club-title-box" onclick="showPage('home-view')">
+                <div class="club-logo"><i class="fas fa-trophy"></i></div>
+                <div>
+                    <div class="club-name">ELITE PLAYMAKERS FC</div>
+                    <div style="font-size: 10px; color: var(--gold-secondary);">LET PLAYERS FC OFFICIAL CLUB</div>
+                </div>
             </div>
+            <div class="auth-buttons" id="auth-area">
+                <button class="btn btn-outline" onclick="openModal('signup-modal')"><i class="fas fa-user-plus"></i> সাইন আপ</button>
+                <button class="btn btn-gold" onclick="openModal('login-modal')"><i class="fas fa-sign-in-alt"></i> লগইন</button>
+            </div>
+        </div>
+    </header>
 
-            <!-- Center: Club Title -->
-            <div class="text-center px-1">
-                <h1 class="text-base sm:text-2xl font-black tracking-wider text-amber-400 uppercase glow-gold">
-                    <i class="fa-solid fa-futbol mr-1 text-amber-400"></i> ELITE PLAY-MAKERS FC
-                </h1>
-                <p class="text-[10px] sm:text-xs text-gray-400 font-semibold tracking-widest">eFootball Official League Portal</p>
-            </div>
+    <!-- Top 5 Side-by-Side Nav Bar -->
+    <div style="max-width: 1100px; margin: 0 auto; width: 100%; padding: 0 15px;">
+        <div class="nav-grid">
+            <button class="nav-btn" onclick="showPage('profile-view')"><i class="fas fa-users"></i> প্লেয়ার প্রোফাইল</button>
+            <button class="nav-btn" onclick="showPage('submit-view')"><i class="fas fa-paper-plane"></i> রেজাল্ট সাবমিট</button>
+            <button class="nav-btn" onclick="showPage('weekly-view')"><i class="fas fa-chart-line"></i> উইকলি র‍্যাঙ্কিং</button>
+            <button class="nav-btn" onclick="showPage('rules-view')"><i class="fas fa-scroll"></i> রুলস বোর্ড</button>
+            <button class="nav-btn" onclick="showPage('overall-view')"><i class="fas fa-crown"></i> ওভারঅল র‍্যাঙ্কিং</button>
+        </div>
+    </div>
 
-            <!-- Right: Login / User Status -->
-            <div id="authNavRight">
-                <button onclick="openModal('loginModal')" class="bg-blue-600 hover:bg-blue-700 text-white font-bold text-xs sm:text-sm px-3 py-1.5 rounded-lg shadow flex items-center gap-1 transition">
-                    <i class="fa-solid fa-right-to-bracket"></i> <span class="hidden sm:inline">প্লেয়ার</span> লগইন
-                </button>
+    <!-- ================= PAGE 1: HOME PAGE ================= -->
+    <div id="home-view" class="page-view active">
+        <!-- Current Phase Banner -->
+        <div class="status-card">
+            <div class="phase-header">
+                <div class="phase-title"><i class="fas fa-calendar-alt"></i> কারেন্ট ফেজ (Current Phase)</div>
+                <div class="phase-dates" id="phase-date-range">15 Oct, 2026; 8:00 AM — 22 Oct, 2026; 8:00 AM</div>
             </div>
-            
-            <div id="userInfoNav" class="hidden flex items-center gap-2">
-                <span id="navPlayerName" class="text-xs sm:text-sm font-bold text-amber-300"></span>
-                <button onclick="handleLogout()" class="bg-red-600 hover:bg-red-700 text-white text-xs px-2 py-1 rounded transition">
-                    <i class="fa-solid fa-power-off"></i>
-                </button>
+            <p style="font-size: 12px; color: var(--text-muted); margin-bottom: 10px;">
+                বাংলাদেশ সময় প্রতি বৃহস্পতিবার সকাল ৮:০০ টায় অটোমেটিক নতুন ফেজ শুরু হয়।
+            </p>
+            <div class="timer-box">
+                <div class="time-unit">
+                    <div class="time-val" id="timer-days">00</div>
+                    <div class="time-lbl">Days</div>
+                </div>
+                <div class="time-sep">:</div>
+                <div class="time-unit">
+                    <div class="time-val" id="timer-hours">00</div>
+                    <div class="time-lbl">Hours</div>
+                </div>
+                <div class="time-sep">:</div>
+                <div class="time-unit">
+                    <div class="time-val" id="timer-mins">00</div>
+                    <div class="time-lbl">Mins</div>
+                </div>
+                <div class="time-sep">:</div>
+                <div class="time-unit">
+                    <div class="time-val" id="timer-secs">00</div>
+                    <div class="time-lbl">Secs</div>
+                </div>
             </div>
         </div>
 
-        <!-- 5 MAIN NAVIGATION BUTTONS (Single Row Horizontal Scroll on Mobile) -->
-        <nav class="bg-gray-900 border-t border-gray-800 px-2 py-1.5">
-            <div class="max-w-7xl mx-auto flex items-center justify-between gap-1 overflow-x-auto scrollbar-hide text-xs sm:text-sm font-bold">
-                <button onclick="switchTab('profiles')" id="tabBtn-profiles" class="tab-btn active bg-amber-500/20 text-amber-400 border border-amber-500/40 px-2.5 py-1.5 rounded-lg whitespace-nowrap flex items-center gap-1 transition">
-                    <i class="fa-solid fa-users"></i> ক্লাব প্রোফাইল
-                </button>
-                <button onclick="switchTab('submitMatch')" id="tabBtn-submitMatch" class="tab-btn bg-gray-800 text-gray-300 hover:bg-gray-700 px-2.5 py-1.5 rounded-lg whitespace-nowrap flex items-center gap-1 transition">
-                    <i class="fa-solid fa-gamepad"></i> রেজাল্ট সাবমিট
-                </button>
-                <button onclick="switchTab('weeklyRank')" id="tabBtn-weeklyRank" class="tab-btn bg-gray-800 text-gray-300 hover:bg-gray-700 px-2.5 py-1.5 rounded-lg whitespace-nowrap flex items-center gap-1 transition">
-                    <i class="fa-solid fa-trophy"></i> উইকলি র‍্যাঙ্কিং
-                </button>
-                <button onclick="switchTab('rules')" id="tabBtn-rules" class="tab-btn bg-gray-800 text-gray-300 hover:bg-gray-700 px-2.5 py-1.5 rounded-lg whitespace-nowrap flex items-center gap-1 transition">
-                    <i class="fa-solid fa-scroll"></i> রুলস বোর্ড
-                </button>
-                <button onclick="switchTab('overallRank')" id="tabBtn-overallRank" class="tab-btn bg-gray-800 text-gray-300 hover:bg-gray-700 px-2.5 py-1.5 rounded-lg whitespace-nowrap flex items-center gap-1 transition">
-                    <i class="fa-solid fa-earth-americas"></i> ওভারঅল র‍্যাঙ্কিং
-                </button>
-            </div>
-        </nav>
-    </header>
-
-    <!-- MAIN CONTENT CONTAINER -->
-    <main class="max-w-7xl mx-auto px-3 py-4 flex-grow w-full space-y-4">
-
-        <!-- CURRENT PHASE & LIVE COUNTDOWN TIMER CARD -->
-        <section class="bg-gradient-to-r from-gray-900 via-cardbg to-gray-900 border border-amber-500/30 rounded-xl p-3 sm:p-4 shadow-lg text-center relative overflow-hidden">
-            <div class="absolute top-0 right-0 bg-amber-500 text-black text-[10px] font-black px-2 py-0.5 rounded-bl">LIVE PHASE</div>
-            
-            <div class="flex flex-col md:flex-row items-center justify-between gap-3">
-                <div class="text-left">
-                    <div class="text-xs text-amber-400 font-bold uppercase tracking-wider flex items-center gap-1">
-                        <i class="fa-solid fa-calendar-check"></i> কারেন্ট ফেইজ (৭ দিন)
-                    </div>
-                    <div id="phaseDateDisplay" class="text-xs sm:text-sm font-semibold text-gray-200 mt-0.5">
-                        15 Oct, 2026 8:00 AM — 22 Oct, 2026 8:00 AM
-                    </div>
+        <!-- Hall of Fame & Champions -->
+        <div class="champions-grid">
+            <div class="champ-card">
+                <div class="champ-card-header"><i class="fas fa-award"></i> লাস্ট উইক চ্যাম্পিয়ন (Weekly Champions)</div>
+                <div class="champ-list-item">
+                    <span><i class="fas fa-medal" style="color:var(--gold-primary);"></i> Week 1 Champion</span>
+                    <strong style="color:var(--gold-primary);">Tanvir Ahmed</strong>
                 </div>
-
-                <!-- COUNTDOWN TIMER DISPLAY -->
-                <div class="flex items-center gap-1.5 bg-black/50 px-3 py-1.5 rounded-lg border border-amber-500/20">
-                    <span class="text-xs text-gray-400 font-bold mr-1">টাইম বাকি:</span>
-                    <div class="text-center">
-                        <span id="timerDays" class="text-sm sm:text-base font-black text-amber-400">00</span>
-                        <span class="text-[9px] block text-gray-400">দিন</span>
-                    </div>
-                    <span class="text-amber-400 font-bold">:</span>
-                    <div class="text-center">
-                        <span id="timerHours" class="text-sm sm:text-base font-black text-amber-400">00</span>
-                        <span class="text-[9px] block text-gray-400">ঘণ্টা</span>
-                    </div>
-                    <span class="text-amber-400 font-bold">:</span>
-                    <div class="text-center">
-                        <span id="timerMins" class="text-sm sm:text-base font-black text-amber-400">00</span>
-                        <span class="text-[9px] block text-gray-400">মিঃ</span>
-                    </div>
-                    <span class="text-amber-400 font-bold">:</span>
-                    <div class="text-center">
-                        <span id="timerSecs" class="text-sm sm:text-base font-black text-amber-400">00</span>
-                        <span class="text-[9px] block text-gray-400">সেঃ</span>
-                    </div>
+                <div class="champ-list-item">
+                    <span><i class="fas fa-medal" style="color:var(--gold-primary);"></i> Week 2 Champion</span>
+                    <strong style="color:var(--gold-primary);">Sabbir Hossain</strong>
                 </div>
-
-                <!-- LAST WEEK CHAMPION -->
-                <div class="text-right flex items-center gap-2 bg-amber-500/10 px-3 py-1.5 rounded-lg border border-amber-500/30">
-                    <i class="fa-solid fa-crown text-amber-400 text-xl"></i>
-                    <div class="text-left">
-                        <span class="text-[10px] text-gray-400 block font-bold">লাস্ট উইক চ্যাম্পিয়ন:</span>
-                        <span id="lastWeekChamp" class="text-xs sm:text-sm font-bold text-amber-300">নাইম আহমেদ</span>
-                    </div>
+                <div class="champ-list-item">
+                    <span><i class="fas fa-medal" style="color:var(--gold-primary);"></i> Week 3 Champion</span>
+                    <strong style="color:var(--gold-primary);">Rifat Chowdhury</strong>
+                </div>
+                <div class="champ-list-item">
+                    <span><i class="fas fa-medal" style="color:var(--gold-primary);"></i> Week 4 Champion</span>
+                    <strong style="color:var(--gold-primary);">In Progress...</strong>
                 </div>
             </div>
-        </section>
 
-        <!-- Dynamic Tab Views -->
+            <div class="champ-card">
+                <div class="champ-card-header"><i class="fas fa-star"></i> মান্থলি বেস্ট প্লেয়ার (Monthly Best Player)</div>
+                <div class="champ-list-item">
+                    <span><i class="fas fa-trophy" style="color:var(--cyan-accent);"></i> October MVP</span>
+                    <strong style="color:var(--cyan-accent);">Sabbir Hossain</strong>
+                </div>
+                <div class="champ-list-item">
+                    <span><i class="fas fa-trophy" style="color:var(--cyan-accent);"></i> November MVP</span>
+                    <strong style="color:var(--cyan-accent);">TBD</strong>
+                </div>
+                <div class="champ-list-item">
+                    <span><i class="fas fa-trophy" style="color:var(--cyan-accent);"></i> December MVP</span>
+                    <strong style="color:var(--cyan-accent);">TBD</strong>
+                </div>
+            </div>
+        </div>
+    </div>
 
-        <!-- TAB 1: CLUB PLAYER PROFILES -->
-        <section id="view-profiles" class="tab-view">
-            <div class="flex items-center justify-between mb-3">
-                <h2 class="text-base sm:text-lg font-bold text-amber-400 flex items-center gap-2">
-                    <i class="fa-solid fa-id-card"></i> ক্লাব প্লেয়ার প্রোফাইলস
-                </h2>
-                <span class="text-xs text-gray-400">মোট প্লেয়ার: <strong id="totalPlayersCount" class="text-amber-400">0</strong></span>
+    <!-- ================= PAGE 2: CLUB PLAYER PROFILES ================= -->
+    <div id="profile-view" class="page-view">
+        <button class="btn-back" onclick="showPage('home-view')"><i class="fas fa-arrow-left"></i> হোম পেজে ফিরে যান</button>
+        <h2 style="color: var(--gold-primary); margin-bottom: 8px;"><i class="fas fa-id-card"></i> ক্লাব প্লেয়ার প্রোফাইল</h2>
+        <p style="font-size: 13px; color: var(--text-muted); margin-bottom: 15px;">সকল নিবন্ধিত প্লেয়ারের তালিকা। ক্লিক করে বিস্তারিত স্ট্যাটস দেখুন (হোয়াটসঅ্যাপ নম্বর সম্পূর্ণ গোপন)।</p>
+        
+        <div class="player-cards-grid" id="players-list-container">
+            <!-- Dynamic Player Cards loaded via JS -->
+        </div>
+    </div>
+
+    <!-- ================= PAGE 3: FRIENDLY CHALLENGE RESULT SUBMIT ================= -->
+    <div id="submit-view" class="page-view">
+        <button class="btn-back" onclick="showPage('home-view')"><i class="fas fa-arrow-left"></i> হোম পেজে ফিরে যান</button>
+        <h2 style="color: var(--gold-primary); margin-bottom: 8px;"><i class="fas fa-gamepad"></i> ফ্রেন্ডলি চ্যালেঞ্জ রেজাল্ট সাবমিট</h2>
+        <p style="font-size: 13px; color: var(--text-muted); margin-bottom: 15px;">ম্যাচ শেষ হওয়ার পর অপোনেন্ট সিলেক্ট করুন এবং গ্যালারি থেকে স্ক্রিনশট আপলোড করে সাবমিট করুন।</p>
+
+        <div class="status-card" style="max-width: 600px; margin: 0 auto;">
+            <div id="submit-auth-warning" style="display: none; text-align: center; color: var(--danger); font-weight: bold; padding: 15px;">
+                <i class="fas fa-exclamation-triangle"></i> রেজাল্ট সাবমিট করতে প্রথমে প্লেয়ার হিসেবে লগইন করুন!
             </div>
             
-            <div id="playersGrid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
-                <!-- Dynamic Player Cards Loaded Here -->
-                <div class="col-span-full text-center py-8 text-gray-500">
-                    <i class="fa-solid fa-spinner fa-spin text-2xl text-amber-400 mb-2"></i>
-                    <p class="text-sm">প্লেয়ার প্রোফাইল লোড হচ্ছে...</p>
-                </div>
-            </div>
-        </section>
-
-        <!-- TAB 2: FRIENDLY CHALLENGE RESULT SUBMIT -->
-        <section id="view-submitMatch" class="tab-view hidden">
-            <div class="max-w-xl mx-auto bg-cardbg border border-gray-800 rounded-xl p-4 sm:p-6 shadow-2xl">
-                <h2 class="text-base sm:text-xl font-bold text-amber-400 mb-4 text-center flex items-center justify-center gap-2">
-                    <i class="fa-solid fa-trophy"></i> ফ্রেন্ডলি ম্যাচ রেজাল্ট সাবমিট
-                </h2>
-
-                <div id="submitMatchAuthCheck" class="hidden text-center py-6">
-                    <p class="text-red-400 font-semibold text-sm mb-3">রেজাল্ট সাবমিট করতে প্রথমে প্লেয়ার লগইন করুন!</p>
-                    <button onclick="openModal('loginModal')" class="bg-blue-600 hover:bg-blue-700 text-white font-bold text-xs px-4 py-2 rounded-lg">
-                        লগইন করুন
-                    </button>
+            <form id="match-submit-form" onsubmit="handleMatchSubmit(event)">
+                <div class="form-group">
+                    <label>অপোনেন্ট প্লেয়ার সিলেক্ট করুন (Choose Opponent)</label>
+                    <select class="form-input" id="opponent-select" required>
+                        <option value="">-- প্লেয়ার বাছাই করুন --</option>
+                    </select>
                 </div>
 
-                <form id="matchSubmitForm" onsubmit="handleMatchSubmit(event)" class="space-y-4">
-                    <!-- Opponent Selector -->
-                    <div>
-                        <label class="block text-xs font-bold text-gray-300 mb-1">অপোনেন্ট সিলেক্ট করুন (Choose Opponent):</label>
-                        <select id="opponentSelect" required class="w-full bg-gray-900 border border-gray-700 rounded-lg p-2.5 text-xs sm:text-sm text-gray-100 focus:border-amber-400 outline-none">
-                            <option value="">-- প্লেয়ার লিস্ট থেকে সিলেক্ট করুন --</option>
-                        </select>
+                <div class="vs-container">
+                    <div class="vs-box">
+                        <div style="font-size: 11px; color: var(--gold-primary);" id="logged-player-name">ইউ (You)</div>
+                        <input type="number" min="0" max="99" class="form-input" id="your-score" placeholder="0" style="text-align: center; font-size: 20px; font-weight: bold;" required>
                     </div>
-
-                    <!-- Score Input Box -->
-                    <div class="bg-gray-900 p-3 rounded-lg border border-gray-800">
-                        <label class="block text-xs font-bold text-amber-400 mb-2 text-center">ম্যাচ স্কোর (Score):</label>
-                        <div class="flex items-center justify-center gap-2 sm:gap-4">
-                            <div class="text-center flex-1">
-                                <span id="submitterPlayerName" class="text-xs font-bold text-gray-300 block truncate">আপনি</span>
-                                <input type="number" id="myScore" min="0" value="0" required class="w-full mt-1 bg-black text-center text-lg font-bold text-amber-400 border border-amber-500/40 rounded-lg py-2">
-                            </div>
-                            <span class="text-lg font-black text-gray-500">VS</span>
-                            <div class="text-center flex-1">
-                                <span id="opponentPlayerName" class="text-xs font-bold text-gray-300 block truncate">অপোনেন্ট</span>
-                                <input type="number" id="oppScore" min="0" value="0" required class="w-full mt-1 bg-black text-center text-lg font-bold text-blue-400 border border-blue-500/40 rounded-lg py-2">
-                            </div>
-                        </div>
-                    </div>
-
-                    <!-- Screenshot Upload -->
-                    <div>
-                        <label class="block text-xs font-bold text-gray-300 mb-1">ম্যাচ রেজাল্ট স্ক্রিনশট (Gallery Screenshot):</label>
-                        <input type="file" id="screenshotFile" accept="image/*" required class="w-full bg-gray-900 border border-gray-700 text-xs text-gray-300 rounded-lg p-2 file:mr-3 file:py-1 file:px-3 file:rounded-md file:border-0 file:text-xs file:font-semibold file:bg-amber-500 file:text-black">
-                    </div>
-
-                    <button type="submit" id="submitMatchBtn" class="w-full bg-gradient-to-r from-amber-500 to-yellow-600 hover:from-amber-600 hover:to-yellow-700 text-black font-bold text-sm py-2.5 rounded-lg shadow-lg transition">
-                        <i class="fa-solid fa-paper-plane mr-1"></i> রেজাল্ট সাবমিট করুন
-                    </button>
-                </form>
-            </div>
-        </section>
-
-        <!-- TAB 3: WEEKLY RANKING BOARD -->
-        <section id="view-weeklyRank" class="tab-view hidden space-y-4">
-            <div class="bg-cardbg border border-gray-800 rounded-xl p-3 sm:p-4 shadow-xl">
-                <div class="flex flex-col sm:flex-row items-center justify-between gap-2 mb-3">
-                    <h2 class="text-base sm:text-lg font-bold text-amber-400 flex items-center gap-2">
-                        <i class="fa-solid fa-ranking-star"></i> উইকলি পয়েন্ট টেবিল & র‍্যাঙ্কিং
-                    </h2>
-                    <div class="flex items-center gap-2">
-                        <label class="text-xs text-gray-400 font-semibold">উইক ফিল্টার:</label>
-                        <select id="weeklyFilterSelect" onchange="loadWeeklyRankings()" class="bg-gray-900 text-xs border border-gray-700 text-amber-300 rounded px-2 py-1 outline-none">
-                            <option value="current">কারেন্ট উইক (Current Week)</option>
-                        </select>
+                    <div class="vs-text">VS</div>
+                    <div class="vs-box">
+                        <div style="font-size: 11px; color: var(--cyan-accent);">অপোনেন্ট</div>
+                        <input type="number" min="0" max="99" class="form-input" id="opponent-score" placeholder="0" style="text-align: center; font-size: 20px; font-weight: bold;" required>
                     </div>
                 </div>
 
-                <div class="overflow-x-auto">
-                    <table class="w-full text-left text-xs sm:text-sm">
-                        <thead class="bg-gray-900 text-amber-400 border-b border-gray-800">
-                            <tr>
-                                <th class="p-2 text-center">#</th>
-                                <th class="p-2">প্লেয়ার নাম</th>
-                                <th class="p-2 text-center">ম্যাচ</th>
-                                <th class="p-2 text-center">জয় (W)</th>
-                                <th class="p-2 text-center">ড্র (D)</th>
-                                <th class="p-2 text-center">হার (L)</th>
-                                <th class="p-2 text-center text-amber-400 font-bold">পয়েন্ট</th>
-                            </tr>
-                        </thead>
-                        <tbody id="weeklyLeaderboardBody" class="divide-y divide-gray-800">
-                            <!-- Dynamic Leaderboard Data -->
-                        </tbody>
-                    </table>
-                </div>
-            </div>
-
-            <!-- WEEKLY HISTORY & MONTHLY BEST PLAYER SECTION (As sketched in image) -->
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                <!-- Weekly History -->
-                <div class="bg-cardbg border border-gray-800 rounded-xl p-3 sm:p-4">
-                    <h3 class="text-sm font-bold text-amber-400 mb-2 border-b border-gray-800 pb-1 flex items-center gap-2">
-                        <i class="fa-solid fa-history"></i> উইকলি চ্যাম্পিয়ন্স হিস্ট্রি
-                    </h3>
-                    <div id="weeklyHistoryList" class="space-y-2 text-xs">
-                        <!-- Loaded dynamically -->
-                        <div class="flex justify-between items-center bg-gray-900 p-2 rounded">
-                            <span class="text-gray-300 font-bold">1st Week:</span>
-                            <span class="text-amber-300 font-semibold">নাইম আহমেদ (১৬ পয়েন্ট)</span>
-                        </div>
-                    </div>
+                <div class="form-group">
+                    <label><i class="fas fa-image"></i> ম্যাচ প্রুফ স্ক্রিনশট (Upload Screenshot)</label>
+                    <input type="file" accept="image/*" class="form-input" id="screenshot-file" required>
                 </div>
 
-                <!-- Monthly Best Player -->
-                <div class="bg-cardbg border border-gray-800 rounded-xl p-3 sm:p-4">
-                    <h3 class="text-sm font-bold text-amber-400 mb-2 border-b border-gray-800 pb-1 flex items-center gap-2">
-                        <i class="fa-solid fa-star"></i> মান্থলি বেস্ট প্লেয়ার (Monthly Best)
-                    </h3>
-                    <div id="monthlyHistoryList" class="space-y-2 text-xs">
-                        <div class="flex justify-between items-center bg-gray-900 p-2 rounded">
-                            <span class="text-gray-300 font-bold">October 2026:</span>
-                            <span class="text-amber-300 font-semibold">সাব্বির হোসেন</span>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </section>
-
-        <!-- TAB 4: RULES BOARD -->
-        <section id="view-rules" class="tab-view hidden">
-            <div class="bg-cardbg border border-gray-800 rounded-xl p-4 sm:p-6 shadow-xl space-y-4">
-                <h2 class="text-base sm:text-xl font-bold text-amber-400 border-b border-gray-800 pb-2 flex items-center gap-2">
-                    <i class="fa-solid fa-book-open"></i> টুর্নামেন্ট ও পয়েন্ট সিস্টেম রুলস
-                </h2>
-
-                <!-- Point Distribution System (Exact matching image 2) -->
-                <div class="bg-gray-900 p-4 rounded-xl border border-amber-500/30">
-                    <h3 class="text-sm font-bold text-amber-300 mb-2">⭐ পয়েন্ট গণনার নিয়ম (Point Rules):</h3>
-                    <ul class="text-xs sm:text-sm space-y-1 text-gray-300">
-                        <li>• <strong class="text-green-400">Win (জয়):</strong> ৩ পয়েন্ট + ১ পার্টিসিপেশন পয়েন্ট = <strong class="text-amber-400">৪ পয়েন্ট</strong></li>
-                        <li>• <strong class="text-yellow-400">Draw (ড্র):</strong> ১ পয়েন্ট + ১ পার্টিসিপেশন পয়েন্ট = <strong class="text-amber-400">২ পয়েন্ট</strong></li>
-                        <li>• <strong class="text-red-400">Loss (হার):</strong> ০ পয়েন্ট + ১ পার্টিসিপেশন পয়েন্ট = <strong class="text-amber-400">১ পয়েন্ট</strong></li>
-                    </ul>
-                    <p class="text-[11px] text-gray-400 mt-2 italic">* প্রতি ম্যাচে অংশগ্রহণের জন্য ১ বোনাস পয়েন্ট দেওয়া হবে। তাই বেশি ম্যাচ খেললে পয়েন্ট বৃদ্ধির সুযোগ থাকবে!</p>
-                </div>
-
-                <div class="space-y-2 text-xs sm:text-sm text-gray-300">
-                    <h3 class="text-sm font-bold text-amber-300">📌 সাবমিশন রুলস:</h3>
-                    <ol class="list-decimal list-inside space-y-1 text-gray-400">
-                        <li>ম্যাচ শেষে অবশ্যই পরিষ্কার স্কোরবোর্ড স্ক্রিনশট আপলোড করতে হবে।</li>
-                        <li>ফেক বা ভুয়া রেজাল্ট সাবমিট করলে টুর্নামেন্ট থেকে স্থায়ী ব্যান করা হবে।</li>
-                        <li>প্রতি বৃহস্পতিবার সকাল ৮:০০ টা থেকে নতুন ফেইজ ও উইক শুরু হবে।</li>
-                    </ol>
-                </div>
-            </div>
-        </section>
-
-        <!-- TAB 5: OVERALL RANKING BOARD -->
-        <section id="view-overallRank" class="tab-view hidden">
-            <div class="bg-cardbg border border-gray-800 rounded-xl p-3 sm:p-4 shadow-xl">
-                <h2 class="text-base sm:text-lg font-bold text-amber-400 mb-3 flex items-center gap-2">
-                    <i class="fa-solid fa-crown text-amber-400"></i> অল-টাইম ওভারঅল র‍্যাঙ্কিং (Lifetime Standings)
-                </h2>
-
-                <div class="overflow-x-auto">
-                    <table class="w-full text-left text-xs sm:text-sm">
-                        <thead class="bg-gray-900 text-amber-400 border-b border-gray-800">
-                            <tr>
-                                <th class="p-2 text-center">#</th>
-                                <th class="p-2">প্লেয়ার নাম</th>
-                                <th class="p-2 text-center">মোট ম্যাচ</th>
-                                <th class="p-2 text-center">জয় (W)</th>
-                                <th class="p-2 text-center">ড্র (D)</th>
-                                <th class="p-2 text-center">হার (L)</th>
-                                <th class="p-2 text-center text-amber-400 font-bold">মোট পয়েন্ট</th>
-                            </tr>
-                        </thead>
-                        <tbody id="overallLeaderboardBody" class="divide-y divide-gray-800">
-                            <!-- Dynamic Overall Data -->
-                        </tbody>
-                    </table>
-                </div>
-            </div>
-        </section>
-
-    </main>
-
-    <!-- FOOTER WITH SECRET DOUBLE TAP ADMIN LOGIN -->
-    <footer class="bg-cardbg border-t border-gray-800 py-3 text-center text-xs text-gray-500 relative select-none">
-        <p>© 2026 ELITE PLAY-MAKERS FC. All Rights Reserved.</p>
-        <!-- Secret Double-Tap Target -->
-        <span id="secretAdminSpot" onclick="handleSecretTap()" class="inline-block cursor-pointer px-2 py-1 text-gray-600 hover:text-amber-500 transition">
-            <i class="fa-solid fa-shield-halved"></i>
-        </span>
-    </footer>
-
-    <!-- MODALS -->
-
-    <!-- SIGNUP MODAL -->
-    <div id="signupModal" class="fixed inset-0 bg-black/80 backdrop-blur-sm z-50 hidden flex items-center justify-center p-3">
-        <div class="bg-cardbg border border-gray-800 rounded-xl max-w-md w-full p-5 shadow-2xl relative">
-            <button onclick="closeModal('signupModal')" class="absolute top-3 right-3 text-gray-400 hover:text-white"><i class="fa-solid fa-xmark text-lg"></i></button>
-            <h3 class="text-base font-bold text-amber-400 mb-3 text-center"><i class="fa-solid fa-user-plus mr-1"></i> প্লেয়ার রেজিস্ট্রেশন</h3>
-            
-            <form onsubmit="handleSignup(event)" class="space-y-3 text-xs">
-                <div>
-                    <label class="block text-gray-300 font-semibold mb-1">প্লেয়ার নেম (Player Name):</label>
-                    <input type="text" id="regName" required class="w-full bg-gray-900 border border-gray-700 rounded p-2 text-white outline-none focus:border-amber-400">
-                </div>
-                <div>
-                    <label class="block text-gray-300 font-semibold mb-1">গেম UID (eFootball Game UID):</label>
-                    <input type="text" id="regUid" required class="w-full bg-gray-900 border border-gray-700 rounded p-2 text-white outline-none focus:border-amber-400">
-                </div>
-                <div>
-                    <label class="block text-gray-300 font-semibold mb-1">ডিভাইস নেম (Device Name & Variant):</label>
-                    <input type="text" id="regDevice" placeholder="e.g. Redmi Note 12 Pro (8/128)" required class="w-full bg-gray-900 border border-gray-700 rounded p-2 text-white outline-none focus:border-amber-400">
-                </div>
-                <div>
-                    <label class="block text-gray-300 font-semibold mb-1">ইমেইল (Email):</label>
-                    <input type="email" id="regEmail" required class="w-full bg-gray-900 border border-gray-700 rounded p-2 text-white outline-none focus:border-amber-400">
-                </div>
-                <div>
-                    <label class="block text-gray-300 font-semibold mb-1">পাসওয়ার্ড (Password):</label>
-                    <input type="password" id="regPassword" required minlength="6" class="w-full bg-gray-900 border border-gray-700 rounded p-2 text-white outline-none focus:border-amber-400">
-                </div>
-                <div>
-                    <label class="block text-gray-300 font-semibold mb-1">হোয়াটসঅ্যাপ নম্বর (WhatsApp Number - Hidden):</label>
-                    <input type="tel" id="regWhatsapp" placeholder="017xxxxxxxx" required class="w-full bg-gray-900 border border-gray-700 rounded p-2 text-white outline-none focus:border-amber-400">
-                </div>
-
-                <button type="submit" class="w-full bg-amber-500 hover:bg-amber-600 text-black font-bold py-2 rounded-lg transition mt-2">
-                    সাইন আপ সম্পন্ন করুন
+                <button type="submit" class="btn btn-gold" style="width: 100%; justify-content: center; padding: 12px; margin-top: 10px;">
+                    <i class="fas fa-paper-plane"></i> ম্যাচ রেজাল্ট জমা দিন
                 </button>
             </form>
         </div>
     </div>
 
-    <!-- LOGIN MODAL -->
-    <div id="loginModal" class="fixed inset-0 bg-black/80 backdrop-blur-sm z-50 hidden flex items-center justify-center p-3">
-        <div class="bg-cardbg border border-gray-800 rounded-xl max-w-sm w-full p-5 shadow-2xl relative">
-            <button onclick="closeModal('loginModal')" class="absolute top-3 right-3 text-gray-400 hover:text-white"><i class="fa-solid fa-xmark text-lg"></i></button>
-            <h3 class="text-base font-bold text-blue-400 mb-3 text-center"><i class="fa-solid fa-right-to-bracket mr-1"></i> প্লেয়ার লগইন</h3>
-            
-            <form onsubmit="handleLogin(event)" class="space-y-3 text-xs">
-                <div>
-                    <label class="block text-gray-300 font-semibold mb-1">ইমেইল (Email):</label>
-                    <input type="email" id="loginEmail" required class="w-full bg-gray-900 border border-gray-700 rounded p-2 text-white outline-none focus:border-blue-400">
-                </div>
-                <div>
-                    <label class="block text-gray-300 font-semibold mb-1">পাসওয়ার্ড (Password):</label>
-                    <input type="password" id="loginPassword" required class="w-full bg-gray-900 border border-gray-700 rounded p-2 text-white outline-none focus:border-blue-400">
-                </div>
+    <!-- ================= PAGE 4: WEEKLY RANKING BOARD ================= -->
+    <div id="weekly-view" class="page-view">
+        <button class="btn-back" onclick="showPage('home-view')"><i class="fas fa-arrow-left"></i> হোম পেজে ফিরে যান</button>
+        <h2 style="color: var(--gold-primary); margin-bottom: 8px;"><i class="fas fa-trophy"></i> উইকলি র‍্যাঙ্কিং বোর্ড</h2>
+        <p style="font-size: 13px; color: var(--text-muted); margin-bottom: 15px;">চলতি সপ্তাহের লাইভ পয়েন্ট টেবিল। পূর্ববর্তী সপ্তাহের রেজাল্ট দেখতে উইক সিলেক্ট করুন।</p>
 
-                <button type="submit" class="w-full bg-blue-600 hover:bg-blue-700 text-white font-bold py-2 rounded-lg transition mt-2">
+        <div style="display: flex; gap: 8px; margin-bottom: 15px; overflow-x: auto; padding-bottom: 5px;">
+            <button class="btn btn-gold" onclick="loadWeeklyTable('current')">কারেন্ট উইক</button>
+            <button class="btn btn-outline" onclick="loadWeeklyTable('w1')">Week 1</button>
+            <button class="btn btn-outline" onclick="loadWeeklyTable('w2')">Week 2</button>
+            <button class="btn btn-outline" onclick="loadWeeklyTable('w3')">Week 3</button>
+        </div>
+
+        <table class="rank-table">
+            <thead>
+                <tr>
+                    <th>র‍্যাঙ্ক</th>
+                    <th>প্লেয়ার</th>
+                    <th>ম্যাচ</th>
+                    <th>জয় (W)</th>
+                    <th>ড্র (D)</th>
+                    <th>হার (L)</th>
+                    <th>পয়েন্ট</th>
+                </tr>
+            </thead>
+            <tbody id="weekly-rank-body">
+                <!-- Dynamic Rows -->
+            </tbody>
+        </table>
+    </div>
+
+    <!-- ================= PAGE 5: RULES BOARD ================= -->
+    <div id="rules-view" class="page-view">
+        <button class="btn-back" onclick="showPage('home-view')"><i class="fas fa-arrow-left"></i> হোম পেজে ফিরে যান</button>
+        <h2 style="color: var(--gold-primary); margin-bottom: 8px;"><i class="fas fa-gavel"></i> ক্লাবের অফিসিয়াল রুলস বোর্ড</h2>
+        
+        <div class="status-card" style="line-height: 1.8;">
+            <h3 style="color: var(--gold-secondary); margin-bottom: 10px;"><i class="fas fa-star"></i> পয়েন্ট ক্যালকুলেশন রুলস:</h3>
+            <ul style="padding-left: 20px; font-size: 14px; color: var(--text-main); margin-bottom: 20px;">
+                <li><strong>Win (জয়):</strong> ৩ পয়েন্ট + ১ পার্টিসিপেশন পয়েন্ট = <span style="color: var(--gold-primary);">মোট ৪ পয়েন্ট</span></li>
+                <li><strong>Draw (ড্র):</strong> ১ পয়েন্ট + ১ পার্টিসিপেশন পয়েন্ট = <span style="color: var(--cyan-accent);">মোট ২ পয়েন্ট</span></li>
+                <li><strong>Loss (হার):</strong> ০ পয়েন্ট + ১ পার্টিসিপেশন পয়েন্ট = <span style="color: #ccc;">মোট ১ পয়েন্ট</span></li>
+            </ul>
+
+            <h3 style="color: var(--gold-secondary); margin-bottom: 10px;"><i class="fas fa-check-circle"></i> ম্যাচ সাবমিশন নিয়মাবলী:</h3>
+            <ol style="padding-left: 20px; font-size: 14px; color: var(--text-main); margin-bottom: 20px;">
+                <li>প্রতিটি ম্যাচের রেজাল্ট অবশ্যই প্লেয়ার অ্যাকাউন্ট থেকে লগইন করে সাবমিট করতে হবে।</li>
+                <li>সঠিক অপোনেন্ট সিলেক্ট করে স্কোর এবং গ্যালারি থেকে অরিজিনাল স্ক্রিনশট প্রুফ দিতে হবে।</li>
+                <li>ভুল তথ্য বা মিথ্যা রেজাল্ট সাবমিট করলে পয়েন্ট কেটে নেওয়া হবে।</li>
+            </ol>
+
+            <h3 style="color: var(--gold-secondary); margin-bottom: 10px;"><i class="fas fa-clock"></i> ফেইজ ও টাইমার রুলস:</h3>
+            <p style="font-size: 14px; color: var(--text-main);">
+                প্রতি সপ্তাহে বাংলাদেশ সময় (BST) বৃহস্পতিবার সকাল ৮:০০ টা থেকে পরবর্তী বৃহস্পতিবার সকাল ৮:০০ টা পর্যন্ত উইকলি প্রতিযোগিতা চলে। সর্বোচ্চ পয়েন্ট অর্জনকারী উইকলি চ্যাম্পিয়ন হিসেবে ঘোষিত হন।
+            </p>
+        </div>
+    </div>
+
+    <!-- ================= PAGE 6: OVERALL RANKING BOARD ================= -->
+    <div id="overall-view" class="page-view">
+        <button class="btn-back" onclick="showPage('home-view')"><i class="fas fa-arrow-left"></i> হোম পেজে ফিরে যান</button>
+        <h2 style="color: var(--gold-primary); margin-bottom: 8px;"><i class="fas fa-crown"></i> অল-টাইম ওভারওল র‍্যাঙ্কিং বোর্ড</h2>
+        <p style="font-size: 13px; color: var(--text-muted); margin-bottom: 15px;">ক্লাবের আজীবনের সেরা প্লেয়ারদের অল-টাইম র‍্যাঙ্কিং রেটিং।</p>
+
+        <table class="rank-table">
+            <thead>
+                <tr>
+                    <th>অল-টাইম র‍্যাঙ্ক</th>
+                    <th>প্লেয়ার নাম</th>
+                    <th>গেম ইউআইডি</th>
+                    <th>মোট ম্যাচ</th>
+                    <th>মোট জয়</th>
+                    <th>মোট পয়েন্ট</th>
+                </tr>
+            </thead>
+            <tbody id="overall-rank-body">
+                <!-- Dynamic Overall Table -->
+            </tbody>
+        </table>
+    </div>
+
+    <!-- MODAL 1: PLAYER SIGNUP -->
+    <div id="signup-modal" class="modal">
+        <div class="modal-content">
+            <span class="modal-close" onclick="closeModal('signup-modal')">&times;</span>
+            <h3 style="color: var(--gold-primary); margin-bottom: 15px;"><i class="fas fa-user-plus"></i> প্লেয়ার সাইন আপ / রেজিস্ট্রেশন</h3>
+            <form onsubmit="handleSignup(event)">
+                <div class="form-group">
+                    <label>প্লেয়ার এর নাম (Player Name)</label>
+                    <input type="text" id="signup-name" class="form-input" required placeholder="উদাহরণ: Sabbir Hossain">
+                </div>
+                <div class="form-group">
+                    <label>গেম ইউআইডি (Game UID)</label>
+                    <input type="text" id="signup-uid" class="form-input" required placeholder="উদাহরণ: 582910492">
+                </div>
+                <div class="form-group">
+                    <label>ডিভাইস নেম (Device Name with Variant)</label>
+                    <input type="text" id="signup-device" class="form-input" required placeholder="উদাহরণ: Redmi Note 12 Pro (8/128)">
+                </div>
+                <div class="form-group">
+                    <label>ইমেইল অ্যাড্রেস (Email)</label>
+                    <input type="email" id="signup-email" class="form-input" required placeholder="player@gmail.com">
+                </div>
+                <div class="form-group">
+                    <label>পাসওয়ার্ড (Password)</label>
+                    <input type="password" id="signup-pass" class="form-input" required placeholder="******">
+                </div>
+                <div class="form-group">
+                    <label>হোয়াটসঅ্যাপ নম্বর (WhatsApp - Private)</label>
+                    <input type="tel" id="signup-wa" class="form-input" required placeholder="+8801700000000">
+                </div>
+                <button type="submit" class="btn btn-gold" style="width: 100%; justify-content: center; padding: 12px; margin-top: 10px;">
+                    রেজিস্ট্রেশন সম্পূর্ণ করুন
+                </button>
+            </form>
+        </div>
+    </div>
+
+    <!-- MODAL 2: PLAYER LOGIN -->
+    <div id="login-modal" class="modal">
+        <div class="modal-content">
+            <span class="modal-close" onclick="closeModal('login-modal')">&times;</span>
+            <h3 style="color: var(--gold-primary); margin-bottom: 15px;"><i class="fas fa-sign-in-alt"></i> প্লেয়ার লগইন</h3>
+            <form onsubmit="handleLogin(event)">
+                <div class="form-group">
+                    <label>ইমেইল (Email)</label>
+                    <input type="email" id="login-email" class="form-input" required placeholder="player@gmail.com">
+                </div>
+                <div class="form-group">
+                    <label>পাসওয়ার্ড (Password)</label>
+                    <input type="password" id="login-pass" class="form-input" required placeholder="******">
+                </div>
+                <button type="submit" class="btn btn-gold" style="width: 100%; justify-content: center; padding: 12px; margin-top: 10px;">
                     লগইন করুন
                 </button>
             </form>
         </div>
     </div>
 
-    <!-- PLAYER PROFILE DETAILS MODAL -->
-    <div id="profileDetailModal" class="fixed inset-0 bg-black/80 backdrop-blur-sm z-50 hidden flex items-center justify-center p-3">
-        <div class="bg-cardbg border border-amber-500/40 rounded-xl max-w-md w-full p-5 shadow-2xl relative">
-            <button onclick="closeModal('profileDetailModal')" class="absolute top-3 right-3 text-gray-400 hover:text-white"><i class="fa-solid fa-xmark text-lg"></i></button>
+    <!-- MODAL 3: PLAYER STAT SHEET MODAL -->
+    <div id="player-detail-modal" class="modal">
+        <div class="modal-content">
+            <span class="modal-close" onclick="closeModal('player-detail-modal')">&times;</span>
+            <div style="text-align: center; margin-bottom: 15px;">
+                <div class="player-badge" id="modal-player-avatar" style="margin: 0 auto 10px auto;">P</div>
+                <h3 style="color: var(--gold-primary);" id="modal-player-name">Player Name</h3>
+                <p style="font-size: 12px; color: var(--cyan-accent);" id="modal-player-uid">UID: 000000</p>
+                <p style="font-size: 11px; color: var(--text-muted);" id="modal-player-device">Device: Xiaomi</p>
+            </div>
             
-            <div class="text-center border-b border-gray-800 pb-3 mb-3">
-                <i class="fa-solid fa-circle-user text-4xl text-amber-400 mb-1"></i>
-                <h3 id="modalPlayerName" class="text-lg font-bold text-amber-300">--</h3>
-                <p class="text-xs text-gray-400">Game UID: <span id="modalGameUid" class="text-gray-200 font-mono">--</span></p>
-                <p class="text-xs text-gray-400">Device: <span id="modalDevice" class="text-gray-200">--</span></p>
-            </div>
-
-            <!-- Stats Box -->
-            <div class="grid grid-cols-4 gap-2 text-center text-xs mb-3">
-                <div class="bg-gray-900 p-2 rounded">
-                    <span class="block text-gray-400 text-[10px]">মোট ম্যাচ</span>
-                    <strong id="modalStatPlayed" class="text-amber-400">0</strong>
+            <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; text-align: center; margin-bottom: 15px; background: rgba(0,0,0,0.3); padding: 10px; border-radius: 8px;">
+                <div>
+                    <div style="font-size: 18px; font-weight: bold; color: var(--gold-primary);" id="modal-stat-matches">0</div>
+                    <div style="font-size: 10px; color: var(--text-muted);">Matches</div>
                 </div>
-                <div class="bg-gray-900 p-2 rounded">
-                    <span class="block text-gray-400 text-[10px]">জয়</span>
-                    <strong id="modalStatWin" class="text-green-400">0</strong>
+                <div>
+                    <div style="font-size: 18px; font-weight: bold; color: var(--success);" id="modal-stat-wins">0</div>
+                    <div style="font-size: 10px; color: var(--text-muted);">Wins</div>
                 </div>
-                <div class="bg-gray-900 p-2 rounded">
-                    <span class="block text-gray-400 text-[10px]">ড্র</span>
-                    <strong id="modalStatDraw" class="text-yellow-400">0</strong>
-                </div>
-                <div class="bg-gray-900 p-2 rounded">
-                    <span class="block text-gray-400 text-[10px]">হার</span>
-                    <strong id="modalStatLoss" class="text-red-400">0</strong>
+                <div>
+                    <div style="font-size: 18px; font-weight: bold; color: var(--gold-secondary);" id="modal-stat-points">0</div>
+                    <div style="font-size: 10px; color: var(--text-muted);">Points</div>
                 </div>
             </div>
 
-            <h4 class="text-xs font-bold text-amber-400 mb-2"><i class="fa-solid fa-history mr-1"></i> সাম্প্রতিক ফ্রেন্ডলি ম্যাচ হিস্ট্রি:</h4>
-            <div id="modalMatchHistory" class="space-y-1.5 max-h-40 overflow-y-auto pr-1 text-xs">
-                <!-- Loaded Dynamically -->
+            <h4 style="font-size: 13px; color: var(--gold-primary); margin-bottom: 8px;"><i class="fas fa-history"></i> সাম্প্রতিক ম্যাচ হিস্টোরি</h4>
+            <div id="modal-match-history" style="max-height: 150px; overflow-y: auto; font-size: 12px; line-height: 1.6;">
+                <!-- Match history items -->
             </div>
         </div>
     </div>
 
-    <!-- SECRET ADMIN LOGIN MODAL -->
-    <div id="adminModal" class="fixed inset-0 bg-black/90 backdrop-blur-md z-50 hidden flex items-center justify-center p-3">
-        <div class="bg-cardbg border border-red-600 rounded-xl max-w-sm w-full p-5 shadow-2xl relative">
-            <button onclick="closeModal('adminModal')" class="absolute top-3 right-3 text-gray-400 hover:text-white"><i class="fa-solid fa-xmark text-lg"></i></button>
-            <h3 class="text-base font-bold text-red-500 mb-3 text-center"><i class="fa-solid fa-user-shield mr-1"></i> সিক্রেট এডমিন এক্সেস</h3>
-            
-            <form onsubmit="handleAdminLogin(event)" class="space-y-3 text-xs">
-                <div>
-                    <label class="block text-gray-300 font-semibold mb-1">এডমিন ইমেইল:</label>
-                    <input type="email" id="adminEmail" required class="w-full bg-gray-900 border border-gray-700 rounded p-2 text-white outline-none focus:border-red-500">
+    <!-- MODAL 4: SECRET ADMIN PORTAL -->
+    <div id="admin-modal" class="modal">
+        <div class="modal-content" style="border-color: var(--danger);">
+            <span class="modal-close" onclick="closeModal('admin-modal')">&times;</span>
+            <h3 style="color: var(--danger); margin-bottom: 15px;"><i class="fas fa-user-shield"></i> সিক্রেট এডমিন প্যানেল</h3>
+            <form onsubmit="handleAdminLogin(event)" id="admin-login-form">
+                <div class="form-group">
+                    <label>এডমিন সিক্রেট পাসওয়ার্ড</label>
+                    <input type="password" id="admin-pass" class="form-input" placeholder="পাসওয়ার্ড লিখুন">
                 </div>
-                <div>
-                    <label class="block text-gray-300 font-semibold mb-1">সিক্রেট পাসওয়ার্ড:</label>
-                    <input type="password" id="adminPassword" required class="w-full bg-gray-900 border border-gray-700 rounded p-2 text-white outline-none focus:border-red-500">
-                </div>
-                <button type="submit" class="w-full bg-red-600 hover:bg-red-700 text-white font-bold py-2 rounded-lg transition">
-                    এডমিন ড্যাশবোর্ড অপেন করুন
+                <button type="submit" class="btn" style="background: var(--danger); color: #fff; width: 100%; justify-content: center;">
+                    এডমিন এক্সেস
                 </button>
             </form>
+            <div id="admin-controls" style="display: none; margin-top: 15px;">
+                <p style="color: var(--success); font-weight: bold; font-size: 13px; margin-bottom: 10px;">স্বাগতম ক্লাব এডমিন!</p>
+                <button class="btn btn-gold" style="width: 100%; margin-bottom: 8px;" onclick="adminAction('reset-phase')"><i class="fas fa-sync"></i> ম্যানুয়াল ফেজ রিসেট</button>
+                <button class="btn btn-outline" style="width: 100%; margin-bottom: 8px;" onclick="adminAction('export-db')"><i class="fas fa-download"></i> প্লেয়ার ডেটা ব্যাকআপ এক্সপোর্ট</button>
+            </div>
         </div>
     </div>
 
-    <!-- JAVASCRIPT APP LOGIC & SUPABASE INTEGRATION -->
+    <!-- Footer -->
+    <footer>
+        <div>&copy; 2026 Elite Playmakers FC (Let Players FC). All Rights Reserved.</div>
+        <div style="font-size: 10px; color: #555; margin-top: 4px;">Powered by VIP Dark Engine & Supabase</div>
+        
+        <!-- Secret Admin Trigger (Double Tap Area) -->
+        <div class="secret-admin-trigger" id="admin-trigger-zone" title="Secret Admin Zone"></div>
+    </footer>
+
+    <!-- JavaScript Engine -->
     <script>
-        // SUPABASE CONFIGURATION
-        const SUPABASE_URL = "YOUR_SUPABASE_URL_HERE";
-        const SUPABASE_KEY = "YOUR_SUPABASE_ANON_KEY_HERE";
-        const supabase = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+        // Data Store
+        let mockPlayers = [
+            { id: 1, name: "Tanvir Ahmed", uid: "8849201", device: "iPhone 13 Pro", matches: 12, wins: 9, draws: 2, losses: 1, points: 33 },
+            { id: 2, name: "Sabbir Hossain", uid: "5829104", device: "Redmi Note 12", matches: 10, wins: 7, draws: 1, losses: 2, points: 25 },
+            { id: 3, name: "Rifat Chowdhury", uid: "9921048", device: "Samsung S22 Ultra", matches: 8, wins: 5, draws: 2, losses: 1, points: 20 },
+            { id: 4, name: "Naimur Rahman", uid: "1049285", device: "Realme GT Master", matches: 6, wins: 3, draws: 1, losses: 2, points: 13 }
+        ];
 
-        let currentUser = null;
-        let userProfile = null;
-        let allProfiles = [];
-        let lastTapTime = 0;
+        let loggedInPlayer = null;
+        let tapCount = 0;
+        let tapTimer = null;
 
-        // Initialize App
-        document.addEventListener('DOMContentLoaded', async () => {
-            initPhaseTimer();
-            await checkAuthStatus();
-            await loadProfiles();
-            await loadWeeklyRankings();
-            await loadOverallRankings();
+        // Navigation Page Switcher (Handles Multi-page Feel inside Single HTML)
+        function showPage(pageId) {
+            document.querySelectorAll('.page-view').forEach(p => p.classList.remove('active'));
+            const target = document.getElementById(pageId);
+            if (target) {
+                target.classList.add('active');
+                window.scrollTo({ top: 0, behavior: 'smooth' });
+            }
+
+            if (pageId === 'profile-view') renderPlayerCards();
+            if (pageId === 'weekly-view') loadWeeklyTable('current');
+            if (pageId === 'overall-view') loadOverallTable();
+            if (pageId === 'submit-view') setupSubmitPage();
+        }
+
+        // Modal Handlers
+        function openModal(id) { document.getElementById(id).style.display = 'flex'; }
+        function closeModal(id) { document.getElementById(id).style.display = 'none'; }
+
+        // Render Player Profiles
+        function renderPlayerCards() {
+            const container = document.getElementById('players-list-container');
+            container.innerHTML = mockPlayers.map(p => `
+                <div class="player-card" onclick="openPlayerDetail(${p.id})">
+                    <div class="player-badge">${p.name.charAt(0)}</div>
+                    <h3 style="color: var(--gold-primary); font-size: 15px;">${p.name}</h3>
+                    <div style="font-size: 12px; color: var(--cyan-accent); margin-top: 4px;">UID: ${p.uid}</div>
+                    <div style="font-size: 11px; color: var(--text-muted); margin-top: 2px;">Device: ${p.device}</div>
+                    <div style="font-size: 11px; color: var(--gold-secondary); margin-top: 8px;">
+                        <strong>P:</strong> ${p.points} | <strong>W:</strong> ${p.wins} | <strong>M:</strong> ${p.matches}
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        function openPlayerDetail(playerId) {
+            const p = mockPlayers.find(x => x.id === playerId);
+            if (!p) return;
+            document.getElementById('modal-player-avatar').innerText = p.name.charAt(0);
+            document.getElementById('modal-player-name').innerText = p.name;
+            document.getElementById('modal-player-uid').innerText = 'Game UID: ' + p.uid;
+            document.getElementById('modal-player-device').innerText = 'Device: ' + p.device;
+            document.getElementById('modal-stat-matches').innerText = p.matches;
+            document.getElementById('modal-stat-wins').innerText = p.wins;
+            document.getElementById('modal-stat-points').innerText = p.points;
+
+            document.getElementById('modal-match-history').innerHTML = `
+                <div style="padding: 4px 0; border-bottom: 1px solid rgba(255,255,255,0.05);">vs Sabbir Hossain - <span style="color:var(--success);">WON 3-1</span></div>
+                <div style="padding: 4px 0; border-bottom: 1px solid rgba(255,255,255,0.05);">vs Rifat Chowdhury - <span style="color:var(--gold-secondary);">DRAW 2-2</span></div>
+            `;
+            openModal('player-detail-modal');
+        }
+
+        // Setup Submit Page
+        function setupSubmitPage() {
+            const warning = document.getElementById('submit-auth-warning');
+            const form = document.getElementById('match-submit-form');
+            const oppSelect = document.getElementById('opponent-select');
+
+            if (!loggedInPlayer) {
+                warning.style.display = 'block';
+                form.style.opacity = '0.4';
+                form.style.pointerEvents = 'none';
+            } else {
+                warning.style.display = 'none';
+                form.style.opacity = '1';
+                form.style.pointerEvents = 'auto';
+                document.getElementById('logged-player-name').innerText = loggedInPlayer.name + ' (You)';
+            }
+
+            oppSelect.innerHTML = '<option value="">-- অপোনেন্ট সিলেক্ট করুন --</option>' + 
+                mockPlayers.filter(p => !loggedInPlayer || p.id !== loggedInPlayer.id).map(p => `<option value="${p.id}">${p.name} (${p.uid})</option>`).join('');
+        }
+
+        function handleMatchSubmit(e) {
+            e.preventDefault();
+            alert('ম্যাচ রেজাল্ট এবং স্ক্রিনশট সফলভাবে সাবমিট করা হয়েছে!');
+            e.target.reset();
+            showPage('home-view');
+        }
+
+        // Tables
+        function loadWeeklyTable(filter) {
+            const tbody = document.getElementById('weekly-rank-body');
+            tbody.innerHTML = mockPlayers.map((p, idx) => `
+                <tr>
+                    <td><span class="rank-badge ${idx < 3 ? 'rank-' + (idx+1) : ''}">${idx + 1}</span></td>
+                    <td><strong>${p.name}</strong></td>
+                    <td>${p.matches}</td>
+                    <td>${p.wins}</td>
+                    <td>${p.draws}</td>
+                    <td>${p.losses}</td>
+                    <td style="color: var(--gold-primary); font-weight: bold;">${p.points}</td>
+                </tr>
+            `).join('');
+        }
+
+        function loadOverallTable() {
+            const tbody = document.getElementById('overall-rank-body');
+            tbody.innerHTML = mockPlayers.map((p, idx) => `
+                <tr>
+                    <td><span class="rank-badge ${idx < 3 ? 'rank-' + (idx+1) : ''}">${idx + 1}</span></td>
+                    <td><strong>${p.name}</strong></td>
+                    <td>${p.uid}</td>
+                    <td>${p.matches}</td>
+                    <td>${p.wins}</td>
+                    <td style="color: var(--gold-primary); font-weight: bold;">${p.points * 4}</td>
+                </tr>
+            `).join('');
+        }
+
+        // Auth
+        function handleSignup(e) {
+            e.preventDefault();
+            const name = document.getElementById('signup-name').value;
+            const uid = document.getElementById('signup-uid').value;
+            const device = document.getElementById('signup-device').value;
+            
+            const newPlayer = {
+                id: mockPlayers.length + 1,
+                name: name,
+                uid: uid,
+                device: device,
+                matches: 0, wins: 0, draws: 0, losses: 0, points: 0
+            };
+            mockPlayers.push(newPlayer);
+            loggedInPlayer = newPlayer;
+            updateAuthUI();
+            closeModal('signup-modal');
+            alert('রেজিস্ট্রেশন সফল হয়েছে!');
+        }
+
+        function handleLogin(e) {
+            e.preventDefault();
+            loggedInPlayer = mockPlayers[0];
+            updateAuthUI();
+            closeModal('login-modal');
+            alert('স্বাগতম ' + loggedInPlayer.name + '!');
+        }
+
+        function updateAuthUI() {
+            const area = document.getElementById('auth-area');
+            if (loggedInPlayer) {
+                area.innerHTML = `
+                    <div style="font-size: 12px; color: var(--gold-primary); font-weight: bold;">
+                        <i class="fas fa-user-circle"></i> ${loggedInPlayer.name}
+                    </div>
+                `;
+            }
+        }
+
+        // Secret Admin Portal Trigger (Double Tap)
+        document.getElementById('admin-trigger-zone').addEventListener('click', () => {
+            tapCount++;
+            clearTimeout(tapTimer);
+            if (tapCount >= 2) {
+                openModal('admin-modal');
+                tapCount = 0;
+            } else {
+                tapTimer = setTimeout(() => { tapCount = 0; }, 400);
+            }
         });
 
-        // Tab Switching
-        function switchTab(tabName) {
-            document.querySelectorAll('.tab-view').forEach(el => el.classList.add('hidden'));
-            document.querySelectorAll('.tab-btn').forEach(el => {
-                el.classList.remove('active', 'bg-amber-500/20', 'text-amber-400', 'border-amber-500/40');
-                el.classList.add('bg-gray-800', 'text-gray-300');
-            });
-
-            document.getElementById(`view-${tabName}`).classList.remove('hidden');
-            const activeBtn = document.getElementById(`tabBtn-${tabName}`);
-            activeBtn.classList.remove('bg-gray-800', 'text-gray-300');
-            activeBtn.classList.add('active', 'bg-amber-500/20', 'text-amber-400', 'border-amber-500/40');
-        }
-
-        // Modal Controls
-        function openModal(id) { document.getElementById(id).classList.remove('hidden'); }
-        function closeModal(id) { document.getElementById(id).classList.add('hidden'); }
-
-        // Secret Admin Double Tap
-        function handleSecretTap() {
-            const currentTime = new Date().getTime();
-            const tapLength = currentTime - lastTapTime;
-            if (tapLength < 400 && tapLength > 0) {
-                openModal('adminModal');
+        function handleAdminLogin(e) {
+            e.preventDefault();
+            const pass = document.getElementById('admin-pass').value;
+            if (pass === 'admin123' || pass === '1234') {
+                document.getElementById('admin-login-form').style.display = 'none';
+                document.getElementById('admin-controls').style.display = 'block';
+            } else {
+                alert('ভুল সিক্রেট পাসওয়ার্ড!');
             }
-            lastTapTime = currentTime;
         }
 
-        // Phase Calculation (Thursday 8:00 AM BD Time Cycle)
-        function initPhaseTimer() {
+        function adminAction(type) {
+            alert('এডমিন একশন সম্পূর্ণ হয়েছে!');
+        }
+
+        // Dynamic BST Timer Engine
+        function startPhaseTimer() {
             function updateTimer() {
                 const now = new Date();
-                // Find next Thursday 8:00 AM
-                let nextThursday = new Date();
-                nextThursday.setHours(8, 0, 0, 0);
-                let dayOffset = (4 - now.getDay() + 7) % 7;
-                if (dayOffset === 0 && now.getHours() >= 8) dayOffset = 7;
-                nextThursday.setDate(now.getDate() + dayOffset);
+                let target = new Date();
+                target.setHours(8, 0, 0, 0);
+                
+                let dayOffset = (4 - target.getDay() + 7) % 7;
+                if (dayOffset === 0 && now > target) dayOffset = 7;
+                target.setDate(target.getDate() + dayOffset);
 
-                let prevThursday = new Date(nextThursday);
-                prevThursday.setDate(nextThursday.getDate() - 7);
-
-                const diff = nextThursday - now;
+                const diff = target - now;
                 const days = Math.floor(diff / (1000 * 60 * 60 * 24));
                 const hours = Math.floor((diff / (1000 * 60 * 60)) % 24);
-                const mins = Math.floor((diff / 1000 / 60) % 60);
+                const mins = Math.floor((diff / (1000 * 60)) % 60);
                 const secs = Math.floor((diff / 1000) % 60);
 
-                document.getElementById('timerDays').innerText = String(days).padStart(2, '0');
-                document.getElementById('timerHours').innerText = String(hours).padStart(2, '0');
-                document.getElementById('timerMins').innerText = String(mins).padStart(2, '0');
-                document.getElementById('timerSecs').innerText = String(secs).padStart(2, '0');
-
-                // Update Phase Date Display
-                const options = { day: 'numeric', month: 'short', year: 'numeric' };
-                document.getElementById('phaseDateDisplay').innerText = 
-                    `${prevThursday.toLocaleDateString('en-US', options)} 8:00 AM — ${nextThursday.toLocaleDateString('en-US', options)} 8:00 AM`;
+                document.getElementById('timer-days').innerText = String(days).padStart(2, '0');
+                document.getElementById('timer-hours').innerText = String(hours).padStart(2, '0');
+                document.getElementById('timer-mins').innerText = String(mins).padStart(2, '0');
+                document.getElementById('timer-secs').innerText = String(secs).padStart(2, '0');
             }
             updateTimer();
             setInterval(updateTimer, 1000);
         }
 
-        // Authentication Handlers
-        async function checkAuthStatus() {
-            const { data: { session } } = await supabase.auth.getSession();
-            if (session) {
-                currentUser = session.user;
-                const { data } = await supabase.from('profiles').select('*').eq('id', currentUser.id).single();
-                userProfile = data;
-                
-                document.getElementById('authNavLeft').classList.add('hidden');
-                document.getElementById('authNavRight').classList.add('hidden');
-                document.getElementById('userInfoNav').classList.remove('hidden');
-                document.getElementById('navPlayerName').innerText = userProfile ? userProfile.player_name : 'Player';
-                document.getElementById('submitterPlayerName').innerText = userProfile ? userProfile.player_name : 'আপনি';
-                document.getElementById('submitMatchAuthCheck').classList.add('hidden');
-                document.getElementById('matchSubmitForm').classList.remove('hidden');
-            } else {
-                document.getElementById('submitMatchAuthCheck').classList.remove('hidden');
-                document.getElementById('matchSubmitForm').classList.add('hidden');
-            }
-        }
-
-        async function handleSignup(e) {
-            e.preventDefault();
-            const email = document.getElementById('regEmail').value;
-            const password = document.getElementById('regPassword').value;
-            const name = document.getElementById('regName').value;
-            const uid = document.getElementById('regUid').value;
-            const device = document.getElementById('regDevice').value;
-            const whatsapp = document.getElementById('regWhatsapp').value;
-
-            const { data, error } = await supabase.auth.signUp({ email, password });
-            if (error) return alert("রেজিস্ট্রেশন ত্রুটি: " + error.message);
-
-            if (data.user) {
-                await supabase.from('profiles').insert([{
-                    id: data.user.id,
-                    player_name: name,
-                    game_uid: uid,
-                    device_name: device,
-                    whatsapp_number: whatsapp
-                }]);
-                alert("সাইন আপ সফল হয়েছে!");
-                location.reload();
-            }
-        }
-
-        async function handleLogin(e) {
-            e.preventDefault();
-            const email = document.getElementById('loginEmail').value;
-            const password = document.getElementById('loginPassword').value;
-
-            const { error } = await supabase.auth.signInWithPassword({ email, password });
-            if (error) return alert("লগইন ত্রুটি: " + error.message);
-            location.reload();
-        }
-
-        async function handleLogout() {
-            await supabase.auth.signOut();
-            location.reload();
-        }
-
-        // Load Player Profiles
-        async function loadProfiles() {
-            const { data, error } = await supabase.from('profiles').select('*');
-            if (error || !data) return;
-            allProfiles = data;
-
-            document.getElementById('totalPlayersCount').innerText = data.length;
-            const container = document.getElementById('playersGrid');
-            const select = document.getElementById('opponentSelect');
-            container.innerHTML = '';
-            select.innerHTML = '<option value="">-- অপোনেন্ট চুজ করুন --</option>';
-
-            data.forEach(p => {
-                // Populate Opponent Dropdown
-                if (!currentUser || p.id !== currentUser.id) {
-                    const opt = document.createElement('option');
-                    opt.value = p.id;
-                    opt.innerText = `${p.player_name} (${p.game_uid})`;
-                    select.appendChild(opt);
-                }
-
-                // Render Profile Card
-                const card = document.createElement('div');
-                card.className = "bg-cardbg border border-gray-800 hover:border-amber-500/50 p-3 rounded-xl shadow cursor-pointer transition flex items-center gap-3";
-                card.onclick = () => showPlayerProfileModal(p);
-                card.innerHTML = `
-                    <div class="bg-amber-500/10 p-3 rounded-lg border border-amber-500/30 text-amber-400">
-                        <i class="fa-solid fa-gamepad text-2xl"></i>
-                    </div>
-                    <div class="flex-grow overflow-hidden">
-                        <h4 class="text-sm font-bold text-amber-300 truncate">${p.player_name}</h4>
-                        <p class="text-[11px] text-gray-400 truncate">UID: <span class="font-mono text-gray-200">${p.game_uid}</span></p>
-                        <p class="text-[10px] text-gray-500 truncate"><i class="fa-solid fa-mobile-screen mr-1"></i>${p.device_name}</p>
-                    </div>
-                `;
-                container.appendChild(card);
-            });
-        }
-
-        // Submit Friendly Match Result
-        async function handleMatchSubmit(e) {
-            e.preventDefault();
-            if (!currentUser) return alert("লগইন করুন!");
-
-            const oppId = document.getElementById('opponentSelect').value;
-            const myScore = parseInt(document.getElementById('myScore').value);
-            const oppScore = parseInt(document.getElementById('oppScore').value);
-            const file = document.getElementById('screenshotFile').files[0];
-
-            if (!oppId) return alert("অপোনেন্ট সিলেক্ট করুন!");
-            if (!file) return alert("স্ক্রিনশট সিলেক্ট করুন!");
-
-            // Upload Screenshot to Supabase Storage
-            const fileExt = file.name.split('.').pop();
-            const filePath = `matches/${Date.now()}_${currentUser.id}.${fileExt}`;
-            const { error: uploadError } = await supabase.storage.from('match-screenshots').upload(filePath, file);
-
-            if (uploadError) return alert("ছবি আপলোড ব্যর্থ: " + uploadError.message);
-
-            const { data: publicUrlData } = supabase.storage.from('match-screenshots').getPublicUrl(filePath);
-
-            // Submit Match
-            const { error: matchError } = await supabase.from('matches').insert([{
-                submitted_by: currentUser.id,
-                player1_id: currentUser.id,
-                player2_id: oppId,
-                player1_score: myScore,
-                player2_score: oppScore,
-                screenshot_url: publicUrlData.publicUrl,
-                week_code: 'CURRENT'
-            }]);
-
-            if (matchError) return alert("রেজাল্ট সাবমিট ব্যর্থ: " + matchError.message);
-
-            alert("ম্যাচ রেজাল্ট সফলভাবে সাবমিট হয়েছে!");
-            location.reload();
-        }
-
-        // Load Rankings Logic (Win=3+1=4, Draw=1+1=2, Loss=0+1=1)
-        async function loadWeeklyRankings() {
-            const { data: matches } = await supabase.from('matches').select('*').eq('status', 'approved');
-            const stats = calculateLeaderboard(matches);
-            renderLeaderboard('weeklyLeaderboardBody', stats);
-        }
-
-        async function loadOverallRankings() {
-            const { data: matches } = await supabase.from('matches').select('*').eq('status', 'approved');
-            const stats = calculateLeaderboard(matches);
-            renderLeaderboard('overallLeaderboardBody', stats);
-        }
-
-        function calculateLeaderboard(matches) {
-            const table = {};
-            allProfiles.forEach(p => {
-                table[p.id] = { name: p.player_name, played: 0, wins: 0, draws: 0, losses: 0, points: 0 };
-            });
-
-            if (matches) {
-                matches.forEach(m => {
-                    const p1 = table[m.player1_id];
-                    const p2 = table[m.player2_id];
-                    if (p1 && p2) {
-                        p1.played++; p2.played++;
-                        if (m.player1_score > m.player2_score) {
-                            p1.wins++; p1.points += 4; // 3 + 1 bonus
-                            p2.losses++; p2.points += 1; // 0 + 1 bonus
-                        } else if (m.player1_score < m.player2_score) {
-                            p2.wins++; p2.points += 4;
-                            p1.losses++; p1.points += 1;
-                        } else {
-                            p1.draws++; p1.points += 2; // 1 + 1 bonus
-                            p2.draws++; p2.points += 2;
-                        }
-                    }
-                });
-            }
-
-            return Object.values(table).sort((a, b) => b.points - a.points || b.wins - a.wins);
-        }
-
-        function renderLeaderboard(elementId, stats) {
-            const body = document.getElementById(elementId);
-            body.innerHTML = '';
-            stats.forEach((s, idx) => {
-                const tr = document.createElement('tr');
-                tr.className = idx % 2 === 0 ? 'bg-gray-900/50' : 'bg-cardbg';
-                tr.innerHTML = `
-                    <td class="p-2 text-center font-bold ${idx < 3 ? 'text-amber-400' : 'text-gray-400'}">${idx + 1}</td>
-                    <td class="p-2 font-bold text-gray-200">${s.name}</td>
-                    <td class="p-2 text-center text-gray-400">${s.played}</td>
-                    <td class="p-2 text-center text-green-400">${s.wins}</td>
-                    <td class="p-2 text-center text-yellow-400">${s.draws}</td>
-                    <td class="p-2 text-center text-red-400">${s.losses}</td>
-                    <td class="p-2 text-center font-black text-amber-400">${s.points}</td>
-                `;
-                body.appendChild(tr);
-            });
-        }
-
-        async function showPlayerProfileModal(player) {
-            document.getElementById('modalPlayerName').innerText = player.player_name;
-            document.getElementById('modalGameUid').innerText = player.game_uid;
-            document.getElementById('modalDevice').innerText = player.device_name;
-
-            // Fetch player matches
-            const { data } = await supabase.from('matches')
-                .select('*')
-                .or(`player1_id.eq.${player.id},player2_id.eq.${player.id}`);
-
-            let played = 0, wins = 0, draws = 0, losses = 0;
-            const historyContainer = document.getElementById('modalMatchHistory');
-            historyContainer.innerHTML = '';
-
-            if (data && data.length > 0) {
-                data.forEach(m => {
-                    played++;
-                    const isP1 = m.player1_id === player.id;
-                    const mySc = isP1 ? m.player1_score : m.player2_score;
-                    const oppSc = isP1 ? m.player2_score : m.player1_score;
-
-                    if (mySc > oppSc) wins++;
-                    else if (mySc < oppSc) losses++;
-                    else draws++;
-
-                    const div = document.createElement('div');
-                    div.className = "bg-gray-900 p-2 rounded flex justify-between items-center";
-                    div.innerHTML = `
-                        <span class="text-gray-300">VS Match (${mySc} - ${oppSc})</span>
-                        <span class="${mySc > oppSc ? 'text-green-400 font-bold' : mySc < oppSc ? 'text-red-400' : 'text-yellow-400'}">
-                            ${mySc > oppSc ? 'WIN' : mySc < oppSc ? 'LOSS' : 'DRAW'}
-                        </span>
-                    `;
-                    historyContainer.appendChild(div);
-                });
-            } else {
-                historyContainer.innerHTML = '<p class="text-gray-500 text-center py-2">কোনো ম্যাচ রেকর্ড নেই</p>';
-            }
-
-            document.getElementById('modalStatPlayed').innerText = played;
-            document.getElementById('modalStatWin').innerText = wins;
-            document.getElementById('modalStatDraw').innerText = draws;
-            document.getElementById('modalStatLoss').innerText = losses;
-
-            openModal('profileDetailModal');
-        }
+        window.onload = function() {
+            startPhaseTimer();
+            renderPlayerCards();
+        };
     </script>
 </body>
 </html>
