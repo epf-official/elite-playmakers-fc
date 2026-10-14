@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Elite Playmakers FC | EPF Official</title>
+    <title>Elite Playmakers FC</title>
     <!-- Supabase JS Library -->
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <!-- FontAwesome Icons -->
@@ -45,7 +45,7 @@
                 radial-gradient(circle at 90% 80%, rgba(0, 240, 255, 0.05) 0%, transparent 25%);
         }
 
-        /* Header Area */
+        /* Top Header */
         header {
             background: rgba(18, 24, 36, 0.95);
             border-bottom: 2px solid var(--gold-secondary);
@@ -152,7 +152,7 @@
             background: #2a3750;
         }
 
-        /* Navigation Bar (Side by Side 5 Buttons) */
+        /* Nav Grid (5 Side by Side Buttons) */
         .nav-grid {
             display: grid;
             grid-template-columns: repeat(5, 1fr);
@@ -207,7 +207,7 @@
             box-shadow: 0 0 10px rgba(255, 215, 0, 0.2);
         }
 
-        /* Page Management */
+        /* Page Switcher View */
         .page-view {
             display: none;
             width: 100%;
@@ -224,7 +224,6 @@
             to { opacity: 1; transform: translateY(0); }
         }
 
-        /* Status & Banner Cards */
         .status-card {
             background: var(--bg-card);
             border: 1px solid var(--border-gold);
@@ -273,7 +272,6 @@
             border: 1px solid rgba(0, 240, 255, 0.2);
         }
 
-        /* BST Timer */
         .timer-box {
             display: flex;
             justify-content: center;
@@ -305,7 +303,6 @@
 
         .time-sep { font-size: 22px; font-weight: bold; color: var(--gold-secondary); }
 
-        /* Champions Grid & Scrollable Dynamic Lists */
         .champions-grid {
             display: grid;
             grid-template-columns: 1fr 1fr;
@@ -340,14 +337,8 @@
             padding-right: 5px;
         }
 
-        .scrollable-history::-webkit-scrollbar {
-            width: 4px;
-        }
-
-        .scrollable-history::-webkit-scrollbar-thumb {
-            background: var(--gold-secondary);
-            border-radius: 4px;
-        }
+        .scrollable-history::-webkit-scrollbar { width: 4px; }
+        .scrollable-history::-webkit-scrollbar-thumb { background: var(--gold-secondary); border-radius: 4px; }
 
         .champ-list-item {
             display: flex;
@@ -381,7 +372,7 @@
             border: 1px solid var(--gold-primary);
             border-radius: 14px;
             width: 100%;
-            max-width: 480px;
+            max-width: 550px;
             padding: 24px;
             box-shadow: 0 0 30px rgba(255, 215, 0, 0.2);
             position: relative;
@@ -427,7 +418,6 @@
             box-shadow: 0 0 8px var(--gold-glow);
         }
 
-        /* Cards & Tables */
         .player-cards-grid {
             display: grid;
             grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
@@ -528,7 +518,41 @@
         .vs-box { text-align: center; flex: 1; }
         .vs-text { font-weight: 800; color: var(--gold-primary); font-size: 20px; }
 
-        /* Secret Admin Footer */
+        /* Admin Tabs Styling */
+        .admin-tab-nav {
+            display: flex;
+            gap: 8px;
+            margin-bottom: 15px;
+            border-bottom: 1px solid var(--border-card);
+            padding-bottom: 10px;
+        }
+
+        .admin-tab-btn {
+            background: var(--bg-primary);
+            color: var(--text-muted);
+            border: 1px solid var(--border-card);
+            padding: 8px 12px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 12px;
+            font-weight: bold;
+        }
+
+        .admin-tab-btn.active {
+            background: var(--gold-primary);
+            color: #000;
+            border-color: var(--gold-primary);
+        }
+
+        .admin-card-item {
+            background: var(--bg-primary);
+            border: 1px solid var(--border-gold);
+            border-radius: 8px;
+            padding: 12px;
+            margin-bottom: 10px;
+            font-size: 12px;
+        }
+
         footer {
             margin-top: auto;
             background: var(--bg-secondary);
@@ -565,7 +589,6 @@
                 <div class="club-logo"><i class="fas fa-trophy"></i></div>
                 <div>
                     <div class="club-name">ELITE PLAYMAKERS FC</div>
-                    <div style="font-size: 10px; color: var(--gold-secondary);">EPF OFFICIAL CLUB</div>
                 </div>
             </div>
             <div class="auth-buttons" id="auth-area">
@@ -598,42 +621,26 @@
                 বাংলাদেশ সময় প্রতি বৃহস্পতিবার সকাল ৮:০০ টায় অটোমেটিক নতুন ফেজ শুরু হয়।
             </p>
             <div class="timer-box">
-                <div class="time-unit">
-                    <div class="time-val" id="timer-days">00</div>
-                    <div class="time-lbl">Days</div>
-                </div>
+                <div class="time-unit"><div class="time-val" id="timer-days">00</div><div class="time-lbl">Days</div></div>
                 <div class="time-sep">:</div>
-                <div class="time-unit">
-                    <div class="time-val" id="timer-hours">00</div>
-                    <div class="time-lbl">Hours</div>
-                </div>
+                <div class="time-unit"><div class="time-val" id="timer-hours">00</div><div class="time-lbl">Hours</div></div>
                 <div class="time-sep">:</div>
-                <div class="time-unit">
-                    <div class="time-val" id="timer-mins">00</div>
-                    <div class="time-lbl">Mins</div>
-                </div>
+                <div class="time-unit"><div class="time-val" id="timer-mins">00</div><div class="time-lbl">Mins</div></div>
                 <div class="time-sep">:</div>
-                <div class="time-unit">
-                    <div class="time-val" id="timer-secs">00</div>
-                    <div class="time-lbl">Secs</div>
-                </div>
+                <div class="time-unit"><div class="time-val" id="timer-secs">00</div><div class="time-lbl">Secs</div></div>
             </div>
         </div>
 
-        <!-- Hall of Fame & Dynamic Champions Lists (Non-fixed Endless Generation) -->
+        <!-- Hall of Fame & Dynamic Champions Lists -->
         <div class="champions-grid">
             <div class="champ-card">
                 <div class="champ-card-header"><i class="fas fa-award"></i> উইকলি চ্যাম্পিয়ন হিস্টোরি (Weekly Champions)</div>
-                <div class="scrollable-history" id="dynamic-weekly-champions">
-                    <!-- Dynamic Endless Week Generator -->
-                </div>
+                <div class="scrollable-history" id="dynamic-weekly-champions"></div>
             </div>
 
             <div class="champ-card">
                 <div class="champ-card-header"><i class="fas fa-star"></i> মান্থলি বেস্ট প্লেয়ার (Monthly Best Player)</div>
-                <div class="scrollable-history" id="dynamic-monthly-mvps">
-                    <!-- Dynamic Endless Month Generator -->
-                </div>
+                <div class="scrollable-history" id="dynamic-monthly-mvps"></div>
             </div>
         </div>
     </div>
@@ -642,22 +649,20 @@
     <div id="profile-view" class="page-view">
         <button class="btn-back" onclick="showPage('home-view')"><i class="fas fa-arrow-left"></i> হোম পেজে ফিরে যান</button>
         <h2 style="color: var(--gold-primary); margin-bottom: 8px;"><i class="fas fa-id-card"></i> ক্লাব প্লেয়ার প্রোফাইল</h2>
-        <p style="font-size: 13px; color: var(--text-muted); margin-bottom: 15px;">সকল নিবন্ধিত প্লেয়ারের তালিকা (হোয়াটসঅ্যাপ নম্বর সম্পূর্ণ গোপন থাকবে)।</p>
+        <p style="font-size: 13px; color: var(--text-muted); margin-bottom: 15px;">এডমিন কর্তৃক অ্যাপ্রুভকৃত নিবন্ধিত প্লেয়ারদের তালিকা (হোয়াটসঅ্যাপ নম্বর গোপন থাকবে)।</p>
         
-        <div class="player-cards-grid" id="players-list-container">
-            <!-- Dynamic Data From Supabase -->
-        </div>
+        <div class="player-cards-grid" id="players-list-container"></div>
     </div>
 
     <!-- PAGE 3: FRIENDLY CHALLENGE RESULT SUBMIT -->
     <div id="submit-view" class="page-view">
         <button class="btn-back" onclick="showPage('home-view')"><i class="fas fa-arrow-left"></i> হোম পেজে ফিরে যান</button>
         <h2 style="color: var(--gold-primary); margin-bottom: 8px;"><i class="fas fa-gamepad"></i> ফ্রেন্ডলি চ্যালেঞ্জ রেজাল্ট সাবমিট</h2>
-        <p style="font-size: 13px; color: var(--text-muted); margin-bottom: 15px;">ম্যাচ শেষ হওয়ার পর অপোনেন্ট সিলেক্ট করুন এবং গ্যালারি থেকে স্ক্রিনশট আপলোড করে সাবমিট করুন।</p>
+        <p style="font-size: 13px; color: var(--text-muted); margin-bottom: 15px;">অপোনেন্ট সিলেক্ট করে স্কোর ও প্রুফ সাবমিট করুন (এডমিন অ্যাপ্রুভ করার পরেই পয়েন্ট যোগ হবে)।</p>
 
         <div class="status-card" style="max-width: 600px; margin: 0 auto;">
             <div id="submit-auth-warning" style="display: none; text-align: center; color: var(--danger); font-weight: bold; padding: 15px;">
-                <i class="fas fa-exclamation-triangle"></i> রেজাল্ট সাবমিট করতে প্রথমে প্লেয়ার হিসেবে লগইন করুন!
+                <i class="fas fa-exclamation-triangle"></i> রেজাল্ট সাবমিট করতে প্রথমে লগইন করুন এবং আপনার একাউন্টটি এডমিন কর্তৃক অ্যাপ্রুভ থাকতে হবে!
             </div>
             
             <form id="match-submit-form" onsubmit="handleMatchSubmit(event)">
@@ -686,7 +691,7 @@
                 </div>
 
                 <button type="submit" class="btn btn-gold" style="width: 100%; justify-content: center; padding: 12px; margin-top: 10px;">
-                    <i class="fas fa-paper-plane"></i> ম্যাচ রেজাল্ট জমা দিন
+                    <i class="fas fa-paper-plane"></i> রেজাল্ট জমা দিন (Pending Review)
                 </button>
             </form>
         </div>
@@ -698,10 +703,7 @@
         <h2 style="color: var(--gold-primary); margin-bottom: 8px;"><i class="fas fa-trophy"></i> উইকলি র‍্যাঙ্কিং বোর্ড</h2>
         <p style="font-size: 13px; color: var(--text-muted); margin-bottom: 15px;">চলতি সপ্তাহের লাইভ পয়েন্ট টেবিল।</p>
 
-        <!-- Dynamic Week History Selector Buttons -->
-        <div id="weekly-history-selector" style="display: flex; gap: 8px; margin-bottom: 15px; overflow-x: auto; padding-bottom: 5px;">
-            <!-- Generated dynamically -->
-        </div>
+        <div id="weekly-history-selector" style="display: flex; gap: 8px; margin-bottom: 15px; overflow-x: auto; padding-bottom: 5px;"></div>
 
         <table class="rank-table">
             <thead>
@@ -715,9 +717,7 @@
                     <th>পয়েন্ট</th>
                 </tr>
             </thead>
-            <tbody id="weekly-rank-body">
-                <!-- Dynamic Rows -->
-            </tbody>
+            <tbody id="weekly-rank-body"></tbody>
         </table>
     </div>
 
@@ -734,10 +734,10 @@
                 <li><strong>Loss (হার):</strong> ০ পয়েন্ট + ১ পার্টিসিপেশন পয়েন্ট = <span style="color: #ccc;">মোট ১ পয়েন্ট</span></li>
             </ul>
 
-            <h3 style="color: var(--gold-secondary); margin-bottom: 10px;"><i class="fas fa-check-circle"></i> ম্যাচ সাবমিশন নিয়মাবলী:</h3>
+            <h3 style="color: var(--gold-secondary); margin-bottom: 10px;"><i class="fas fa-check-circle"></i> এডমিন রিভিউ রুলস:</h3>
             <ol style="padding-left: 20px; font-size: 14px; color: var(--text-main); margin-bottom: 20px;">
-                <li>প্রতিটি ম্যাচের রেজাল্ট অবশ্যই প্লেয়ার অ্যাকাউন্ট থেকে লগইন করে সাবমিট করতে হবে।</li>
-                <li>সঠিক অপোনেন্ট সিলেক্ট করে স্কোর এবং গ্যালারি থেকে অরিজিনাল স্ক্রিনশট প্রুফ দিতে হবে।</li>
+                <li>নতুন সাইন আপ করা প্লেয়ারদের এডমিন ম্যানুয়ালি ভেরিফাই করে অ্যাপ্রুভ করবেন।</li>
+                <li>প্রতিটি ম্যাচের পয়েন্ট এডমিন স্ক্রিনশট ও স্কোর যাচাই করে অ্যাপ্রুভ করলে অটোমেটিক পয়েন্ট যোগ হবে।</li>
             </ol>
         </div>
     </div>
@@ -759,9 +759,7 @@
                     <th>মোট পয়েন্ট</th>
                 </tr>
             </thead>
-            <tbody id="overall-rank-body">
-                <!-- Dynamic Overall Table -->
-            </tbody>
+            <tbody id="overall-rank-body"></tbody>
         </table>
     </div>
 
@@ -796,7 +794,7 @@
                     <input type="tel" id="signup-wa" class="form-input" required placeholder="+8801700000000">
                 </div>
                 <button type="submit" class="btn btn-gold" style="width: 100%; justify-content: center; padding: 12px; margin-top: 10px;">
-                    রেজিস্ট্রেশন সম্পূর্ণ করুন
+                    রেজিস্ট্রেশন জমা দিন (Pending Admin Approval)
                 </button>
             </form>
         </div>
@@ -850,16 +848,17 @@
             </div>
             <h4 style="font-size: 13px; color: var(--gold-primary); margin-bottom: 8px;"><i class="fas fa-history"></i> ম্যাচ হিস্টোরি</h4>
             <div id="modal-match-history" style="max-height: 150px; overflow-y: auto; font-size: 12px; color: var(--text-muted);">
-                কোনো সাম্প্রতিক ম্যাচ পাওয়া যায়নি।
+                কোনো সাম্প্রতিক অ্যাপ্রুভকৃত ম্যাচ পাওয়া যায়নি।
             </div>
         </div>
     </div>
 
-    <!-- MODAL 4: SECRET ADMIN PORTAL -->
+    <!-- MODAL 4: SECRET ADMIN PORTAL (WITH PENDING APPROVAL CONTROL) -->
     <div id="admin-modal" class="modal">
         <div class="modal-content" style="border-color: var(--danger);">
             <span class="modal-close" onclick="closeModal('admin-modal')">&times;</span>
             <h3 style="color: var(--danger); margin-bottom: 15px;"><i class="fas fa-user-shield"></i> সিক্রেট এডমিন প্যানেল</h3>
+            
             <form onsubmit="handleAdminLogin(event)" id="admin-login-form">
                 <div class="form-group">
                     <label>এডমিন সিক্রেট পাসওয়ার্ড</label>
@@ -869,42 +868,58 @@
                     এডমিন এক্সেস
                 </button>
             </form>
-            <div id="admin-controls" style="display: none; margin-top: 15px;">
-                <p style="color: var(--success); font-weight: bold; font-size: 13px; margin-bottom: 10px;">স্বাগতম ক্লাব এডমিন!</p>
-                <button class="btn btn-gold" style="width: 100%; margin-bottom: 8px;" onclick="alert('ফেজ রিসেট সম্পন্ন হয়েছে!')"><i class="fas fa-sync"></i> ম্যানুয়াল ফেজ রিসেট</button>
+
+            <div id="admin-controls" style="display: none;">
+                <div class="admin-tab-nav">
+                    <button class="admin-tab-btn active" id="tab-btn-players" onclick="switchAdminTab('players')">পেন্ডিং রেজিস্ট্রেশন (<span id="count-pending-players">0</span>)</button>
+                    <button class="admin-tab-btn" id="tab-btn-matches" onclick="switchAdminTab('matches')">পেন্ডিং ম্যাচ রেজাল্ট (<span id="count-pending-matches">0</span>)</button>
+                </div>
+
+                <!-- Admin Tab 1: Pending Registrations -->
+                <div id="admin-tab-players-view">
+                    <h4 style="font-size: 12px; color: var(--gold-primary); margin-bottom: 10px;">অ্যাপ্রুভালের জন্য জমা হওয়া প্লেয়ার তালিকা:</h4>
+                    <div id="admin-pending-players-list"></div>
+                </div>
+
+                <!-- Admin Tab 2: Pending Match Results -->
+                <div id="admin-tab-matches-view" style="display: none;">
+                    <h4 style="font-size: 12px; color: var(--gold-primary); margin-bottom: 10px;">অ্যাপ্রুভালের জন্য জমা হওয়া ম্যাচ রেজাল্ট:</h4>
+                    <div id="admin-pending-matches-list"></div>
+                </div>
+
+                <hr style="border: 0; border-top: 1px solid var(--border-card); margin: 15px 0;">
+                <button class="btn btn-gold" style="width: 100%;" onclick="alert('ফেজ রিসেট সম্পন্ন হয়েছে!')"><i class="fas fa-sync"></i> ম্যানুয়াল ফেজ রিসেট</button>
             </div>
         </div>
     </div>
 
     <!-- Footer -->
     <footer>
-        <div>&copy; 2026 Elite Playmakers FC (EPF Management). All Rights Reserved.</div>
-        <div style="font-size: 10px; color: #555; margin-top: 4px;">Powered by VIP Dark Engine & Dynamic Time Progression</div>
+        <div>&copy; 2026 Elite Playmakers FC. All Rights Reserved.</div>
+        <div style="font-size: 10px; color: #555; margin-top: 4px;">Powered by VIP Dark Engine & Supabase System</div>
         <div class="secret-admin-trigger" id="admin-trigger-zone" title="Secret Admin Zone"></div>
     </footer>
 
-    <!-- JavaScript Dynamic Endless Engine -->
+    <!-- JavaScript Engine -->
     <script>
-        // Supabase Setup
-        const SUPABASE_URL = 'https://webaeqsthnfjaswfaoxb.supabase.co';
-        const SUPABASE_ANON_KEY = 'sb_publishable_lt6YBB8ygolh1xiP1UHcjw_TkpP4tcI';
+        // Supabase Credentials
+        const SUPABASE_URL = 'YOUR_SUPABASE_PROJECT_URL';
+        const SUPABASE_ANON_KEY = 'YOUR_SUPABASE_ANON_KEY';
         
         let supabaseClient = null;
         if (SUPABASE_URL !== 'YOUR_SUPABASE_PROJECT_URL' && typeof supabase !== 'undefined') {
             supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
         }
 
-        // Global Stores
         let registeredPlayers = [];
-        let hallOfFameData = {}; // Stores winners indexed by week or month
+        let pendingMatchesList = [];
+        let hallOfFameData = {};
         let loggedInPlayer = null;
         let tapCount = 0;
         let tapTimer = null;
 
-        // Base Anchor Start Date: Thursday, 15 October 2026, 08:00 AM BST (UTC+6)
-        const ANCHOR_START_DATE = new Date(Date.UTC(2026, 9, 15, 2, 0, 0)); // UTC equivalent for 8 AM BST
+        const ANCHOR_START_DATE = new Date(Date.UTC(2026, 9, 15, 2, 0, 0));
 
-        // Navigation Engine
         function showPage(pageId) {
             document.querySelectorAll('.page-view').forEach(p => p.classList.remove('active'));
             const target = document.getElementById(pageId);
@@ -922,113 +937,40 @@
         function openModal(id) { document.getElementById(id).style.display = 'flex'; }
         function closeModal(id) { document.getElementById(id).style.display = 'none'; }
 
-        // Dynamic Week & Date Calculator Engine
         function getPhaseInfo() {
             const now = new Date();
             const timeDiff = now.getTime() - ANCHOR_START_DATE.getTime();
-            
             let weekIndex = 1;
-            if (timeDiff > 0) {
-                weekIndex = Math.floor(timeDiff / (7 * 24 * 60 * 60 * 1000)) + 1;
-            }
+            if (timeDiff > 0) weekIndex = Math.floor(timeDiff / (7 * 24 * 60 * 60 * 1000)) + 1;
 
-            // Start date of current calculated phase week
             const phaseStart = new Date(ANCHOR_START_DATE.getTime() + (weekIndex - 1) * 7 * 24 * 60 * 60 * 1000);
             const phaseEnd = new Date(phaseStart.getTime() + 7 * 24 * 60 * 60 * 1000);
 
-            return {
-                currentWeek: weekIndex,
-                startDate: phaseStart,
-                endDate: phaseEnd
-            };
+            return { currentWeek: weekIndex, startDate: phaseStart, endDate: phaseEnd };
         }
 
-        // Render Dynamic Endless Champions Lists (No Hardcoded Weeks or Months)
-        function renderDynamicChampions() {
-            const phase = getPhaseInfo();
-            const weeklyContainer = document.getElementById('dynamic-weekly-champions');
-            const monthlyContainer = document.getElementById('dynamic-monthly-mvps');
-
-            // 1. Dynamic Weekly List (Loop from Week 1 up to current dynamic week)
-            let weeklyHTML = '';
-            for (let w = phase.currentWeek; w >= 1; w--) {
-                if (w === phase.currentWeek) {
-                    weeklyHTML += `
-                        <div class="champ-list-item">
-                            <span><i class="fas fa-medal" style="color:var(--gold-primary);"></i> Week ${w} Champion</span>
-                            <strong style="color:var(--gold-secondary);">রানিং (In Progress...)</strong>
-                        </div>`;
-                } else {
-                    const winner = hallOfFameData[`week_${w}`] || 'টিবিডি / ডাটা নেই';
-                    weeklyHTML += `
-                        <div class="champ-list-item">
-                            <span><i class="fas fa-medal" style="color:var(--gold-primary);"></i> Week ${w} Champion</span>
-                            <strong style="color:var(--gold-primary);">${winner}</strong>
-                        </div>`;
-                }
-            }
-            weeklyContainer.innerHTML = weeklyHTML;
-
-            // 2. Dynamic Monthly List (Generates Months dynamically based on calendar progression)
-            const monthNames = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
-            const now = new Date();
-            let startYear = 2026;
-            let startMonthIndex = 9; // October (0-indexed)
-
-            let monthlyHTML = '';
-            let currentYear = now.getFullYear();
-            let currentMonthIndex = now.getMonth();
-
-            for (let y = currentYear; y >= startYear; y--) {
-                let mEnd = (y === currentYear) ? currentMonthIndex : 11;
-                let mStart = (y === startYear) ? startMonthIndex : 0;
-
-                for (let m = mEnd; m >= mStart; m--) {
-                    const monthKey = `${monthNames[m]}_${y}`;
-                    const mvpWinner = hallOfFameData[monthKey] || 'টিবিডি (TBD)';
-                    monthlyHTML += `
-                        <div class="champ-list-item">
-                            <span><i class="fas fa-trophy" style="color:var(--cyan-accent);"></i> ${monthNames[m]} ${y} MVP</span>
-                            <strong style="color:var(--cyan-accent);">${mvpWinner}</strong>
-                        </div>`;
-                }
-            }
-            monthlyContainer.innerHTML = monthlyHTML;
-
-            // 3. Dynamic Weekly History Buttons in Ranking Page
-            const historySelector = document.getElementById('weekly-history-selector');
-            let historyBtnHTML = `<button class="btn btn-gold" onclick="renderWeeklyTable(${phase.currentWeek})">কারেন্ট উইক (${phase.currentWeek})</button>`;
-            for (let w = phase.currentWeek - 1; w >= 1; w--) {
-                historyBtnHTML += `<button class="btn btn-outline" onclick="renderWeeklyTable(${w})">Week ${w}</button>`;
-            }
-            historySelector.innerHTML = historyBtnHTML;
-        }
-
-        // Fetch Data from Supabase
         async function fetchPlayers() {
             if (supabaseClient) {
                 const { data, error } = await supabaseClient.from('players').select('*');
                 if (!error && data) registeredPlayers = data;
 
-                const { data: fame, error: fameErr } = await supabaseClient.from('hall_of_fame').select('*');
-                if (!fameErr && fame) {
-                    fame.forEach(f => { hallOfFameData[f.title] = f.player_name; });
-                }
+                const { data: matches } = await supabaseClient.from('match_results').select('*').eq('status', 'pending');
+                if (matches) pendingMatchesList = matches;
             }
         }
 
-        // Render Player Cards
         function renderPlayerCards() {
+            const approvedPlayers = registeredPlayers.filter(p => p.is_approved === true);
             const container = document.getElementById('players-list-container');
-            if (registeredPlayers.length === 0) {
+            if (approvedPlayers.length === 0) {
                 container.innerHTML = `<div class="empty-placeholder" style="grid-column: 1/-1;">
-                    <i class="fas fa-user-slash" style="font-size: 30px; color: var(--gold-primary); margin-bottom: 10px;"></i><br>
-                    এখনো কোনো প্লেয়ার রেজিস্ট্রেশন করেনি। সাইন আপ বাটনে ক্লিক করে প্রথম প্লেয়ার হিসেবে যুক্ত হন!
+                    <i class="fas fa-user-clock" style="font-size: 30px; color: var(--gold-primary); margin-bottom: 10px;"></i><br>
+                    এখনো কোনো প্লেয়ার এডমিন কর্তৃক অ্যাপ্রুভ হয়নি। সাইন আপ করার পর এডমিন একসেপ্ট করলে এখানে প্রোফাইল দেখাবে।
                 </div>`;
                 return;
             }
 
-            container.innerHTML = registeredPlayers.map(p => `
+            container.innerHTML = approvedPlayers.map(p => `
                 <div class="player-card" onclick="openPlayerDetail('${p.id || p.game_uid}')">
                     <div class="player-badge">${p.player_name ? p.player_name.charAt(0).toUpperCase() : 'P'}</div>
                     <h3 style="color: var(--gold-primary); font-size: 15px;">${p.player_name}</h3>
@@ -1054,13 +996,12 @@
             openModal('player-detail-modal');
         }
 
-        // Setup Submit Page
         function setupSubmitPage() {
             const warning = document.getElementById('submit-auth-warning');
             const form = document.getElementById('match-submit-form');
             const oppSelect = document.getElementById('opponent-select');
 
-            if (!loggedInPlayer) {
+            if (!loggedInPlayer || !loggedInPlayer.is_approved) {
                 warning.style.display = 'block';
                 form.style.opacity = '0.4';
                 form.style.pointerEvents = 'none';
@@ -1072,37 +1013,44 @@
             }
 
             oppSelect.innerHTML = '<option value="">-- অপোনেন্ট সিলেক্ট করুন --</option>' + 
-                registeredPlayers.filter(p => !loggedInPlayer || p.game_uid !== loggedInPlayer.game_uid)
+                registeredPlayers.filter(p => p.is_approved && (!loggedInPlayer || p.game_uid !== loggedInPlayer.game_uid))
                 .map(p => `<option value="${p.game_uid}">${p.player_name} (${p.game_uid})</option>`).join('');
         }
 
         async function handleMatchSubmit(e) {
             e.preventDefault();
             const opponentUid = document.getElementById('opponent-select').value;
-            const yourScore = document.getElementById('your-score').value;
-            const opponentScore = document.getElementById('opponent-score').value;
+            const yourScore = parseInt(document.getElementById('your-score').value);
+            const opponentScore = parseInt(document.getElementById('opponent-score').value);
+
+            const matchData = {
+                submitter_id: loggedInPlayer.id,
+                submitter_name: loggedInPlayer.player_name,
+                opponent_id: opponentUid,
+                submitter_score: yourScore,
+                opponent_score: opponentScore,
+                status: 'pending'
+            };
 
             if (supabaseClient) {
-                await supabaseClient.from('match_results').insert([{
-                    submitter_id: loggedInPlayer.id,
-                    opponent_id: opponentUid,
-                    submitter_score: parseInt(yourScore),
-                    opponent_score: parseInt(opponentScore)
-                }]);
+                await supabaseClient.from('match_results').insert([matchData]);
+            } else {
+                pendingMatchesList.push(matchData);
             }
 
-            alert('ম্যাচ রেজাল্ট সফলভাবে জমা দেওয়া হয়েছে!');
+            alert('ম্যাচ রেজাল্ট এডমিনের কাছে জমা দেওয়া হয়েছে! এডমিন স্ক্রিনশট ও স্কোর যাচাই করে অ্যাপ্রুভ করলে পয়েন্ট যোগ হবে।');
             e.target.reset();
             showPage('home-view');
         }
 
-        function renderWeeklyTable(weekNum) {
+        function renderWeeklyTable() {
+            const approved = registeredPlayers.filter(p => p.is_approved);
             const tbody = document.getElementById('weekly-rank-body');
-            if (registeredPlayers.length === 0) {
+            if (approved.length === 0) {
                 tbody.innerHTML = `<tr><td colspan="7" style="text-align:center; color: var(--text-muted); padding:20px;">এখনো কোনো উইকলি পয়েন্ট ডাটা পাওয়া যায়নি।</td></tr>`;
                 return;
             }
-            tbody.innerHTML = registeredPlayers.map((p, idx) => `
+            tbody.innerHTML = approved.map((p, idx) => `
                 <tr>
                     <td><span class="rank-badge ${idx < 3 ? 'rank-' + (idx+1) : ''}">${idx + 1}</span></td>
                     <td><strong>${p.player_name}</strong></td>
@@ -1116,12 +1064,13 @@
         }
 
         function renderOverallTable() {
+            const approved = registeredPlayers.filter(p => p.is_approved);
             const tbody = document.getElementById('overall-rank-body');
-            if (registeredPlayers.length === 0) {
+            if (approved.length === 0) {
                 tbody.innerHTML = `<tr><td colspan="6" style="text-align:center; color: var(--text-muted); padding:20px;">এখনো কোনো ওভারঅল ডাটা পাওয়া যায়নি।</td></tr>`;
                 return;
             }
-            tbody.innerHTML = registeredPlayers.map((p, idx) => `
+            tbody.innerHTML = approved.map((p, idx) => `
                 <tr>
                     <td><span class="rank-badge ${idx < 3 ? 'rank-' + (idx+1) : ''}">${idx + 1}</span></td>
                     <td><strong>${p.player_name}</strong></td>
@@ -1133,7 +1082,6 @@
             `).join('');
         }
 
-        // Signup Handler
         async function handleSignup(e) {
             e.preventDefault();
             const name = document.getElementById('signup-name').value;
@@ -1150,49 +1098,46 @@
                 email: email,
                 password_hash: pass,
                 whatsapp_number: wa,
+                is_approved: false,
                 matches_played: 0, wins: 0, draws: 0, losses: 0, points: 0
             };
 
             if (supabaseClient) {
-                const { data, error } = await supabaseClient.from('players').insert([newPlayer]).select();
+                const { error } = await supabaseClient.from('players').insert([newPlayer]);
                 if (error) {
                     alert('রেজিস্ট্রেশনে সমস্যা হয়েছে: ' + error.message);
                     return;
                 }
-                if (data && data[0]) loggedInPlayer = data[0];
             } else {
                 registeredPlayers.push(newPlayer);
-                loggedInPlayer = newPlayer;
             }
 
-            await fetchPlayers();
-            updateAuthUI();
             closeModal('signup-modal');
-            alert('রেজিস্ট্রেশন সফল হয়েছে! স্বাগতম ' + name);
+            alert('আপনার রেজিস্ট্রেশন সফলভাবে জমা হয়েছে! এডমিন ম্যানুয়ালি অ্যাপ্রুভ করার পর আপনি লগইন করতে পারবেন।');
         }
 
-        // Login Handler
         async function handleLogin(e) {
             e.preventDefault();
             const email = document.getElementById('login-email').value;
             const pass = document.getElementById('login-pass').value;
 
-            if (supabaseClient) {
-                const { data, error } = await supabaseClient.from('players').select('*').eq('email', email).eq('password_hash', pass).single();
-                if (error || !data) {
-                    alert('ইমেইল অথবা পাসওয়ার্ড সঠিক নয়!');
-                    return;
-                }
-                loggedInPlayer = data;
-            } else {
-                const found = registeredPlayers.find(p => p.email === email && p.password_hash === pass);
-                if (!found) {
-                    alert('ইমেইল অথবা পাসওয়ার্ড সঠিক নয়!');
-                    return;
-                }
-                loggedInPlayer = found;
+            let found = registeredPlayers.find(p => p.email === email && p.password_hash === pass);
+            if (!found && supabaseClient) {
+                const { data } = await supabaseClient.from('players').select('*').eq('email', email).eq('password_hash', pass).single();
+                found = data;
             }
 
+            if (!found) {
+                alert('ইমেইল অথবা পাসওয়ার্ড সঠিক নয়!');
+                return;
+            }
+
+            if (!found.is_approved) {
+                alert('আপনার একাউন্টটি এখনো এডমিন কর্তৃক অ্যাপ্রুভ করা হয়নি। অনুগ্রহ করে অপেক্ষা করুন!');
+                return;
+            }
+
+            loggedInPlayer = found;
             updateAuthUI();
             closeModal('login-modal');
             alert('স্বাগতম ' + loggedInPlayer.player_name + '!');
@@ -1209,7 +1154,7 @@
             }
         }
 
-        // Secret Admin Portal Trigger
+        // Secret Admin Portal
         document.getElementById('admin-trigger-zone').addEventListener('click', () => {
             tapCount++;
             clearTimeout(tapTimer);
@@ -1227,9 +1172,97 @@
             if (pass === 'admin123' || pass === '1234') {
                 document.getElementById('admin-login-form').style.display = 'none';
                 document.getElementById('admin-controls').style.display = 'block';
+                renderAdminDashboard();
             } else {
                 alert('ভুল সিক্রেট পাসওয়ার্ড!');
             }
+        }
+
+        function switchAdminTab(tab) {
+            document.getElementById('tab-btn-players').classList.toggle('active', tab === 'players');
+            document.getElementById('tab-btn-matches').classList.toggle('active', tab === 'matches');
+            document.getElementById('admin-tab-players-view').style.display = tab === 'players' ? 'block' : 'none';
+            document.getElementById('admin-tab-matches-view').style.display = tab === 'matches' ? 'block' : 'none';
+        }
+
+        function renderAdminDashboard() {
+            const pendingPlayers = registeredPlayers.filter(p => !p.is_approved);
+            document.getElementById('count-pending-players').innerText = pendingPlayers.length;
+            document.getElementById('count-pending-matches').innerText = pendingMatchesList.length;
+
+            const pContainer = document.getElementById('admin-pending-players-list');
+            if (pendingPlayers.length === 0) {
+                pContainer.innerHTML = '<p style="color:var(--text-muted);">কোনো পেন্ডিং প্লেয়ার নেই।</p>';
+            } else {
+                pContainer.innerHTML = pendingPlayers.map(p => `
+                    <div class="admin-card-item">
+                        <div><strong>${p.player_name}</strong> (UID: ${p.game_uid})</div>
+                        <div>ডিভাইস: ${p.device_name}</div>
+                        <div>হোয়াটসঅ্যাপ: <span style="color:var(--gold-primary); font-weight:bold;">${p.whatsapp_number}</span></div>
+                        <button class="btn btn-gold" style="margin-top:8px; padding:6px 12px; font-size:11px;" onclick="approvePlayer('${p.game_uid}')">অ্যাপ্রুভ করুন (Approve)</button>
+                    </div>
+                `).join('');
+            }
+
+            const mContainer = document.getElementById('admin-pending-matches-list');
+            if (pendingMatchesList.length === 0) {
+                mContainer.innerHTML = '<p style="color:var(--text-muted);">কোনো পেন্ডিং ম্যাচ রেজাল্ট নেই।</p>';
+            } else {
+                mContainer.innerHTML = pendingMatchesList.map((m, idx) => `
+                    <div class="admin-card-item">
+                        <div>সাবমিটার: <strong>${m.submitter_name}</strong> vs অপোনেন্ট UID: <strong>${m.opponent_id}</strong></div>
+                        <div style="font-size:14px; font-weight:bold; color:var(--cyan-accent); margin:4px 0;">স্কোর: ${m.submitter_score} - ${m.opponent_score}</div>
+                        <button class="btn btn-gold" style="margin-top:6px; padding:6px 12px; font-size:11px;" onclick="approveMatch(${idx})">ম্যাচ অ্যাপ্রুভ করুন</button>
+                    </div>
+                `).join('');
+            }
+        }
+
+        async function approvePlayer(uid) {
+            const p = registeredPlayers.find(x => x.game_uid === uid);
+            if (p) {
+                p.is_approved = true;
+                if (supabaseClient) {
+                    await supabaseClient.from('players').update({ is_approved: true }).eq('game_uid', uid);
+                }
+                alert(p.player_name + ' প্লেয়ার একাউন্ট সফলভাবে অ্যাপ্রুভ করা হয়েছে!');
+                renderAdminDashboard();
+                renderPlayerCards();
+            }
+        }
+
+        async function approveMatch(idx) {
+            const m = pendingMatchesList[idx];
+            if (!m) return;
+
+            const sub = registeredPlayers.find(x => x.id === m.submitter_id || x.player_name === m.submitter_name);
+            const opp = registeredPlayers.find(x => x.game_uid === m.opponent_id);
+
+            if (sub && opp) {
+                sub.matches_played = (sub.matches_played || 0) + 1;
+                opp.matches_played = (opp.matches_played || 0) + 1;
+
+                if (m.submitter_score > m.opponent_score) {
+                    sub.wins = (sub.wins || 0) + 1; sub.points = (sub.points || 0) + 4;
+                    opp.losses = (opp.losses || 0) + 1; opp.points = (opp.points || 0) + 1;
+                } else if (m.submitter_score < m.opponent_score) {
+                    opp.wins = (opp.wins || 0) + 1; opp.points = (opp.points || 0) + 4;
+                    sub.losses = (sub.losses || 0) + 1; sub.points = (sub.points || 0) + 1;
+                } else {
+                    sub.draws = (sub.draws || 0) + 1; sub.points = (sub.points || 0) + 2;
+                    opp.draws = (opp.draws || 0) + 1; opp.points = (opp.points || 0) + 2;
+                }
+
+                if (supabaseClient) {
+                    await supabaseClient.from('players').update(sub).eq('game_uid', sub.game_uid);
+                    await supabaseClient.from('players').update(opp).eq('game_uid', opp.game_uid);
+                    await supabaseClient.from('match_results').update({ status: 'approved' }).eq('id', m.id);
+                }
+            }
+
+            pendingMatchesList.splice(idx, 1);
+            alert('ম্যাচ রেজাল্ট অ্যাপ্রুভ হয়েছে এবং পয়েন্ট টেবিলে যোগ হয়েছে!');
+            renderAdminDashboard();
         }
 
         // Dynamic BST Timer Engine
@@ -1265,7 +1298,6 @@
         window.onload = async function() {
             startPhaseTimer();
             await fetchPlayers();
-            renderDynamicChampions();
             renderPlayerCards();
         };
     </script>
