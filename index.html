@@ -1,1195 +1,810 @@
 
-
-
 <!DOCTYPE html>
-<html lang="bn">
+<html lang="bn" class="dark">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>ELITE PLAYMAKERS FC - e-Football Club</title>
+    <title>ELITE PLAY-MAKERS FC | Official Club Portal</title>
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    colors: {
+                        gold: '#f59e0b',
+                        darkbg: '#0b0f19',
+                        cardbg: '#111827',
+                        accent: '#3b82f6',
+                        accentgreen: '#10b981'
+                    }
+                }
+            }
+        }
+    </script>
+    <!-- FontAwesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <!-- Google Fonts -->
-    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@500;700;900&family=Rajdhani:wght@500;600;700&family=Hind+Siliguri:wght@400;600;700&display=swap" rel="stylesheet">
-    <!-- Supabase JS CDN Library -->
+    <link href="https://fonts.googleapis.com/css2?family=Rajdhani:wght@500;600;700&family=Hind+Siliguri:wght@400;600;700&display=swap" rel="stylesheet">
+    <!-- Supabase JS CDN -->
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-    
     <style>
-        :root {
-            --bg-main: #0a0d14;
-            --bg-card: #121824;
-            --bg-card-hover: #1a2336;
-            --neon-green: #00ff87;
-            --neon-blue: #00e5ff;
-            --neon-purple: #9d4edd;
-            --neon-gold: #ffbe0b;
-            --neon-red: #ff0055;
-            --text-primary: #ffffff;
-            --text-secondary: #94a3b8;
-            --border-glow: #1e293b;
-        }
-
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-            font-family: 'Hind Siliguri', 'Rajdhani', sans-serif;
-            transition: all 0.25s ease-in-out;
-        }
-
-        body {
-            background-color: var(--bg-main);
-            color: var(--text-primary);
-            min-height: 100vh;
-            display: flex;
-            flex-direction: column;
-            overflow-x: hidden;
-        }
-
-        body::before {
-            content: '';
-            position: fixed;
-            top: -100px;
-            left: 50%;
-            transform: translateX(-50%);
-            width: 600px;
-            height: 300px;
-            background: radial-gradient(circle, rgba(0, 255, 135, 0.08) 0%, rgba(0, 0, 0, 0) 70%);
-            pointer-events: none;
-            z-index: 0;
-        }
-
-        header {
-            position: relative;
-            z-index: 10;
-            background: rgba(18, 24, 36, 0.95);
-            backdrop-filter: blur(12px);
-            border-bottom: 2px solid rgba(0, 255, 135, 0.3);
-            padding: 15px 25px;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            box-shadow: 0 4px 25px rgba(0, 0, 0, 0.6);
-        }
-
-        .brand-logo {
-            font-family: 'Orbitron', sans-serif;
-            font-size: 1.8rem;
-            font-weight: 900;
-            letter-spacing: 2px;
-            background: linear-gradient(135deg, #fff 30%, var(--neon-green) 100%);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            cursor: pointer;
-            text-transform: uppercase;
-        }
-
-        .header-actions {
-            display: flex;
-            align-items: center;
-            gap: 12px;
-        }
-
-        .user-tag {
-            font-size: 0.95rem;
-            font-weight: 700;
-            color: var(--neon-green);
-            background: rgba(0, 255, 135, 0.1);
-            padding: 6px 14px;
-            border-radius: 20px;
-            border: 1px solid rgba(0, 255, 135, 0.3);
-        }
-
-        .btn {
-            padding: 10px 20px;
-            border: none;
-            border-radius: 8px;
-            font-weight: 700;
-            font-size: 0.9rem;
-            cursor: pointer;
-            text-transform: uppercase;
-            letter-spacing: 1px;
-            display: inline-flex;
-            align-items: center;
-            gap: 8px;
-            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
-        }
-
-        .btn-green {
-            background: linear-gradient(135deg, #00ff87 0%, #00b359 100%);
-            color: #000;
-        }
-        .btn-green:hover {
-            box-shadow: 0 0 20px rgba(0, 255, 135, 0.5);
-            transform: translateY(-2px);
-        }
-
-        .btn-blue {
-            background: transparent;
-            border: 2px solid var(--neon-blue);
-            color: var(--neon-blue);
-        }
-        .btn-blue:hover {
-            background: var(--neon-blue);
-            color: #000;
-            box-shadow: 0 0 15px rgba(0, 229, 255, 0.4);
-            transform: translateY(-2px);
-        }
-
-        .btn-back {
-            background: rgba(255, 255, 255, 0.05);
-            border: 1px solid var(--border-glow);
-            color: var(--text-secondary);
-            margin-bottom: 20px;
-        }
-        .btn-back:hover {
-            color: #fff;
-            border-color: var(--neon-green);
-            background: rgba(0, 255, 135, 0.1);
-        }
-
-        .main-wrapper {
-            position: relative;
-            z-index: 5;
-            max-width: 1150px;
-            width: 100%;
-            margin: 0 auto;
-            padding: 30px 20px;
-            flex-grow: 1;
-        }
-
-        .view-page {
-            display: none;
-            animation: fadeIn 0.35s ease-in-out forwards;
-        }
-        .view-page.active-view {
-            display: block;
-        }
-
-        @keyframes fadeIn {
-            from { opacity: 0; transform: translateY(12px); }
-            to { opacity: 1; transform: translateY(0); }
-        }
-
-        .home-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-            gap: 18px;
-            margin-bottom: 30px;
-        }
-
-        .menu-card {
-            background: var(--bg-card);
-            border: 1px solid var(--border-glow);
-            border-radius: 16px;
-            padding: 25px 20px;
-            text-align: center;
-            cursor: pointer;
-            position: relative;
-            overflow: hidden;
-        }
-        .menu-card::before {
-            content: '';
-            position: absolute;
-            top: 0; left: 0; width: 100%; height: 4px;
-            background: linear-gradient(90deg, var(--neon-green), var(--neon-blue));
-            opacity: 0;
-            transition: 0.3s;
-        }
-        .menu-card:hover {
-            background: var(--bg-card-hover);
-            transform: translateY(-6px);
-            border-color: rgba(0, 255, 135, 0.4);
-            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.5);
-        }
-        .menu-card:hover::before {
-            opacity: 1;
-        }
-        .menu-icon {
-            font-size: 2.2rem;
-            margin-bottom: 12px;
-            display: block;
-        }
-        .menu-title {
-            font-size: 1.15rem;
-            font-weight: 700;
-            color: var(--text-primary);
-        }
-
-        .phase-card {
-            background: linear-gradient(135deg, #161e2e 0%, #0d131f 100%);
-            border: 1px solid rgba(0, 229, 255, 0.3);
-            border-radius: 18px;
-            padding: 25px;
-            text-align: center;
-            margin-bottom: 30px;
-            position: relative;
-            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.4);
-        }
-        .phase-header {
-            font-family: 'Orbitron', sans-serif;
-            font-size: 1.1rem;
-            color: var(--neon-gold);
-            letter-spacing: 1px;
-            margin-bottom: 8px;
-        }
-        .phase-date {
-            font-size: 1.05rem;
-            color: var(--text-secondary);
-            margin-bottom: 20px;
-        }
-        .timer-grid {
-            display: flex;
-            justify-content: center;
-            gap: 15px;
-        }
-        .timer-box {
-            background: rgba(0, 0, 0, 0.6);
-            border: 1px solid var(--border-glow);
-            padding: 12px 18px;
-            border-radius: 12px;
-            min-width: 75px;
-        }
-        .timer-val {
-            font-family: 'Orbitron', sans-serif;
-            font-size: 1.8rem;
-            font-weight: 700;
-            color: var(--neon-green);
-        }
-        .timer-lbl {
-            font-size: 0.75rem;
-            color: var(--text-secondary);
-            text-transform: uppercase;
-        }
-
-        .champ-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-            gap: 20px;
-        }
-        .champ-card {
-            background: var(--bg-card);
-            border: 1px solid var(--border-glow);
-            border-radius: 16px;
-            padding: 22px;
-        }
-        .champ-title {
-            font-size: 1.2rem;
-            font-weight: 700;
-            color: var(--neon-gold);
-            margin-bottom: 15px;
-            display: flex;
-            align-items: center;
-            gap: 8px;
-            border-bottom: 1px solid var(--border-glow);
-            padding-bottom: 10px;
-        }
-        .winner-banner {
-            background: rgba(255, 190, 11, 0.08);
-            border: 1px dashed var(--neon-gold);
-            border-radius: 12px;
-            padding: 15px;
-            text-align: center;
-            font-size: 1.2rem;
-            font-weight: 700;
-            color: var(--neon-green);
-            margin-bottom: 15px;
-        }
-        .history-list {
-            list-style: none;
-            line-height: 2.2;
-        }
-        .history-item {
-            display: flex;
-            justify-content: space-between;
-            border-bottom: 1px dashed rgba(255, 255, 255, 0.05);
-            font-size: 0.95rem;
-        }
-
-        .page-header-box {
-            background: var(--bg-card);
-            border-left: 4px solid var(--neon-green);
-            padding: 20px 25px;
-            border-radius: 12px;
-            margin-bottom: 25px;
-        }
-        .page-header-title {
-            font-size: 1.6rem;
-            font-weight: 700;
-            color: var(--text-primary);
-        }
-
-        .table-responsive {
-            overflow-x: auto;
-            background: var(--bg-card);
-            border-radius: 14px;
-            border: 1px solid var(--border-glow);
-        }
-        table {
-            width: 100%;
-            border-collapse: collapse;
-            text-align: left;
-        }
-        th, td {
-            padding: 15px 18px;
-            border-bottom: 1px solid var(--border-glow);
-        }
-        th {
-            background: rgba(0, 0, 0, 0.4);
-            color: var(--neon-blue);
-            font-weight: 700;
-            text-transform: uppercase;
-            font-size: 0.85rem;
-        }
-        tr:hover {
-            background: rgba(255, 255, 255, 0.02);
-        }
-
-        .form-card {
-            background: var(--bg-card);
-            border: 1px solid var(--border-glow);
-            border-radius: 16px;
-            padding: 25px;
-            max-width: 650px;
-            margin: 0 auto;
-        }
-        .form-group {
-            margin-bottom: 20px;
-        }
-        .form-group label {
-            display: block;
-            margin-bottom: 8px;
-            font-weight: 600;
-            color: var(--text-secondary);
-        }
-        .form-control {
-            width: 100%;
-            padding: 12px 16px;
-            background: #0a0d14;
-            border: 1px solid var(--border-glow);
-            border-radius: 8px;
-            color: #fff;
-            font-size: 1rem;
-        }
-        .form-control:focus {
-            outline: none;
-            border-color: var(--neon-green);
-            box-shadow: 0 0 10px rgba(0, 255, 135, 0.2);
-        }
-
-        .vs-box {
-            display: flex;
-            align-items: center;
-            gap: 15px;
-            background: #0a0d14;
-            padding: 20px;
-            border-radius: 12px;
-            margin: 20px 0;
-            border: 1px solid var(--border-glow);
-        }
-        .vs-badge {
-            font-family: 'Orbitron', sans-serif;
-            font-size: 1.8rem;
-            color: var(--neon-red);
-            font-weight: 900;
-        }
-
-        .rules-ul {
-            list-style: none;
-            background: var(--bg-card);
-            padding: 25px;
-            border-radius: 16px;
-            border: 1px solid var(--border-glow);
-            line-height: 2;
-        }
-        .rules-ul li {
-            position: relative;
-            padding-left: 30px;
-            margin-bottom: 15px;
-            border-bottom: 1px dashed rgba(255, 255, 255, 0.05);
-            padding-bottom: 10px;
-        }
-        .rules-ul li::before {
-            content: "⚽";
-            position: absolute;
-            left: 0;
-            color: var(--neon-green);
-        }
-
-        .modal {
-            display: none;
-            position: fixed;
-            top: 0; left: 0; width: 100%; height: 100%;
-            background: rgba(0, 0, 0, 0.85);
-            backdrop-filter: blur(8px);
-            z-index: 100;
-            justify-content: center;
-            align-items: center;
-            padding: 20px;
-        }
-        .modal-content {
-            background: var(--bg-card);
-            border: 2px solid var(--neon-green);
-            border-radius: 18px;
-            max-width: 480px;
-            width: 100%;
-            padding: 30px;
-            position: relative;
-            max-height: 90vh;
-            overflow-y: auto;
-        }
-        .close-modal {
-            position: absolute;
-            top: 18px;
-            right: 22px;
-            font-size: 1.6rem;
-            color: var(--text-secondary);
-            cursor: pointer;
-        }
-
-        footer {
-            text-align: center;
-            padding: 20px;
-            color: var(--text-secondary);
-            font-size: 0.85rem;
-            margin-top: auto;
-            border-top: 1px solid var(--border-glow);
-        }
-        .secret-icon {
-            cursor: pointer;
-            user-select: none;
-            opacity: 0.2;
-            margin-left: 8px;
-        }
+        body { font-family: 'Hind Siliguri', 'Rajdhani', sans-serif; background-color: #0b0f19; color: #f3f4f6; }
+        .glow-gold { text-shadow: 0 0 12px rgba(245, 158, 11, 0.6); }
+        .gold-border { border-color: rgba(245, 158, 11, 0.4); }
+        .scrollbar-hide::-webkit-scrollbar { display: none; }
+        .scrollbar-hide { -ms-overflow-style: none; scrollbar-width: none; }
     </style>
 </head>
-<body>
+<body class="min-h-screen flex flex-col justify-between antialiased">
 
-    <!-- Header -->
-    <header>
-        <div class="brand-logo" onclick="navigateTo('home-view')">ELITE PLAYMAKERS FC</div>
-        <div class="header-actions">
-            <span id="userBadge" class="user-tag" style="display:none;"></span>
-            <button class="btn btn-green" id="regBtn" onclick="openModal('signupModal')">Player Registration</button>
-            <button class="btn btn-blue" id="loginBtn" onclick="openModal('loginModal')">Login</button>
-            <button class="btn btn-blue" id="logoutBtn" style="display:none;" onclick="handleLogout()">Logout</button>
+    <!-- HEADER / NAVIGATION -->
+    <header class="bg-cardbg border-b border-gray-800 sticky top-0 z-40 shadow-xl">
+        <div class="max-w-7xl mx-auto px-3 py-2 flex items-center justify-between">
+            <!-- Left: Sign Up Button -->
+            <div id="authNavLeft">
+                <button onclick="openModal('signupModal')" class="bg-gradient-to-r from-amber-500 to-yellow-600 hover:from-amber-600 hover:to-yellow-700 text-black font-bold text-xs sm:text-sm px-3 py-1.5 rounded-lg shadow flex items-center gap-1 transition">
+                    <i class="fa-solid fa-user-plus"></i> <span class="hidden sm:inline">প্লেয়ার</span> সাইন আপ
+                </button>
+            </div>
+
+            <!-- Center: Club Title -->
+            <div class="text-center px-1">
+                <h1 class="text-base sm:text-2xl font-black tracking-wider text-amber-400 uppercase glow-gold">
+                    <i class="fa-solid fa-futbol mr-1 text-amber-400"></i> ELITE PLAY-MAKERS FC
+                </h1>
+                <p class="text-[10px] sm:text-xs text-gray-400 font-semibold tracking-widest">eFootball Official League Portal</p>
+            </div>
+
+            <!-- Right: Login / User Status -->
+            <div id="authNavRight">
+                <button onclick="openModal('loginModal')" class="bg-blue-600 hover:bg-blue-700 text-white font-bold text-xs sm:text-sm px-3 py-1.5 rounded-lg shadow flex items-center gap-1 transition">
+                    <i class="fa-solid fa-right-to-bracket"></i> <span class="hidden sm:inline">প্লেয়ার</span> লগইন
+                </button>
+            </div>
+            
+            <div id="userInfoNav" class="hidden flex items-center gap-2">
+                <span id="navPlayerName" class="text-xs sm:text-sm font-bold text-amber-300"></span>
+                <button onclick="handleLogout()" class="bg-red-600 hover:bg-red-700 text-white text-xs px-2 py-1 rounded transition">
+                    <i class="fa-solid fa-power-off"></i>
+                </button>
+            </div>
         </div>
+
+        <!-- 5 MAIN NAVIGATION BUTTONS (Single Row Horizontal Scroll on Mobile) -->
+        <nav class="bg-gray-900 border-t border-gray-800 px-2 py-1.5">
+            <div class="max-w-7xl mx-auto flex items-center justify-between gap-1 overflow-x-auto scrollbar-hide text-xs sm:text-sm font-bold">
+                <button onclick="switchTab('profiles')" id="tabBtn-profiles" class="tab-btn active bg-amber-500/20 text-amber-400 border border-amber-500/40 px-2.5 py-1.5 rounded-lg whitespace-nowrap flex items-center gap-1 transition">
+                    <i class="fa-solid fa-users"></i> ক্লাব প্রোফাইল
+                </button>
+                <button onclick="switchTab('submitMatch')" id="tabBtn-submitMatch" class="tab-btn bg-gray-800 text-gray-300 hover:bg-gray-700 px-2.5 py-1.5 rounded-lg whitespace-nowrap flex items-center gap-1 transition">
+                    <i class="fa-solid fa-gamepad"></i> রেজাল্ট সাবমিট
+                </button>
+                <button onclick="switchTab('weeklyRank')" id="tabBtn-weeklyRank" class="tab-btn bg-gray-800 text-gray-300 hover:bg-gray-700 px-2.5 py-1.5 rounded-lg whitespace-nowrap flex items-center gap-1 transition">
+                    <i class="fa-solid fa-trophy"></i> উইকলি র‍্যাঙ্কিং
+                </button>
+                <button onclick="switchTab('rules')" id="tabBtn-rules" class="tab-btn bg-gray-800 text-gray-300 hover:bg-gray-700 px-2.5 py-1.5 rounded-lg whitespace-nowrap flex items-center gap-1 transition">
+                    <i class="fa-solid fa-scroll"></i> রুলস বোর্ড
+                </button>
+                <button onclick="switchTab('overallRank')" id="tabBtn-overallRank" class="tab-btn bg-gray-800 text-gray-300 hover:bg-gray-700 px-2.5 py-1.5 rounded-lg whitespace-nowrap flex items-center gap-1 transition">
+                    <i class="fa-solid fa-earth-americas"></i> ওভারঅল র‍্যাঙ্কিং
+                </button>
+            </div>
+        </nav>
     </header>
 
-    <!-- Main Container -->
-    <div class="main-wrapper">
+    <!-- MAIN CONTENT CONTAINER -->
+    <main class="max-w-7xl mx-auto px-3 py-4 flex-grow w-full space-y-4">
 
-        <!-- PAGE 0: HOME DASHBOARD -->
-        <div id="home-view" class="view-page active-view">
-            <div class="home-grid">
-                <div class="menu-card" onclick="navigateTo('profile-view')">
-                    <span class="menu-icon">👥</span>
-                    <div class="menu-title">Club Player Profile</div>
+        <!-- CURRENT PHASE & LIVE COUNTDOWN TIMER CARD -->
+        <section class="bg-gradient-to-r from-gray-900 via-cardbg to-gray-900 border border-amber-500/30 rounded-xl p-3 sm:p-4 shadow-lg text-center relative overflow-hidden">
+            <div class="absolute top-0 right-0 bg-amber-500 text-black text-[10px] font-black px-2 py-0.5 rounded-bl">LIVE PHASE</div>
+            
+            <div class="flex flex-col md:flex-row items-center justify-between gap-3">
+                <div class="text-left">
+                    <div class="text-xs text-amber-400 font-bold uppercase tracking-wider flex items-center gap-1">
+                        <i class="fa-solid fa-calendar-check"></i> কারেন্ট ফেইজ (৭ দিন)
+                    </div>
+                    <div id="phaseDateDisplay" class="text-xs sm:text-sm font-semibold text-gray-200 mt-0.5">
+                        15 Oct, 2026 8:00 AM — 22 Oct, 2026 8:00 AM
+                    </div>
                 </div>
-                <div class="menu-card" onclick="navigateTo('submit-view')">
-                    <span class="menu-icon">⚔️</span>
-                    <div class="menu-title">Match Result Submit</div>
+
+                <!-- COUNTDOWN TIMER DISPLAY -->
+                <div class="flex items-center gap-1.5 bg-black/50 px-3 py-1.5 rounded-lg border border-amber-500/20">
+                    <span class="text-xs text-gray-400 font-bold mr-1">টাইম বাকি:</span>
+                    <div class="text-center">
+                        <span id="timerDays" class="text-sm sm:text-base font-black text-amber-400">00</span>
+                        <span class="text-[9px] block text-gray-400">দিন</span>
+                    </div>
+                    <span class="text-amber-400 font-bold">:</span>
+                    <div class="text-center">
+                        <span id="timerHours" class="text-sm sm:text-base font-black text-amber-400">00</span>
+                        <span class="text-[9px] block text-gray-400">ঘণ্টা</span>
+                    </div>
+                    <span class="text-amber-400 font-bold">:</span>
+                    <div class="text-center">
+                        <span id="timerMins" class="text-sm sm:text-base font-black text-amber-400">00</span>
+                        <span class="text-[9px] block text-gray-400">মিঃ</span>
+                    </div>
+                    <span class="text-amber-400 font-bold">:</span>
+                    <div class="text-center">
+                        <span id="timerSecs" class="text-sm sm:text-base font-black text-amber-400">00</span>
+                        <span class="text-[9px] block text-gray-400">সেঃ</span>
+                    </div>
                 </div>
-                <div class="menu-card" onclick="navigateTo('weekly-view')">
-                    <span class="menu-icon">🏆</span>
-                    <div class="menu-title">Weekly Ranking Board</div>
-                </div>
-                <div class="menu-card" onclick="navigateTo('rules-view')">
-                    <span class="menu-icon">📜</span>
-                    <div class="menu-title">Rules Board</div>
-                </div>
-                <div class="menu-card" onclick="navigateTo('overall-view')">
-                    <span class="menu-icon">👑</span>
-                    <div class="menu-title">Overall Ranking Board</div>
+
+                <!-- LAST WEEK CHAMPION -->
+                <div class="text-right flex items-center gap-2 bg-amber-500/10 px-3 py-1.5 rounded-lg border border-amber-500/30">
+                    <i class="fa-solid fa-crown text-amber-400 text-xl"></i>
+                    <div class="text-left">
+                        <span class="text-[10px] text-gray-400 block font-bold">লাস্ট উইক চ্যাম্পিয়ন:</span>
+                        <span id="lastWeekChamp" class="text-xs sm:text-sm font-bold text-amber-300">নাইম আহমেদ</span>
+                    </div>
                 </div>
             </div>
+        </section>
 
-            <div class="phase-card">
-                <div class="phase-header">CURRENT PHASE</div>
-                <div class="phase-date" id="phaseDateRange">15 Oct, 2026; 8:00 AM — 22 Oct, 2026; 8:00 AM</div>
-                <div style="font-size:0.9rem; color:var(--text-secondary); margin-bottom:12px;">সময় বাকি আছে (Time Left):</div>
-                <div class="timer-grid">
-                    <div class="timer-box"><div class="timer-val" id="dNum">00</div><div class="timer-lbl">Days</div></div>
-                    <div class="timer-box"><div class="timer-val" id="hNum">00</div><div class="timer-lbl">Hours</div></div>
-                    <div class="timer-box"><div class="timer-val" id="mNum">00</div><div class="timer-lbl">Mins</div></div>
-                    <div class="timer-box"><div class="timer-val" id="sNum">00</div><div class="timer-lbl">Secs</div></div>
+        <!-- Dynamic Tab Views -->
+
+        <!-- TAB 1: CLUB PLAYER PROFILES -->
+        <section id="view-profiles" class="tab-view">
+            <div class="flex items-center justify-between mb-3">
+                <h2 class="text-base sm:text-lg font-bold text-amber-400 flex items-center gap-2">
+                    <i class="fa-solid fa-id-card"></i> ক্লাব প্লেয়ার প্রোফাইলস
+                </h2>
+                <span class="text-xs text-gray-400">মোট প্লেয়ার: <strong id="totalPlayersCount" class="text-amber-400">0</strong></span>
+            </div>
+            
+            <div id="playersGrid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
+                <!-- Dynamic Player Cards Loaded Here -->
+                <div class="col-span-full text-center py-8 text-gray-500">
+                    <i class="fa-solid fa-spinner fa-spin text-2xl text-amber-400 mb-2"></i>
+                    <p class="text-sm">প্লেয়ার প্রোফাইল লোড হচ্ছে...</p>
                 </div>
             </div>
+        </section>
 
-            <div class="champ-grid">
-                <div class="champ-card">
-                    <div class="champ-title">🎖️ Champion: Last Week</div>
-                    <div class="winner-banner" id="lastWeekWinnerBox">কোনো উইনার নেই এখনো</div>
-                    <div style="font-weight:700; color:var(--neon-green); margin-bottom:10px;">Weekly Champions History:</div>
-                    <ul class="history-list">
-                        <li class="history-item"><span>1st Week:</span><strong id="w1Name" style="color:var(--neon-gold);">--</strong></li>
-                        <li class="history-item"><span>2nd Week:</span><strong id="w2Name" style="color:var(--neon-gold);">--</strong></li>
-                        <li class="history-item"><span>3rd Week:</span><strong id="w3Name" style="color:var(--neon-gold);">--</strong></li>
-                        <li class="history-item"><span>4th Week:</span><strong id="w4Name" style="color:var(--neon-gold);">--</strong></li>
-                    </ul>
+        <!-- TAB 2: FRIENDLY CHALLENGE RESULT SUBMIT -->
+        <section id="view-submitMatch" class="tab-view hidden">
+            <div class="max-w-xl mx-auto bg-cardbg border border-gray-800 rounded-xl p-4 sm:p-6 shadow-2xl">
+                <h2 class="text-base sm:text-xl font-bold text-amber-400 mb-4 text-center flex items-center justify-center gap-2">
+                    <i class="fa-solid fa-trophy"></i> ফ্রেন্ডলি ম্যাচ রেজাল্ট সাবমিট
+                </h2>
+
+                <div id="submitMatchAuthCheck" class="hidden text-center py-6">
+                    <p class="text-red-400 font-semibold text-sm mb-3">রেজাল্ট সাবমিট করতে প্রথমে প্লেয়ার লগইন করুন!</p>
+                    <button onclick="openModal('loginModal')" class="bg-blue-600 hover:bg-blue-700 text-white font-bold text-xs px-4 py-2 rounded-lg">
+                        লগইন করুন
+                    </button>
                 </div>
 
-                <div class="champ-card">
-                    <div class="champ-title">🌟 Monthly Best Player</div>
-                    <ul class="history-list" style="margin-top:10px;">
-                        <li class="history-item"><span>October:</span><strong id="mOct" style="color:var(--neon-green);">--</strong></li>
-                        <li class="history-item"><span>November:</span><strong id="mNov" style="color:var(--neon-green);">--</strong></li>
-                        <li class="history-item"><span>December:</span><strong id="mDec" style="color:var(--neon-green);">--</strong></li>
-                    </ul>
-                </div>
-            </div>
-        </div>
-
-        <!-- PAGE 1: CLUB PLAYER PROFILE -->
-        <div id="profile-view" class="view-page">
-            <button class="btn btn-back" onclick="navigateTo('home-view')">⬅️ ব্যাক টু হোম (Back to Home)</button>
-            <div class="page-header-box">
-                <div class="page-header-title">👥 নিবন্ধিত ক্লাব প্লেয়ার প্রোফাইল</div>
-                <div style="color:var(--text-secondary); margin-top:5px;">প্লেয়ারের নামের ওপর ক্লিক করে তার বিস্তারিত রেকর্ড ও ম্যাচ হিস্ট্রি দেখুন।</div>
-            </div>
-            <div class="table-responsive">
-                <table>
-                    <thead>
-                        <tr>
-                            <th>#</th>
-                            <th>Player Name</th>
-                            <th>Game UID</th>
-                            <th>Device Name</th>
-                            <th>Action</th>
-                        </tr>
-                    </thead>
-                    <tbody id="playerTableBody"></tbody>
-                </table>
-            </div>
-        </div>
-
-        <!-- PAGE 2: MATCH RESULT SUBMIT -->
-        <div id="submit-view" class="view-page">
-            <button class="btn btn-back" onclick="navigateTo('home-view')">⬅️ ব্যাক টু হোম (Back to Home)</button>
-            <div class="form-card">
-                <div class="page-header-title" style="margin-bottom:15px; color:var(--neon-green);">⚔️ ফ্রেন্ডলি ম্যাচ রেজাল্ট সাবমিট</div>
-                <div id="submitLoginAlert" style="display:none; background:rgba(255,0,85,0.15); color:var(--neon-red); padding:12px; border-radius:8px; font-weight:700; margin-bottom:15px;">
-                    ⚠️ রেজাল্ট সাবমিট করতে প্রথমে প্লেয়ার অ্যাকাউন্ট লগইন করুন!
-                </div>
-                <form onsubmit="handleMatchSubmit(event)">
-                    <div class="form-group">
-                        <label>Choose Opponent (অপোনেন্ট সিলেক্ট করুন):</label>
-                        <select id="oppSelect" class="form-control" required>
-                            <option value="">-- প্লেয়ার চুজ করুন --</option>
+                <form id="matchSubmitForm" onsubmit="handleMatchSubmit(event)" class="space-y-4">
+                    <!-- Opponent Selector -->
+                    <div>
+                        <label class="block text-xs font-bold text-gray-300 mb-1">অপোনেন্ট সিলেক্ট করুন (Choose Opponent):</label>
+                        <select id="opponentSelect" required class="w-full bg-gray-900 border border-gray-700 rounded-lg p-2.5 text-xs sm:text-sm text-gray-100 focus:border-amber-400 outline-none">
+                            <option value="">-- প্লেয়ার লিস্ট থেকে সিলেক্ট করুন --</option>
                         </select>
                     </div>
 
-                    <div class="vs-box">
-                        <div style="flex:1; text-align:center;">
-                            <label id="myLabel" style="color:var(--neon-green); font-weight:700; display:block; margin-bottom:5px;">Your Score</label>
-                            <input type="number" id="myScore" class="form-control" min="0" value="0" required style="text-align:center; font-size:1.2rem;">
-                        </div>
-                        <div class="vs-badge">VS</div>
-                        <div style="flex:1; text-align:center;">
-                            <label id="oppLabel" style="color:var(--neon-blue); font-weight:700; display:block; margin-bottom:5px;">Opponent Score</label>
-                            <input type="number" id="oppScore" class="form-control" min="0" value="0" required style="text-align:center; font-size:1.2rem;">
+                    <!-- Score Input Box -->
+                    <div class="bg-gray-900 p-3 rounded-lg border border-gray-800">
+                        <label class="block text-xs font-bold text-amber-400 mb-2 text-center">ম্যাচ স্কোর (Score):</label>
+                        <div class="flex items-center justify-center gap-2 sm:gap-4">
+                            <div class="text-center flex-1">
+                                <span id="submitterPlayerName" class="text-xs font-bold text-gray-300 block truncate">আপনি</span>
+                                <input type="number" id="myScore" min="0" value="0" required class="w-full mt-1 bg-black text-center text-lg font-bold text-amber-400 border border-amber-500/40 rounded-lg py-2">
+                            </div>
+                            <span class="text-lg font-black text-gray-500">VS</span>
+                            <div class="text-center flex-1">
+                                <span id="opponentPlayerName" class="text-xs font-bold text-gray-300 block truncate">অপোনেন্ট</span>
+                                <input type="number" id="oppScore" min="0" value="0" required class="w-full mt-1 bg-black text-center text-lg font-bold text-blue-400 border border-blue-500/40 rounded-lg py-2">
+                            </div>
                         </div>
                     </div>
 
-                    <div class="form-group">
-                        <label>Upload Screenshot (গ্যালারি থেকে স্ক্রিনশট আপলোড করুন):</label>
-                        <input type="file" id="ssFile" class="form-control" accept="image/*" required onchange="previewScreenshot(event)">
-                        <img id="ssPreview" style="display:none; width:100%; border-radius:10px; margin-top:10px; border:1px solid var(--border-glow);">
+                    <!-- Screenshot Upload -->
+                    <div>
+                        <label class="block text-xs font-bold text-gray-300 mb-1">ম্যাচ রেজাল্ট স্ক্রিনশট (Gallery Screenshot):</label>
+                        <input type="file" id="screenshotFile" accept="image/*" required class="w-full bg-gray-900 border border-gray-700 text-xs text-gray-300 rounded-lg p-2 file:mr-3 file:py-1 file:px-3 file:rounded-md file:border-0 file:text-xs file:font-semibold file:bg-amber-500 file:text-black">
                     </div>
 
-                    <button type="submit" class="btn btn-green" style="width:100%; padding:14px; font-size:1.05rem;">Submit Result</button>
+                    <button type="submit" id="submitMatchBtn" class="w-full bg-gradient-to-r from-amber-500 to-yellow-600 hover:from-amber-600 hover:to-yellow-700 text-black font-bold text-sm py-2.5 rounded-lg shadow-lg transition">
+                        <i class="fa-solid fa-paper-plane mr-1"></i> রেজাল্ট সাবমিট করুন
+                    </button>
                 </form>
             </div>
-        </div>
+        </section>
 
-        <!-- PAGE 3: WEEKLY RANKING BOARD -->
-        <div id="weekly-view" class="view-page">
-            <button class="btn btn-back" onclick="navigateTo('home-view')">⬅️ ব্যাক টু হোম (Back to Home)</button>
-            <div class="page-header-box" style="border-color:var(--neon-gold);">
-                <div class="page-header-title">🏆 উইকলি র‍্যাঙ্কিং বোর্ড (Weekly Standings)</div>
-            </div>
-            <div class="table-responsive">
-                <table>
-                    <thead>
-                        <tr>
-                            <th>Rank</th>
-                            <th>Player</th>
-                            <th>Played</th>
-                            <th>Win</th>
-                            <th>Draw</th>
-                            <th>Loss</th>
-                            <th>Points</th>
-                        </tr>
-                    </thead>
-                    <tbody id="weeklyTableBody"></tbody>
-                </table>
-            </div>
-        </div>
-
-        <!-- PAGE 4: RULES BOARD -->
-        <div id="rules-view" class="view-page">
-            <button class="btn btn-back" onclick="navigateTo('home-view')">⬅️ ব্যাক টু হোম (Back to Home)</button>
-            <div class="page-header-box">
-                <div class="page-header-title">📜 পয়েন্ট সিস্টেম ও ক্লাবের নিয়মাবলী</div>
-            </div>
-            <ul class="rules-ul">
-                <li><strong>Win (জয়):</strong> ৩ পয়েন্ট (জয়) + ১ পয়েন্ট (পার্টিসিপেশন) = <strong>মোট ৪ পয়েন্ট</strong></li>
-                <li><strong>Draw (ড্র):</strong> ১ পয়েন্ট (ড্র) + ১ পয়েন্ট (পার্টিসিপেশন) = <strong>মোট ২ পয়েন্ট</strong></li>
-                <li><strong>Loss (হার):</strong> ০ পয়েন্ট (হার) + ১ পয়েন্ট (পার্টিসিপেশন) = <strong>মোট ১ পয়েন্ট</strong></li>
-                <li>প্রতিটি ফ্রেন্ডলি ম্যাচের পর গ্যালারি থেকে অরিজিনাল স্ক্রিনশট সিলেক্ট করে সাবমিট করতে হবে।</li>
-                <li>এডমিন প্যানেল থেকে স্ক্রিনশট যাচাই-বাছাই করার পর র‍্যাঙ্কিং বোর্ডে পয়েন্ট অটোমেটিক যুক্ত হবে।</li>
-                <li>প্রতি বৃহস্পতিবার সকাল ৮:০০ টায় উইকলি সাইকেল রিনিউ হবে এবং বিজয়ী চ্যাম্পিয়ন হিসেবে নির্বাচিত হবে।</li>
-            </ul>
-        </div>
-
-        <!-- PAGE 5: OVERALL RANKING BOARD -->
-        <div id="overall-view" class="view-page">
-            <button class="btn btn-back" onclick="navigateTo('home-view')">⬅️ ব্যাক টু হোম (Back to Home)</button>
-            <div class="page-header-box" style="border-color:var(--neon-purple);">
-                <div class="page-header-title">👑 অলটাইম ওভারঅল র‍্যাঙ্কিং (Lifetime Standings)</div>
-            </div>
-            <div class="table-responsive">
-                <table>
-                    <thead>
-                        <tr>
-                            <th>Rank</th>
-                            <th>Player</th>
-                            <th>Total Matches</th>
-                            <th>Total Wins</th>
-                            <th>Total Points</th>
-                        </tr>
-                    </thead>
-                    <tbody id="overallTableBody"></tbody>
-                </table>
-            </div>
-        </div>
-
-        <!-- PAGE 6: SECRET ADMIN PANEL -->
-        <div id="admin-view" class="view-page">
-            <button class="btn btn-back" onclick="navigateTo('home-view')">⬅️ ব্যাক টু হোম (Back to Home)</button>
-            <div class="form-card" style="max-width:800px;">
-                <div class="page-header-title" style="color:var(--neon-gold); margin-bottom:15px;">🔐 Secret Club Admin Panel</div>
-                <div id="adminPassForm">
-                    <div class="form-group">
-                        <label>Enter Admin Password:</label>
-                        <input type="password" id="adminKey" class="form-control" placeholder="Default: admin123">
+        <!-- TAB 3: WEEKLY RANKING BOARD -->
+        <section id="view-weeklyRank" class="tab-view hidden space-y-4">
+            <div class="bg-cardbg border border-gray-800 rounded-xl p-3 sm:p-4 shadow-xl">
+                <div class="flex flex-col sm:flex-row items-center justify-between gap-2 mb-3">
+                    <h2 class="text-base sm:text-lg font-bold text-amber-400 flex items-center gap-2">
+                        <i class="fa-solid fa-ranking-star"></i> উইকলি পয়েন্ট টেবিল & র‍্যাঙ্কিং
+                    </h2>
+                    <div class="flex items-center gap-2">
+                        <label class="text-xs text-gray-400 font-semibold">উইক ফিল্টার:</label>
+                        <select id="weeklyFilterSelect" onchange="loadWeeklyRankings()" class="bg-gray-900 text-xs border border-gray-700 text-amber-300 rounded px-2 py-1 outline-none">
+                            <option value="current">কারেন্ট উইক (Current Week)</option>
+                        </select>
                     </div>
-                    <button class="btn btn-green" onclick="verifyAdminKey()">Access Admin</button>
                 </div>
 
-                <div id="adminPanelContent" style="display:none;">
-                    <h3 style="color:var(--neon-green); margin-bottom:12px;">Pending Match Approvals</h3>
-                    <div id="pendingMatchesBox"></div>
-
-                    <h3 style="color:var(--neon-blue); margin:25px 0 12px;">Registered Players (With WhatsApp Number)</h3>
-                    <div id="adminPlayersBox"></div>
+                <div class="overflow-x-auto">
+                    <table class="w-full text-left text-xs sm:text-sm">
+                        <thead class="bg-gray-900 text-amber-400 border-b border-gray-800">
+                            <tr>
+                                <th class="p-2 text-center">#</th>
+                                <th class="p-2">প্লেয়ার নাম</th>
+                                <th class="p-2 text-center">ম্যাচ</th>
+                                <th class="p-2 text-center">জয় (W)</th>
+                                <th class="p-2 text-center">ড্র (D)</th>
+                                <th class="p-2 text-center">হার (L)</th>
+                                <th class="p-2 text-center text-amber-400 font-bold">পয়েন্ট</th>
+                            </tr>
+                        </thead>
+                        <tbody id="weeklyLeaderboardBody" class="divide-y divide-gray-800">
+                            <!-- Dynamic Leaderboard Data -->
+                        </tbody>
+                    </table>
                 </div>
             </div>
-        </div>
 
-    </div>
+            <!-- WEEKLY HISTORY & MONTHLY BEST PLAYER SECTION (As sketched in image) -->
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <!-- Weekly History -->
+                <div class="bg-cardbg border border-gray-800 rounded-xl p-3 sm:p-4">
+                    <h3 class="text-sm font-bold text-amber-400 mb-2 border-b border-gray-800 pb-1 flex items-center gap-2">
+                        <i class="fa-solid fa-history"></i> উইকলি চ্যাম্পিয়ন্স হিস্ট্রি
+                    </h3>
+                    <div id="weeklyHistoryList" class="space-y-2 text-xs">
+                        <!-- Loaded dynamically -->
+                        <div class="flex justify-between items-center bg-gray-900 p-2 rounded">
+                            <span class="text-gray-300 font-bold">1st Week:</span>
+                            <span class="text-amber-300 font-semibold">নাইম আহমেদ (১৬ পয়েন্ট)</span>
+                        </div>
+                    </div>
+                </div>
 
-    <!-- MODALS -->
-    <div id="signupModal" class="modal">
-        <div class="modal-content">
-            <span class="close-modal" onclick="closeModal('signupModal')">&times;</span>
-            <h2 style="color:var(--neon-green); margin-bottom:15px;">Player Registration</h2>
-            <form onsubmit="handleSignup(event)">
-                <div class="form-group"><label>Player Name:</label><input type="text" id="regName" class="form-control" required placeholder="আপনার নাম"></div>
-                <div class="form-group"><label>eFootball Game UID:</label><input type="text" id="regUid" class="form-control" required placeholder="UID নাম্বার"></div>
-                <div class="form-group"><label>Device Name (Full variant):</label><input type="text" id="regDevice" class="form-control" required placeholder="Redmi Note 11 (6/128)"></div>
-                <div class="form-group"><label>Email Address:</label><input type="email" id="regEmail" class="form-control" required placeholder="email@domain.com"></div>
-                <div class="form-group"><label>Password:</label><input type="password" id="regPass" class="form-control" required placeholder="পাসওয়ার্ড"></div>
-                <div class="form-group"><label>WhatsApp Number:</label><input type="tel" id="regWa" class="form-control" required placeholder="017XXXXXXXX"></div>
-                <button type="submit" class="btn btn-green" style="width:100%;">Submit Registration</button>
-            </form>
-        </div>
-    </div>
+                <!-- Monthly Best Player -->
+                <div class="bg-cardbg border border-gray-800 rounded-xl p-3 sm:p-4">
+                    <h3 class="text-sm font-bold text-amber-400 mb-2 border-b border-gray-800 pb-1 flex items-center gap-2">
+                        <i class="fa-solid fa-star"></i> মান্থলি বেস্ট প্লেয়ার (Monthly Best)
+                    </h3>
+                    <div id="monthlyHistoryList" class="space-y-2 text-xs">
+                        <div class="flex justify-between items-center bg-gray-900 p-2 rounded">
+                            <span class="text-gray-300 font-bold">October 2026:</span>
+                            <span class="text-amber-300 font-semibold">সাব্বির হোসেন</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
 
-    <div id="loginModal" class="modal">
-        <div class="modal-content">
-            <span class="close-modal" onclick="closeModal('loginModal')">&times;</span>
-            <h2 style="color:var(--neon-blue); margin-bottom:15px;">Player Login</h2>
-            <form onsubmit="handleLogin(event)">
-                <div class="form-group"><label>Email Address:</label><input type="email" id="loginEmail" class="form-control" required></div>
-                <div class="form-group"><label>Password:</label><input type="password" id="loginPass" class="form-control" required></div>
-                <button type="submit" class="btn btn-blue" style="width:100%;">Login</button>
-            </form>
-        </div>
-    </div>
+        <!-- TAB 4: RULES BOARD -->
+        <section id="view-rules" class="tab-view hidden">
+            <div class="bg-cardbg border border-gray-800 rounded-xl p-4 sm:p-6 shadow-xl space-y-4">
+                <h2 class="text-base sm:text-xl font-bold text-amber-400 border-b border-gray-800 pb-2 flex items-center gap-2">
+                    <i class="fa-solid fa-book-open"></i> টুর্নামেন্ট ও পয়েন্ট সিস্টেম রুলস
+                </h2>
 
-    <div id="statsModal" class="modal">
-        <div class="modal-content">
-            <span class="close-modal" onclick="closeModal('statsModal')">&times;</span>
-            <h2 id="modalPlayerTitle" style="color:var(--neon-green); margin-bottom:10px;">Player Stats</h2>
-            <div id="modalPlayerMeta" style="color:var(--text-secondary); margin-bottom:15px; line-height:1.6;"></div>
-            <h3 style="color:#fff; font-size:1.1rem; border-bottom:1px solid var(--border-glow); padding-bottom:6px; margin-bottom:10px;">Match History</h3>
-            <div id="modalPlayerHistory"></div>
-        </div>
-    </div>
+                <!-- Point Distribution System (Exact matching image 2) -->
+                <div class="bg-gray-900 p-4 rounded-xl border border-amber-500/30">
+                    <h3 class="text-sm font-bold text-amber-300 mb-2">⭐ পয়েন্ট গণনার নিয়ম (Point Rules):</h3>
+                    <ul class="text-xs sm:text-sm space-y-1 text-gray-300">
+                        <li>• <strong class="text-green-400">Win (জয়):</strong> ৩ পয়েন্ট + ১ পার্টিসিপেশন পয়েন্ট = <strong class="text-amber-400">৪ পয়েন্ট</strong></li>
+                        <li>• <strong class="text-yellow-400">Draw (ড্র):</strong> ১ পয়েন্ট + ১ পার্টিসিপেশন পয়েন্ট = <strong class="text-amber-400">২ পয়েন্ট</strong></li>
+                        <li>• <strong class="text-red-400">Loss (হার):</strong> ০ পয়েন্ট + ১ পার্টিসিপেশন পয়েন্ট = <strong class="text-amber-400">১ পয়েন্ট</strong></li>
+                    </ul>
+                    <p class="text-[11px] text-gray-400 mt-2 italic">* প্রতি ম্যাচে অংশগ্রহণের জন্য ১ বোনাস পয়েন্ট দেওয়া হবে। তাই বেশি ম্যাচ খেললে পয়েন্ট বৃদ্ধির সুযোগ থাকবে!</p>
+                </div>
 
-    <footer>
-        © ELITE PLAYMAKERS FC — Professional e-Football Gaming Club
-        <span class="secret-icon" ondblclick="navigateTo('admin-view')" title="Admin Double Tap">⚙️</span>
+                <div class="space-y-2 text-xs sm:text-sm text-gray-300">
+                    <h3 class="text-sm font-bold text-amber-300">📌 সাবমিশন রুলস:</h3>
+                    <ol class="list-decimal list-inside space-y-1 text-gray-400">
+                        <li>ম্যাচ শেষে অবশ্যই পরিষ্কার স্কোরবোর্ড স্ক্রিনশট আপলোড করতে হবে।</li>
+                        <li>ফেক বা ভুয়া রেজাল্ট সাবমিট করলে টুর্নামেন্ট থেকে স্থায়ী ব্যান করা হবে।</li>
+                        <li>প্রতি বৃহস্পতিবার সকাল ৮:০০ টা থেকে নতুন ফেইজ ও উইক শুরু হবে।</li>
+                    </ol>
+                </div>
+            </div>
+        </section>
+
+        <!-- TAB 5: OVERALL RANKING BOARD -->
+        <section id="view-overallRank" class="tab-view hidden">
+            <div class="bg-cardbg border border-gray-800 rounded-xl p-3 sm:p-4 shadow-xl">
+                <h2 class="text-base sm:text-lg font-bold text-amber-400 mb-3 flex items-center gap-2">
+                    <i class="fa-solid fa-crown text-amber-400"></i> অল-টাইম ওভারঅল র‍্যাঙ্কিং (Lifetime Standings)
+                </h2>
+
+                <div class="overflow-x-auto">
+                    <table class="w-full text-left text-xs sm:text-sm">
+                        <thead class="bg-gray-900 text-amber-400 border-b border-gray-800">
+                            <tr>
+                                <th class="p-2 text-center">#</th>
+                                <th class="p-2">প্লেয়ার নাম</th>
+                                <th class="p-2 text-center">মোট ম্যাচ</th>
+                                <th class="p-2 text-center">জয় (W)</th>
+                                <th class="p-2 text-center">ড্র (D)</th>
+                                <th class="p-2 text-center">হার (L)</th>
+                                <th class="p-2 text-center text-amber-400 font-bold">মোট পয়েন্ট</th>
+                            </tr>
+                        </thead>
+                        <tbody id="overallLeaderboardBody" class="divide-y divide-gray-800">
+                            <!-- Dynamic Overall Data -->
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </section>
+
+    </main>
+
+    <!-- FOOTER WITH SECRET DOUBLE TAP ADMIN LOGIN -->
+    <footer class="bg-cardbg border-t border-gray-800 py-3 text-center text-xs text-gray-500 relative select-none">
+        <p>© 2026 ELITE PLAY-MAKERS FC. All Rights Reserved.</p>
+        <!-- Secret Double-Tap Target -->
+        <span id="secretAdminSpot" onclick="handleSecretTap()" class="inline-block cursor-pointer px-2 py-1 text-gray-600 hover:text-amber-500 transition">
+            <i class="fa-solid fa-shield-halved"></i>
+        </span>
     </footer>
 
+    <!-- MODALS -->
+
+    <!-- SIGNUP MODAL -->
+    <div id="signupModal" class="fixed inset-0 bg-black/80 backdrop-blur-sm z-50 hidden flex items-center justify-center p-3">
+        <div class="bg-cardbg border border-gray-800 rounded-xl max-w-md w-full p-5 shadow-2xl relative">
+            <button onclick="closeModal('signupModal')" class="absolute top-3 right-3 text-gray-400 hover:text-white"><i class="fa-solid fa-xmark text-lg"></i></button>
+            <h3 class="text-base font-bold text-amber-400 mb-3 text-center"><i class="fa-solid fa-user-plus mr-1"></i> প্লেয়ার রেজিস্ট্রেশন</h3>
+            
+            <form onsubmit="handleSignup(event)" class="space-y-3 text-xs">
+                <div>
+                    <label class="block text-gray-300 font-semibold mb-1">প্লেয়ার নেম (Player Name):</label>
+                    <input type="text" id="regName" required class="w-full bg-gray-900 border border-gray-700 rounded p-2 text-white outline-none focus:border-amber-400">
+                </div>
+                <div>
+                    <label class="block text-gray-300 font-semibold mb-1">গেম UID (eFootball Game UID):</label>
+                    <input type="text" id="regUid" required class="w-full bg-gray-900 border border-gray-700 rounded p-2 text-white outline-none focus:border-amber-400">
+                </div>
+                <div>
+                    <label class="block text-gray-300 font-semibold mb-1">ডিভাইস নেম (Device Name & Variant):</label>
+                    <input type="text" id="regDevice" placeholder="e.g. Redmi Note 12 Pro (8/128)" required class="w-full bg-gray-900 border border-gray-700 rounded p-2 text-white outline-none focus:border-amber-400">
+                </div>
+                <div>
+                    <label class="block text-gray-300 font-semibold mb-1">ইমেইল (Email):</label>
+                    <input type="email" id="regEmail" required class="w-full bg-gray-900 border border-gray-700 rounded p-2 text-white outline-none focus:border-amber-400">
+                </div>
+                <div>
+                    <label class="block text-gray-300 font-semibold mb-1">পাসওয়ার্ড (Password):</label>
+                    <input type="password" id="regPassword" required minlength="6" class="w-full bg-gray-900 border border-gray-700 rounded p-2 text-white outline-none focus:border-amber-400">
+                </div>
+                <div>
+                    <label class="block text-gray-300 font-semibold mb-1">হোয়াটসঅ্যাপ নম্বর (WhatsApp Number - Hidden):</label>
+                    <input type="tel" id="regWhatsapp" placeholder="017xxxxxxxx" required class="w-full bg-gray-900 border border-gray-700 rounded p-2 text-white outline-none focus:border-amber-400">
+                </div>
+
+                <button type="submit" class="w-full bg-amber-500 hover:bg-amber-600 text-black font-bold py-2 rounded-lg transition mt-2">
+                    সাইন আপ সম্পন্ন করুন
+                </button>
+            </form>
+        </div>
+    </div>
+
+    <!-- LOGIN MODAL -->
+    <div id="loginModal" class="fixed inset-0 bg-black/80 backdrop-blur-sm z-50 hidden flex items-center justify-center p-3">
+        <div class="bg-cardbg border border-gray-800 rounded-xl max-w-sm w-full p-5 shadow-2xl relative">
+            <button onclick="closeModal('loginModal')" class="absolute top-3 right-3 text-gray-400 hover:text-white"><i class="fa-solid fa-xmark text-lg"></i></button>
+            <h3 class="text-base font-bold text-blue-400 mb-3 text-center"><i class="fa-solid fa-right-to-bracket mr-1"></i> প্লেয়ার লগইন</h3>
+            
+            <form onsubmit="handleLogin(event)" class="space-y-3 text-xs">
+                <div>
+                    <label class="block text-gray-300 font-semibold mb-1">ইমেইল (Email):</label>
+                    <input type="email" id="loginEmail" required class="w-full bg-gray-900 border border-gray-700 rounded p-2 text-white outline-none focus:border-blue-400">
+                </div>
+                <div>
+                    <label class="block text-gray-300 font-semibold mb-1">পাসওয়ার্ড (Password):</label>
+                    <input type="password" id="loginPassword" required class="w-full bg-gray-900 border border-gray-700 rounded p-2 text-white outline-none focus:border-blue-400">
+                </div>
+
+                <button type="submit" class="w-full bg-blue-600 hover:bg-blue-700 text-white font-bold py-2 rounded-lg transition mt-2">
+                    লগইন করুন
+                </button>
+            </form>
+        </div>
+    </div>
+
+    <!-- PLAYER PROFILE DETAILS MODAL -->
+    <div id="profileDetailModal" class="fixed inset-0 bg-black/80 backdrop-blur-sm z-50 hidden flex items-center justify-center p-3">
+        <div class="bg-cardbg border border-amber-500/40 rounded-xl max-w-md w-full p-5 shadow-2xl relative">
+            <button onclick="closeModal('profileDetailModal')" class="absolute top-3 right-3 text-gray-400 hover:text-white"><i class="fa-solid fa-xmark text-lg"></i></button>
+            
+            <div class="text-center border-b border-gray-800 pb-3 mb-3">
+                <i class="fa-solid fa-circle-user text-4xl text-amber-400 mb-1"></i>
+                <h3 id="modalPlayerName" class="text-lg font-bold text-amber-300">--</h3>
+                <p class="text-xs text-gray-400">Game UID: <span id="modalGameUid" class="text-gray-200 font-mono">--</span></p>
+                <p class="text-xs text-gray-400">Device: <span id="modalDevice" class="text-gray-200">--</span></p>
+            </div>
+
+            <!-- Stats Box -->
+            <div class="grid grid-cols-4 gap-2 text-center text-xs mb-3">
+                <div class="bg-gray-900 p-2 rounded">
+                    <span class="block text-gray-400 text-[10px]">মোট ম্যাচ</span>
+                    <strong id="modalStatPlayed" class="text-amber-400">0</strong>
+                </div>
+                <div class="bg-gray-900 p-2 rounded">
+                    <span class="block text-gray-400 text-[10px]">জয়</span>
+                    <strong id="modalStatWin" class="text-green-400">0</strong>
+                </div>
+                <div class="bg-gray-900 p-2 rounded">
+                    <span class="block text-gray-400 text-[10px]">ড্র</span>
+                    <strong id="modalStatDraw" class="text-yellow-400">0</strong>
+                </div>
+                <div class="bg-gray-900 p-2 rounded">
+                    <span class="block text-gray-400 text-[10px]">হার</span>
+                    <strong id="modalStatLoss" class="text-red-400">0</strong>
+                </div>
+            </div>
+
+            <h4 class="text-xs font-bold text-amber-400 mb-2"><i class="fa-solid fa-history mr-1"></i> সাম্প্রতিক ফ্রেন্ডলি ম্যাচ হিস্ট্রি:</h4>
+            <div id="modalMatchHistory" class="space-y-1.5 max-h-40 overflow-y-auto pr-1 text-xs">
+                <!-- Loaded Dynamically -->
+            </div>
+        </div>
+    </div>
+
+    <!-- SECRET ADMIN LOGIN MODAL -->
+    <div id="adminModal" class="fixed inset-0 bg-black/90 backdrop-blur-md z-50 hidden flex items-center justify-center p-3">
+        <div class="bg-cardbg border border-red-600 rounded-xl max-w-sm w-full p-5 shadow-2xl relative">
+            <button onclick="closeModal('adminModal')" class="absolute top-3 right-3 text-gray-400 hover:text-white"><i class="fa-solid fa-xmark text-lg"></i></button>
+            <h3 class="text-base font-bold text-red-500 mb-3 text-center"><i class="fa-solid fa-user-shield mr-1"></i> সিক্রেট এডমিন এক্সেস</h3>
+            
+            <form onsubmit="handleAdminLogin(event)" class="space-y-3 text-xs">
+                <div>
+                    <label class="block text-gray-300 font-semibold mb-1">এডমিন ইমেইল:</label>
+                    <input type="email" id="adminEmail" required class="w-full bg-gray-900 border border-gray-700 rounded p-2 text-white outline-none focus:border-red-500">
+                </div>
+                <div>
+                    <label class="block text-gray-300 font-semibold mb-1">সিক্রেট পাসওয়ার্ড:</label>
+                    <input type="password" id="adminPassword" required class="w-full bg-gray-900 border border-gray-700 rounded p-2 text-white outline-none focus:border-red-500">
+                </div>
+                <button type="submit" class="w-full bg-red-600 hover:bg-red-700 text-white font-bold py-2 rounded-lg transition">
+                    এডমিন ড্যাশবোর্ড অপেন করুন
+                </button>
+            </form>
+        </div>
+    </div>
+
+    <!-- JAVASCRIPT APP LOGIC & SUPABASE INTEGRATION -->
     <script>
-        // =========================================================================
-        // 🔑 SUPABASE CONFIGURATION (আপনার Supabase Credentials এখানে বসাবেন)
-        // =========================================================================
-        const SUPABASE_URL = "YOUR_SUPABASE_PROJECT_URL";
-        const SUPABASE_ANON_KEY = "YOUR_SUPABASE_ANON_KEY";
+        // SUPABASE CONFIGURATION
+        const SUPABASE_URL = "YOUR_SUPABASE_URL_HERE";
+        const SUPABASE_KEY = "YOUR_SUPABASE_ANON_KEY_HERE";
+        const supabase = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
 
-        // Supabase Client Initialization
-        const _supabase = (typeof supabase !== 'undefined' && SUPABASE_URL !== "YOUR_SUPABASE_PROJECT_URL")
-            ? supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY)
-            : null;
+        let currentUser = null;
+        let userProfile = null;
+        let allProfiles = [];
+        let lastTapTime = 0;
 
-        // Local Storage Fallback State
-        let localState = {
-            players: JSON.parse(localStorage.getItem('ep_players')) || [],
-            matches: JSON.parse(localStorage.getItem('ep_matches')) || []
-        };
+        // Initialize App
+        document.addEventListener('DOMContentLoaded', async () => {
+            initPhaseTimer();
+            await checkAuthStatus();
+            await loadProfiles();
+            await loadWeeklyRankings();
+            await loadOverallRankings();
+        });
 
-        let currentUser = JSON.parse(localStorage.getItem('ep_current_user')) || null;
-        let previewBase64 = "";
+        // Tab Switching
+        function switchTab(tabName) {
+            document.querySelectorAll('.tab-view').forEach(el => el.classList.add('hidden'));
+            document.querySelectorAll('.tab-btn').forEach(el => {
+                el.classList.remove('active', 'bg-amber-500/20', 'text-amber-400', 'border-amber-500/40');
+                el.classList.add('bg-gray-800', 'text-gray-300');
+            });
 
-        // Application State Caches
-        let playersCache = [];
-        let matchesCache = [];
+            document.getElementById(`view-${tabName}`).classList.remove('hidden');
+            const activeBtn = document.getElementById(`tabBtn-${tabName}`);
+            activeBtn.classList.remove('bg-gray-800', 'text-gray-300');
+            activeBtn.classList.add('active', 'bg-amber-500/20', 'text-amber-400', 'border-amber-500/40');
+        }
 
-        window.onload = async function() {
-            initTimer();
-            updateAuthUI();
-            await refreshData();
-        };
+        // Modal Controls
+        function openModal(id) { document.getElementById(id).classList.remove('hidden'); }
+        function closeModal(id) { document.getElementById(id).classList.add('hidden'); }
 
-        async function refreshData() {
-            if (_supabase) {
-                // Fetch directly from Supabase DB
-                const { data: pData } = await _supabase.from('players').select('*');
-                const { data: mData } = await _supabase.from('matches').select('*');
+        // Secret Admin Double Tap
+        function handleSecretTap() {
+            const currentTime = new Date().getTime();
+            const tapLength = currentTime - lastTapTime;
+            if (tapLength < 400 && tapLength > 0) {
+                openModal('adminModal');
+            }
+            lastTapTime = currentTime;
+        }
 
-                if (pData) playersCache = pData.map(p => ({
-                    id: p.id,
-                    name: p.name,
-                    uid: p.game_uid,
-                    device: p.device_name,
-                    email: p.email,
-                    pass: p.password,
-                    wa: p.whatsapp
-                }));
+        // Phase Calculation (Thursday 8:00 AM BD Time Cycle)
+        function initPhaseTimer() {
+            function updateTimer() {
+                const now = new Date();
+                // Find next Thursday 8:00 AM
+                let nextThursday = new Date();
+                nextThursday.setHours(8, 0, 0, 0);
+                let dayOffset = (4 - now.getDay() + 7) % 7;
+                if (dayOffset === 0 && now.getHours() >= 8) dayOffset = 7;
+                nextThursday.setDate(now.getDate() + dayOffset);
 
-                if (mData) matchesCache = mData.map(m => ({
-                    id: m.id,
-                    p1Id: m.p1_id,
-                    p1Name: m.p1_name || getPlayerName(m.p1_id),
-                    p2Id: m.p2_id,
-                    p2Name: m.p2_name || getPlayerName(m.p2_id),
-                    s1: m.s1,
-                    s2: m.s2,
-                    img: m.screenshot_data,
-                    status: m.status
-                }));
+                let prevThursday = new Date(nextThursday);
+                prevThursday.setDate(nextThursday.getDate() - 7);
+
+                const diff = nextThursday - now;
+                const days = Math.floor(diff / (1000 * 60 * 60 * 24));
+                const hours = Math.floor((diff / (1000 * 60 * 60)) % 24);
+                const mins = Math.floor((diff / 1000 / 60) % 60);
+                const secs = Math.floor((diff / 1000) % 60);
+
+                document.getElementById('timerDays').innerText = String(days).padStart(2, '0');
+                document.getElementById('timerHours').innerText = String(hours).padStart(2, '0');
+                document.getElementById('timerMins').innerText = String(mins).padStart(2, '0');
+                document.getElementById('timerSecs').innerText = String(secs).padStart(2, '0');
+
+                // Update Phase Date Display
+                const options = { day: 'numeric', month: 'short', year: 'numeric' };
+                document.getElementById('phaseDateDisplay').innerText = 
+                    `${prevThursday.toLocaleDateString('en-US', options)} 8:00 AM — ${nextThursday.toLocaleDateString('en-US', options)} 8:00 AM`;
+            }
+            updateTimer();
+            setInterval(updateTimer, 1000);
+        }
+
+        // Authentication Handlers
+        async function checkAuthStatus() {
+            const { data: { session } } = await supabase.auth.getSession();
+            if (session) {
+                currentUser = session.user;
+                const { data } = await supabase.from('profiles').select('*').eq('id', currentUser.id).single();
+                userProfile = data;
+                
+                document.getElementById('authNavLeft').classList.add('hidden');
+                document.getElementById('authNavRight').classList.add('hidden');
+                document.getElementById('userInfoNav').classList.remove('hidden');
+                document.getElementById('navPlayerName').innerText = userProfile ? userProfile.player_name : 'Player';
+                document.getElementById('submitterPlayerName').innerText = userProfile ? userProfile.player_name : 'আপনি';
+                document.getElementById('submitMatchAuthCheck').classList.add('hidden');
+                document.getElementById('matchSubmitForm').classList.remove('hidden');
             } else {
-                playersCache = localState.players;
-                matchesCache = localState.matches;
-            }
-
-            renderProfiles();
-            renderOpponentOptions();
-            renderWeeklyBoard();
-            renderOverallBoard();
-        }
-
-        function getPlayerName(pId) {
-            const found = playersCache.find(p => p.id == pId);
-            return found ? found.name : 'Unknown';
-        }
-
-        function navigateTo(viewId) {
-            document.querySelectorAll('.view-page').forEach(page => page.classList.remove('active-view'));
-            const targetPage = document.getElementById(viewId);
-            if (targetPage) {
-                targetPage.classList.add('active-view');
-                window.scrollTo({ top: 0, behavior: 'smooth' });
+                document.getElementById('submitMatchAuthCheck').classList.remove('hidden');
+                document.getElementById('matchSubmitForm').classList.add('hidden');
             }
         }
-
-        function openModal(id) { document.getElementById(id).style.display = 'flex'; }
-        function closeModal(id) { document.getElementById(id).style.display = 'none'; }
 
         async function handleSignup(e) {
             e.preventDefault();
-            const name = document.getElementById('regName').value.trim();
-            const uid = document.getElementById('regUid').value.trim();
-            const device = document.getElementById('regDevice').value.trim();
-            const email = document.getElementById('regEmail').value.trim().toLowerCase();
-            const pass = document.getElementById('regPass').value;
-            const wa = document.getElementById('regWa').value.trim();
+            const email = document.getElementById('regEmail').value;
+            const password = document.getElementById('regPassword').value;
+            const name = document.getElementById('regName').value;
+            const uid = document.getElementById('regUid').value;
+            const device = document.getElementById('regDevice').value;
+            const whatsapp = document.getElementById('regWhatsapp').value;
 
-            const newId = Date.now();
+            const { data, error } = await supabase.auth.signUp({ email, password });
+            if (error) return alert("রেজিস্ট্রেশন ত্রুটি: " + error.message);
 
-            if (_supabase) {
-                const { error } = await _supabase.from('players').insert([{
-                    id: newId,
-                    name: name,
+            if (data.user) {
+                await supabase.from('profiles').insert([{
+                    id: data.user.id,
+                    player_name: name,
                     game_uid: uid,
                     device_name: device,
-                    email: email,
-                    password: pass,
-                    whatsapp: wa
+                    whatsapp_number: whatsapp
                 }]);
-
-                if (error) {
-                    alert("Supabase ইমপোর্ট এরর: " + error.message);
-                    return;
-                }
-            } else {
-                localState.players.push({ id: newId, name, uid, device, email, pass, wa });
-                localStorage.setItem('ep_players', JSON.stringify(localState.players));
+                alert("সাইন আপ সফল হয়েছে!");
+                location.reload();
             }
-
-            alert("রেজিস্ট্রেশন সফল হয়েছে! এখন প্লেয়ার লগইন করুন।");
-            closeModal('signupModal');
-            await refreshData();
         }
 
         async function handleLogin(e) {
             e.preventDefault();
-            const email = document.getElementById('loginEmail').value.trim().toLowerCase();
-            const pass = document.getElementById('loginPass').value;
+            const email = document.getElementById('loginEmail').value;
+            const password = document.getElementById('loginPassword').value;
 
-            const player = playersCache.find(p => p.email === email && p.pass === pass);
-            if (player) {
-                currentUser = player;
-                localStorage.setItem('ep_current_user', JSON.stringify(currentUser));
-                updateAuthUI();
-                closeModal('loginModal');
-                alert("লগইন সফল হয়েছে! স্বাগতম " + player.name);
-            } else {
-                alert("ইমেইল অথবা পাসওয়ার্ড ভুল!");
-            }
+            const { error } = await supabase.auth.signInWithPassword({ email, password });
+            if (error) return alert("লগইন ত্রুটি: " + error.message);
+            location.reload();
         }
 
-        function handleLogout() {
-            currentUser = null;
-            localStorage.removeItem('ep_current_user');
-            updateAuthUI();
+        async function handleLogout() {
+            await supabase.auth.signOut();
+            location.reload();
         }
 
-        function updateAuthUI() {
-            const badge = document.getElementById('userBadge');
-            const regBtn = document.getElementById('regBtn');
-            const loginBtn = document.getElementById('loginBtn');
-            const logoutBtn = document.getElementById('logoutBtn');
-            const submitAlert = document.getElementById('submitLoginAlert');
-            const myLabel = document.getElementById('myLabel');
+        // Load Player Profiles
+        async function loadProfiles() {
+            const { data, error } = await supabase.from('profiles').select('*');
+            if (error || !data) return;
+            allProfiles = data;
 
-            if (currentUser) {
-                badge.style.display = 'inline-block';
-                badge.innerText = '👤 ' + currentUser.name;
-                regBtn.style.display = 'none';
-                loginBtn.style.display = 'none';
-                logoutBtn.style.display = 'inline-block';
-                submitAlert.style.display = 'none';
-                myLabel.innerText = currentUser.name + ' (You)';
-            } else {
-                badge.style.display = 'none';
-                regBtn.style.display = 'inline-block';
-                loginBtn.style.display = 'inline-block';
-                logoutBtn.style.display = 'none';
-                submitAlert.style.display = 'block';
-                myLabel.innerText = 'Your Score';
-            }
-        }
+            document.getElementById('totalPlayersCount').innerText = data.length;
+            const container = document.getElementById('playersGrid');
+            const select = document.getElementById('opponentSelect');
+            container.innerHTML = '';
+            select.innerHTML = '<option value="">-- অপোনেন্ট চুজ করুন --</option>';
 
-        function renderProfiles() {
-            const tbody = document.getElementById('playerTableBody');
-            tbody.innerHTML = '';
-            playersCache.forEach((p, idx) => {
-                tbody.innerHTML += `
-                    <tr>
-                        <td>${idx + 1}</td>
-                        <td style="color:var(--neon-green); cursor:pointer; font-weight:bold;" onclick="showPlayerDetail('${p.id}')">${p.name}</td>
-                        <td>${p.uid}</td>
-                        <td>${p.device}</td>
-                        <td><button class="btn btn-blue" style="padding:4px 10px; font-size:0.8rem;" onclick="showPlayerDetail('${p.id}')">View Record</button></td>
-                    </tr>
-                `;
-            });
-        }
-
-        function showPlayerDetail(pId) {
-            const player = playersCache.find(p => p.id == pId);
-            if (!player) return;
-
-            document.getElementById('modalPlayerTitle').innerText = player.name + ' - Stat Record';
-            document.getElementById('modalPlayerMeta').innerHTML = `
-                <div><strong>Game UID:</strong> ${player.uid}</div>
-                <div><strong>Device Variant:</strong> ${player.device}</div>
-            `;
-
-            const approvedMatches = matchesCache.filter(m => m.status === 'approved' && (m.p1Id == player.id || m.p2Id == player.id));
-            let html = '';
-            if (approvedMatches.length === 0) {
-                html = '<div style="color:var(--text-secondary);">কোনো ম্যাচ রেকর্ড নেই।</div>';
-            } else {
-                approvedMatches.forEach(m => {
-                    const isP1 = m.p1Id == player.id;
-                    const opp = isP1 ? m.p2Name : m.p1Name;
-                    const myS = isP1 ? m.s1 : m.s2;
-                    const oppS = isP1 ? m.s2 : m.s1;
-                    let tag = myS > oppS ? '🟢 WIN' : (myS === oppS ? '🟡 DRAW' : '🔴 LOSS');
-                    html += `
-                        <div style="padding:8px 0; border-bottom:1px solid var(--border-glow); display:flex; justify-content:space-between;">
-                            <span>VS ${opp} (${myS} - ${oppS})</span>
-                            <strong>${tag}</strong>
-                        </div>
-                    `;
-                });
-            }
-            document.getElementById('modalPlayerHistory').innerHTML = html;
-            openModal('statsModal');
-        }
-
-        function renderOpponentOptions() {
-            const select = document.getElementById('oppSelect');
-            select.innerHTML = '<option value="">-- প্লেয়ার চুজ করুন --</option>';
-            playersCache.forEach(p => {
+            data.forEach(p => {
+                // Populate Opponent Dropdown
                 if (!currentUser || p.id !== currentUser.id) {
-                    select.innerHTML += `<option value="${p.id}">${p.name} (${p.uid})</option>`;
+                    const opt = document.createElement('option');
+                    opt.value = p.id;
+                    opt.innerText = `${p.player_name} (${p.game_uid})`;
+                    select.appendChild(opt);
                 }
-            });
-        }
 
-        function previewScreenshot(e) {
-            const file = e.target.files[0];
-            if (file) {
-                const reader = new FileReader();
-                reader.onload = function(evt) {
-                    previewBase64 = evt.target.result;
-                    const img = document.getElementById('ssPreview');
-                    img.src = previewBase64;
-                    img.style.display = 'block';
-                }
-                reader.readAsDataURL(file);
-            }
-        }
-
-        async function handleMatchSubmit(e) {
-            e.preventDefault();
-            if (!currentUser) {
-                alert("রেজাল্ট সাবমিট করতে প্রথমে লগইন করুন!");
-                return;
-            }
-
-            const oppId = document.getElementById('oppSelect').value;
-            const oppPlayer = playersCache.find(p => p.id == oppId);
-            const myScore = parseInt(document.getElementById('myScore').value);
-            const oppScore = parseInt(document.getElementById('oppScore').value);
-
-            if (!oppPlayer) {
-                alert("অপোনেন্ট সিলেক্ট করুন!");
-                return;
-            }
-
-            const matchId = Date.now();
-
-            if (_supabase) {
-                const { error } = await _supabase.from('matches').insert([{
-                    id: matchId,
-                    p1_id: currentUser.id,
-                    p2_id: oppPlayer.id,
-                    s1: myScore,
-                    s2: oppScore,
-                    screenshot_data: previewBase64,
-                    status: 'pending'
-                }]);
-
-                if (error) {
-                    alert("Supabase ম্যাচ সাবমিশন এরর: " + error.message);
-                    return;
-                }
-            } else {
-                localState.matches.push({
-                    id: matchId,
-                    p1Id: currentUser.id,
-                    p1Name: currentUser.name,
-                    p2Id: oppPlayer.id,
-                    p2Name: oppPlayer.name,
-                    s1: myScore,
-                    s2: oppScore,
-                    img: previewBase64,
-                    status: 'pending'
-                });
-                localStorage.setItem('ep_matches', JSON.stringify(localState.matches));
-            }
-
-            alert("ম্যাচ রেজাল্ট সফলভাবে সাবমিট হয়েছে!");
-            navigateTo('home-view');
-            await refreshData();
-        }
-
-        function calculateStandings() {
-            let stats = {};
-            playersCache.forEach(p => {
-                stats[p.id] = { id: p.id, name: p.name, played: 0, win: 0, draw: 0, loss: 0, pts: 0 };
-            });
-
-            matchesCache.filter(m => m.status === 'approved').forEach(m => {
-                if (!stats[m.p1Id]) stats[m.p1Id] = { id: m.p1Id, name: m.p1Name, played: 0, win: 0, draw: 0, loss: 0, pts: 0 };
-                if (!stats[m.p2Id]) stats[m.p2Id] = { id: m.p2Id, name: m.p2Name, played: 0, win: 0, draw: 0, loss: 0, pts: 0 };
-
-                let p1 = stats[m.p1Id];
-                let p2 = stats[m.p2Id];
-
-                p1.played++; p2.played++;
-
-                if (m.s1 > m.s2) {
-                    p1.win++; p1.pts += 4;
-                    p2.loss++; p2.pts += 1;
-                } else if (m.s1 < m.s2) {
-                    p2.win++; p2.pts += 4;
-                    p1.loss++; p1.pts += 1;
-                } else {
-                    p1.draw++; p1.pts += 2;
-                    p2.draw++; p2.pts += 2;
-                }
-            });
-
-            return Object.values(stats).sort((a,b) => b.pts - a.pts || b.win - a.win);
-        }
-
-        function renderWeeklyBoard() {
-            const standings = calculateStandings();
-            const tbody = document.getElementById('weeklyTableBody');
-            tbody.innerHTML = '';
-            standings.forEach((st, idx) => {
-                tbody.innerHTML += `
-                    <tr>
-                        <td><strong>${idx + 1}</strong></td>
-                        <td style="color:var(--neon-green); font-weight:700;">${st.name}</td>
-                        <td>${st.played}</td>
-                        <td>${st.win}</td>
-                        <td>${st.draw}</td>
-                        <td>${st.loss}</td>
-                        <td style="color:var(--neon-gold); font-weight:700;">${st.pts}</td>
-                    </tr>
-                `;
-            });
-
-            if (standings.length > 0) {
-                document.getElementById('lastWeekWinnerBox').innerText = standings[0].name + ' (' + standings[0].pts + ' Pts)';
-            }
-        }
-
-        function renderOverallBoard() {
-            const standings = calculateStandings();
-            const tbody = document.getElementById('overallTableBody');
-            tbody.innerHTML = '';
-            standings.forEach((st, idx) => {
-                tbody.innerHTML += `
-                    <tr>
-                        <td><strong>${idx + 1}</strong></td>
-                        <td style="color:var(--neon-blue); font-weight:700;">${st.name}</td>
-                        <td>${st.played}</td>
-                        <td>${st.win}</td>
-                        <td style="color:var(--neon-gold); font-weight:700;">${st.pts}</td>
-                    </tr>
-                `;
-            });
-        }
-
-        function initTimer() {
-            function update() {
-                const now = new Date();
-                let target = new Date();
-                target.setHours(8, 0, 0, 0);
-                let dayOffset = (4 - target.getDay() + 7) % 7;
-                if (dayOffset === 0 && now > target) dayOffset = 7;
-                target.setDate(target.getDate() + dayOffset);
-
-                const diff = target - now;
-                const d = Math.floor(diff / (1000 * 60 * 60 * 24));
-                const h = Math.floor((diff / (1000 * 60 * 60)) % 24);
-                const m = Math.floor((diff / 1000 / 60) % 60);
-                const s = Math.floor((diff / 1000) % 60);
-
-                document.getElementById('dNum').innerText = String(d).padStart(2, '0');
-                document.getElementById('hNum').innerText = String(h).padStart(2, '0');
-                document.getElementById('mNum').innerText = String(m).padStart(2, '0');
-                document.getElementById('sNum').innerText = String(s).padStart(2, '0');
-            }
-            update();
-            setInterval(update, 1000);
-        }
-
-        function verifyAdminKey() {
-            const key = document.getElementById('adminKey').value;
-            if (key === 'admin123') {
-                document.getElementById('adminPassForm').style.display = 'none';
-                document.getElementById('adminPanelContent').style.display = 'block';
-                renderAdminContent();
-            } else {
-                alert("ভুল পাসওয়ার্ড!");
-            }
-        }
-
-        function renderAdminContent() {
-            const box = document.getElementById('pendingMatchesBox');
-            const pending = matchesCache.filter(m => m.status === 'pending');
-            box.innerHTML = '';
-
-            if (pending.length === 0) {
-                box.innerHTML = '<div style="color:var(--text-secondary);">কোনো পেন্ডিং ম্যাচ নেই।</div>';
-            } else {
-                pending.forEach(m => {
-                    box.innerHTML += `
-                        <div style="background:#0a0d14; padding:12px; border-radius:10px; margin-bottom:10px;">
-                            <div><strong>${m.p1Name}</strong> (${m.s1}) VS <strong>${m.p2Name}</strong> (${m.s2})</div>
-                            ${m.img ? `<img src="${m.img}" style="max-width:100%; height:120px; object-fit:contain; margin:10px 0;">` : ''}
-                            <div style="display:flex; gap:10px;">
-                                <button class="btn btn-green" style="padding:4px 10px;" onclick="approveMatch(${m.id})">Approve</button>
-                                <button class="btn btn-blue" style="padding:4px 10px; border-color:var(--neon-red); color:var(--neon-red);" onclick="rejectMatch(${m.id})">Reject</button>
-                            </div>
-                        </div>
-                    `;
-                });
-            }
-
-            const pBox = document.getElementById('adminPlayersBox');
-            pBox.innerHTML = '';
-            playersCache.forEach(p => {
-                pBox.innerHTML += `
-                    <div style="padding:6px 0; border-bottom:1px dashed var(--border-glow);">
-                        ${p.name} | Game UID: ${p.uid} | WA: <strong style="color:var(--neon-green);">${p.wa}</strong>
+                // Render Profile Card
+                const card = document.createElement('div');
+                card.className = "bg-cardbg border border-gray-800 hover:border-amber-500/50 p-3 rounded-xl shadow cursor-pointer transition flex items-center gap-3";
+                card.onclick = () => showPlayerProfileModal(p);
+                card.innerHTML = `
+                    <div class="bg-amber-500/10 p-3 rounded-lg border border-amber-500/30 text-amber-400">
+                        <i class="fa-solid fa-gamepad text-2xl"></i>
+                    </div>
+                    <div class="flex-grow overflow-hidden">
+                        <h4 class="text-sm font-bold text-amber-300 truncate">${p.player_name}</h4>
+                        <p class="text-[11px] text-gray-400 truncate">UID: <span class="font-mono text-gray-200">${p.game_uid}</span></p>
+                        <p class="text-[10px] text-gray-500 truncate"><i class="fa-solid fa-mobile-screen mr-1"></i>${p.device_name}</p>
                     </div>
                 `;
+                container.appendChild(card);
             });
         }
 
-        async function approveMatch(id) {
-            if (_supabase) {
-                await _supabase.from('matches').update({ status: 'approved' }).eq('id', id);
-            } else {
-                const m = localState.matches.find(item => item.id == id);
-                if (m) m.status = 'approved';
-                localStorage.setItem('ep_matches', JSON.stringify(localState.matches));
-            }
-            alert("ম্যাচ অ্যাপ্রুভ হয়েছে!");
-            await refreshData();
-            renderAdminContent();
+        // Submit Friendly Match Result
+        async function handleMatchSubmit(e) {
+            e.preventDefault();
+            if (!currentUser) return alert("লগইন করুন!");
+
+            const oppId = document.getElementById('opponentSelect').value;
+            const myScore = parseInt(document.getElementById('myScore').value);
+            const oppScore = parseInt(document.getElementById('oppScore').value);
+            const file = document.getElementById('screenshotFile').files[0];
+
+            if (!oppId) return alert("অপোনেন্ট সিলেক্ট করুন!");
+            if (!file) return alert("স্ক্রিনশট সিলেক্ট করুন!");
+
+            // Upload Screenshot to Supabase Storage
+            const fileExt = file.name.split('.').pop();
+            const filePath = `matches/${Date.now()}_${currentUser.id}.${fileExt}`;
+            const { error: uploadError } = await supabase.storage.from('match-screenshots').upload(filePath, file);
+
+            if (uploadError) return alert("ছবি আপলোড ব্যর্থ: " + uploadError.message);
+
+            const { data: publicUrlData } = supabase.storage.from('match-screenshots').getPublicUrl(filePath);
+
+            // Submit Match
+            const { error: matchError } = await supabase.from('matches').insert([{
+                submitted_by: currentUser.id,
+                player1_id: currentUser.id,
+                player2_id: oppId,
+                player1_score: myScore,
+                player2_score: oppScore,
+                screenshot_url: publicUrlData.publicUrl,
+                week_code: 'CURRENT'
+            }]);
+
+            if (matchError) return alert("রেজাল্ট সাবমিট ব্যর্থ: " + matchError.message);
+
+            alert("ম্যাচ রেজাল্ট সফলভাবে সাবমিট হয়েছে!");
+            location.reload();
         }
 
-        async function rejectMatch(id) {
-            if (_supabase) {
-                await _supabase.from('matches').delete().eq('id', id);
-            } else {
-                localState.matches = localState.matches.filter(item => item.id != id);
-                localStorage.setItem('ep_matches', JSON.stringify(localState.matches));
+        // Load Rankings Logic (Win=3+1=4, Draw=1+1=2, Loss=0+1=1)
+        async function loadWeeklyRankings() {
+            const { data: matches } = await supabase.from('matches').select('*').eq('status', 'approved');
+            const stats = calculateLeaderboard(matches);
+            renderLeaderboard('weeklyLeaderboardBody', stats);
+        }
+
+        async function loadOverallRankings() {
+            const { data: matches } = await supabase.from('matches').select('*').eq('status', 'approved');
+            const stats = calculateLeaderboard(matches);
+            renderLeaderboard('overallLeaderboardBody', stats);
+        }
+
+        function calculateLeaderboard(matches) {
+            const table = {};
+            allProfiles.forEach(p => {
+                table[p.id] = { name: p.player_name, played: 0, wins: 0, draws: 0, losses: 0, points: 0 };
+            });
+
+            if (matches) {
+                matches.forEach(m => {
+                    const p1 = table[m.player1_id];
+                    const p2 = table[m.player2_id];
+                    if (p1 && p2) {
+                        p1.played++; p2.played++;
+                        if (m.player1_score > m.player2_score) {
+                            p1.wins++; p1.points += 4; // 3 + 1 bonus
+                            p2.losses++; p2.points += 1; // 0 + 1 bonus
+                        } else if (m.player1_score < m.player2_score) {
+                            p2.wins++; p2.points += 4;
+                            p1.losses++; p1.points += 1;
+                        } else {
+                            p1.draws++; p1.points += 2; // 1 + 1 bonus
+                            p2.draws++; p2.points += 2;
+                        }
+                    }
+                });
             }
-            alert("ম্যাচ রিজেক্ট করা হয়েছে!");
-            await refreshData();
-            renderAdminContent();
+
+            return Object.values(table).sort((a, b) => b.points - a.points || b.wins - a.wins);
+        }
+
+        function renderLeaderboard(elementId, stats) {
+            const body = document.getElementById(elementId);
+            body.innerHTML = '';
+            stats.forEach((s, idx) => {
+                const tr = document.createElement('tr');
+                tr.className = idx % 2 === 0 ? 'bg-gray-900/50' : 'bg-cardbg';
+                tr.innerHTML = `
+                    <td class="p-2 text-center font-bold ${idx < 3 ? 'text-amber-400' : 'text-gray-400'}">${idx + 1}</td>
+                    <td class="p-2 font-bold text-gray-200">${s.name}</td>
+                    <td class="p-2 text-center text-gray-400">${s.played}</td>
+                    <td class="p-2 text-center text-green-400">${s.wins}</td>
+                    <td class="p-2 text-center text-yellow-400">${s.draws}</td>
+                    <td class="p-2 text-center text-red-400">${s.losses}</td>
+                    <td class="p-2 text-center font-black text-amber-400">${s.points}</td>
+                `;
+                body.appendChild(tr);
+            });
+        }
+
+        async function showPlayerProfileModal(player) {
+            document.getElementById('modalPlayerName').innerText = player.player_name;
+            document.getElementById('modalGameUid').innerText = player.game_uid;
+            document.getElementById('modalDevice').innerText = player.device_name;
+
+            // Fetch player matches
+            const { data } = await supabase.from('matches')
+                .select('*')
+                .or(`player1_id.eq.${player.id},player2_id.eq.${player.id}`);
+
+            let played = 0, wins = 0, draws = 0, losses = 0;
+            const historyContainer = document.getElementById('modalMatchHistory');
+            historyContainer.innerHTML = '';
+
+            if (data && data.length > 0) {
+                data.forEach(m => {
+                    played++;
+                    const isP1 = m.player1_id === player.id;
+                    const mySc = isP1 ? m.player1_score : m.player2_score;
+                    const oppSc = isP1 ? m.player2_score : m.player1_score;
+
+                    if (mySc > oppSc) wins++;
+                    else if (mySc < oppSc) losses++;
+                    else draws++;
+
+                    const div = document.createElement('div');
+                    div.className = "bg-gray-900 p-2 rounded flex justify-between items-center";
+                    div.innerHTML = `
+                        <span class="text-gray-300">VS Match (${mySc} - ${oppSc})</span>
+                        <span class="${mySc > oppSc ? 'text-green-400 font-bold' : mySc < oppSc ? 'text-red-400' : 'text-yellow-400'}">
+                            ${mySc > oppSc ? 'WIN' : mySc < oppSc ? 'LOSS' : 'DRAW'}
+                        </span>
+                    `;
+                    historyContainer.appendChild(div);
+                });
+            } else {
+                historyContainer.innerHTML = '<p class="text-gray-500 text-center py-2">কোনো ম্যাচ রেকর্ড নেই</p>';
+            }
+
+            document.getElementById('modalStatPlayed').innerText = played;
+            document.getElementById('modalStatWin').innerText = wins;
+            document.getElementById('modalStatDraw').innerText = draws;
+            document.getElementById('modalStatLoss').innerText = losses;
+
+            openModal('profileDetailModal');
         }
     </script>
 </body>
