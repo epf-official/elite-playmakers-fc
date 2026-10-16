@@ -893,7 +893,7 @@
         <div class="secret-admin-trigger" id="admin-trigger-zone" title="Secret Admin Zone"></div>
     </footer>
 
-    <!-- JavaScript Engine -->
+<!-- JavaScript Engine -->
     <script>
         // Supabase Credentials
         const SUPABASE_URL = 'https://webaeqsthnfjaswfaoxb.supabase.co';
@@ -975,7 +975,7 @@
                         </div>`;
                 }
             }
-            weeklyContainer.innerHTML = weeklyHTML;
+            if (weeklyContainer) weeklyContainer.innerHTML = weeklyHTML;
 
             const monthNames = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
             const now = new Date();
@@ -1000,25 +1000,35 @@
                         </div>`;
                 }
             }
-            monthlyContainer.innerHTML = monthlyHTML;
+            if (monthlyContainer) monthlyContainer.innerHTML = monthlyHTML;
 
             const historySelector = document.getElementById('weekly-history-selector');
-            let historyBtnHTML = `<button class="btn btn-gold" onclick="renderWeeklyTable()">কারেন্ট উইক (${phase.currentWeek})</button>`;
-            for (let w = phase.currentWeek - 1; w >= 1; w--) {
-                historyBtnHTML += `<button class="btn btn-outline" onclick="renderWeeklyTable()">Week ${w}</button>`;
+            if (historySelector) {
+                let historyBtnHTML = `<button class="btn btn-gold" onclick="renderWeeklyTable()">কারেন্ট উইক (${phase.currentWeek})</button>`;
+                for (let w = phase.currentWeek - 1; w >= 1; w--) {
+                    historyBtnHTML += `<button class="btn btn-outline" onclick="renderWeeklyTable()">Week ${w}</button>`;
+                }
+                historySelector.innerHTML = historyBtnHTML;
             }
-            historySelector.innerHTML = historyBtnHTML;
         }
 
+        // 🚀 অপটিমাইজড ডাটা ফেচিং (স্ক্রিনশটের বিশাল ডাটা ছাড়াই সুপারফাস্ট লোড)
         async function fetchPlayers() {
             if (supabaseClient) {
                 const { data, error } = await supabaseClient.from('players').select('*');
                 if (!error && data) registeredPlayers = data;
 
-                const { data: pMatches } = await supabaseClient.from('match_results').select('*').eq('status', 'pending');
+                // স্ক্রিনশট ছাড়া হালকা ফিল্ড সিলেক্ট
+                const { data: pMatches } = await supabaseClient
+                    .from('match_results')
+                    .select('id, submitter_id, submitter_name, opponent_id, submitter_score, opponent_score, status, created_at')
+                    .eq('status', 'pending');
                 if (pMatches) pendingMatchesList = pMatches;
 
-                const { data: aMatches } = await supabaseClient.from('match_results').select('*').eq('status', 'approved');
+                const { data: aMatches } = await supabaseClient
+                    .from('match_results')
+                    .select('id, submitter_id, submitter_name, opponent_id, submitter_score, opponent_score, status, created_at')
+                    .eq('status', 'approved');
                 if (aMatches) approvedMatchesList = aMatches;
 
                 const { data: fame } = await supabaseClient.from('hall_of_fame').select('*');
@@ -1029,10 +1039,11 @@
         function renderPlayerCards() {
             const approvedPlayers = registeredPlayers.filter(p => p.is_approved === true);
             const container = document.getElementById('players-list-container');
+            if (!container) return;
             if (approvedPlayers.length === 0) {
                 container.innerHTML = `<div class="empty-placeholder" style="grid-column: 1/-1;">
                     <i class="fas fa-user-clock" style="font-size: 30px; color: var(--gold-primary); margin-bottom: 10px;"></i><br>
-                    এখনো কোনো প্লেয়ার এডমিন কর্তৃক অ্যাপ্রুভ হয়নি। সাইন আপ করার পর এডমিন একসেপ্ট করলে এখানে প্রোফাইল দেখাবে।
+                    এখনো কোনো প্লেয়ার এডমিন কর্তৃক অ্যাপ্রুভ হয়নি। সাইন আপ করার পর এডমিন একসেপ্ট করলে এখানে প্রোফাইল দেখাবে।
                 </div>`;
                 return;
             }
@@ -1052,7 +1063,7 @@
 
         // 🌟 প্লেয়ার ডিটেইল ও অপোনেন্ট নামসহ বিস্তারিত ম্যাচ হিস্টোরি পপআপ
         function openPlayerDetail(playerId) {
-            const p = registeredPlayers.find(x => (x.id === playerId || x.game_uid === playerId));
+            const p = registeredPlayers.find(x => String(x.id) === String(playerId) || String(x.game_uid) === String(playerId));
             if (!p) return;
 
             document.getElementById('modal-player-avatar').innerText = p.player_name ? p.player_name.charAt(0).toUpperCase() : 'P';
@@ -1063,19 +1074,30 @@
             document.getElementById('modal-stat-wins').innerText = p.wins || 0;
             document.getElementById('modal-stat-points').innerText = p.points || 0;
 
-            // অপোনেন্ট নাম ও গোল ডিটেইলসহ ম্যাচ লগ বের করা
-            const userMatches = approvedMatchesList.filter(m => m.submitter_id === p.id || m.opponent_id === p.game_uid);
+            const pUid = String(p.game_uid || '').trim().toLowerCase();
+            const pId = String(p.id || '').trim().toLowerCase();
+
+            const userMatches = approvedMatchesList.filter(m => {
+                const subId = String(m.submitter_id || '').trim().toLowerCase();
+                const oppId = String(m.opponent_id || '').trim().toLowerCase();
+                return subId === pUid || subId === pId || oppId === pUid || oppId === pId;
+            });
+
             const historyContainer = document.getElementById('modal-match-history');
 
             if (userMatches.length === 0) {
-                historyContainer.innerHTML = '<p style="text-align: center; color: var(--text-muted); font-size: 12px;">কোনো সাম্প্রতিক অ্যাপ্রুভকৃত ম্যাচ পাওয়া যায়নি।</p>';
+                historyContainer.innerHTML = '<p style="text-align: center; color: var(--text-muted); font-size: 12px;">কোনো সাম্প্রতিক অ্যাপ্রুভকৃত ম্যাচ পাওয়া যায়নি।</p>';
             } else {
                 historyContainer.innerHTML = userMatches.map(m => {
-                    const isSubmitter = (m.submitter_id === p.id);
+                    const subId = String(m.submitter_id || '').trim().toLowerCase();
+                    const isSubmitter = (subId === pUid || subId === pId);
                     let oppName = 'Opponent';
 
                     if (isSubmitter) {
-                        const oppObj = registeredPlayers.find(x => x.game_uid === m.opponent_id);
+                        const oppObj = registeredPlayers.find(x => 
+                            String(x.game_uid || '').trim().toLowerCase() === String(m.opponent_id || '').trim().toLowerCase() ||
+                            String(x.id || '').trim().toLowerCase() === String(m.opponent_id || '').trim().toLowerCase()
+                        );
                         oppName = oppObj ? oppObj.player_name : m.opponent_id;
                     } else {
                         oppName = m.submitter_name || 'Opponent';
@@ -1112,21 +1134,23 @@
             const oppSelect = document.getElementById('opponent-select');
 
             if (!loggedInPlayer || !loggedInPlayer.is_approved) {
-                warning.style.display = 'block';
-                form.style.opacity = '0.4';
-                form.style.pointerEvents = 'none';
+                if (warning) warning.style.display = 'block';
+                if (form) { form.style.opacity = '0.4'; form.style.pointerEvents = 'none'; }
             } else {
-                warning.style.display = 'none';
-                form.style.opacity = '1';
-                form.style.pointerEvents = 'auto';
-                document.getElementById('logged-player-name').innerText = loggedInPlayer.player_name + ' (You)';
+                if (warning) warning.style.display = 'none';
+                if (form) { form.style.opacity = '1'; form.style.pointerEvents = 'auto'; }
+                const nameDisplay = document.getElementById('logged-player-name');
+                if (nameDisplay) nameDisplay.innerText = loggedInPlayer.player_name + ' (You)';
             }
 
-            oppSelect.innerHTML = '<option value="">-- অপোনেন্ট সিলেক্ট করুন --</option>' + 
-                registeredPlayers.filter(p => p.is_approved && (!loggedInPlayer || p.game_uid !== loggedInPlayer.game_uid))
-                .map(p => `<option value="${p.game_uid}">${p.player_name} (${p.game_uid})</option>`).join('');
+            if (oppSelect) {
+                oppSelect.innerHTML = '<option value="">-- অপোনেন্ট সিলেক্ট করুন --</option>' + 
+                    registeredPlayers.filter(p => p.is_approved && (!loggedInPlayer || p.game_uid !== loggedInPlayer.game_uid))
+                    .map(p => `<option value="${p.game_uid}">${p.player_name} (${p.game_uid})</option>`).join('');
+            }
         }
 
+        // 🛡️ স্মার্ট ম্যাচ সাবমিশন (৫ ম্যাচ সীমা, ডুপ্লিকেট ফটো লক ও সেম স্কোর পপআপ)
         async function handleMatchSubmit(e) {
             e.preventDefault();
             const opponentUid = document.getElementById('opponent-select').value;
@@ -1135,7 +1159,7 @@
             const fileInput = document.getElementById('screenshot-file');
 
             if (!loggedInPlayer || !loggedInPlayer.id) {
-                alert('আপনার আইডি ডাটাবেজে পাওয়া যায়নি! অনুগ্রহ করে একবার লগআউট করে আবার লগইন করুন।');
+                alert('আপনার আইডি ডাটাবেজে পাওয়া যায়নি! অনুগ্রহ করে একবার লগআউট করে আবার লগইন করুন।');
                 return;
             }
 
@@ -1144,7 +1168,7 @@
                 try {
                     screenshotBase64 = await readFileAsBase64(fileInput.files[0]);
                 } catch (err) {
-                    alert('স্ক্রিনশট রিড করতে সমস্যা হয়েছে!');
+                    alert('স্ক্রিনশট রিড করতে সমস্যা হয়েছে!');
                     return;
                 }
             }
@@ -1156,27 +1180,66 @@
             if (supabaseClient) {
                 const { data, error } = await supabaseClient
                     .from('match_results')
-                    .select('id, submitter_id, opponent_id, created_at')
+                    .select('id, submitter_id, opponent_id, submitter_score, opponent_score, screenshot_url, created_at')
                     .gte('created_at', phaseStartISO);
 
                 if (!error && data) {
                     const oppPlayer = registeredPlayers.find(p => p.game_uid === opponentUid);
                     const oppId = oppPlayer ? oppPlayer.id : null;
+                    const oppName = oppPlayer ? oppPlayer.player_name : opponentUid;
 
-                    matchCount = data.filter(m => 
-                        (m.submitter_id === loggedInPlayer.id && m.opponent_id === opponentUid) ||
-                        (oppId && m.submitter_id === oppId && m.opponent_id === loggedInPlayer.game_uid)
-                    ).length;
+                    const mutualMatches = data.filter(m => 
+                        (String(m.submitter_id) === String(loggedInPlayer.id) && String(m.opponent_id) === String(opponentUid)) ||
+                        (oppId && String(m.submitter_id) === String(oppId) && String(m.opponent_id) === String(loggedInPlayer.game_uid)) ||
+                        (String(m.submitter_id) === String(loggedInPlayer.id) && String(m.opponent_id) === String(oppId))
+                    );
+
+                    matchCount = mutualMatches.length;
+
+                    // ১. ৫ ম্যাচের লিমিট চেক
+                    if (matchCount >= MAX_MATCHES_PER_OPPONENT) {
+                        alert(`⚠️ দুঃখিত! চলতি ফেজে আপনি এই অপোনেন্টের সাথে সর্বোচ্চ ${MAX_MATCHES_PER_OPPONENT}টি ম্যাচ খেলে ফেলেছেন। নতুন ফেজ শুরু না হওয়া পর্যন্ত এই অপোনেন্টের সাথে আর ম্যাচ সাবমিট করা যাবে না।`);
+                        return;
+                    }
+
+                    // ২. হুবহু সেম ইমেজ ফাইল চেক
+                    if (screenshotBase64) {
+                        const isDuplicateImage = data.some(m => m.screenshot_url && m.screenshot_url === screenshotBase64);
+                        if (isDuplicateImage) {
+                            alert('❌ এই স্ক্রিনশট প্রুফটি ইতোমধ্যেই একবার সিস্টেমে সাবমিট করা হয়েছে! একই ফোটো দুবার ব্যবহার করা যাবে না।');
+                            return;
+                        }
+                    }
+
+                    // ৩. সেম স্কোর কনফার্মেশন পপআপ
+                    const hasMatchingScore = mutualMatches.some(m => {
+                        const subId = String(m.submitter_id).toLowerCase();
+                        const myId = String(loggedInPlayer.id).toLowerCase();
+                        if (subId === myId) {
+                            return Number(m.submitter_score) === yourScore && Number(m.opponent_score) === opponentScore;
+                        } else {
+                            return Number(m.submitter_score) === opponentScore && Number(m.opponent_score) === yourScore;
+                        }
+                    });
+
+                    if (hasMatchingScore) {
+                        const confirmSubmit = confirm(
+                            `⚠️ সতর্কতা!\n\n` +
+                            `অপোনেন্ট (${oppName})-এর সাথে একই স্কোরের (${yourScore} - ${opponentScore}) একটি ম্যাচ অলরেডি সিস্টেমে রেকর্ড করা আছে।\n\n` +
+                            `আপনি কি নিশ্চিত যে এটি পর পর খেলা সম্পূর্ণ আলাদা/নতুন আরেকটি ম্যাচ?`
+                        );
+                        if (!confirmSubmit) return;
+                    }
                 }
             } else {
                 matchCount = pendingMatchesList.filter(m => 
                     (m.submitter_id === loggedInPlayer.id && m.opponent_id === opponentUid)
                 ).length;
-            }
 
-            if (matchCount >= MAX_MATCHES_PER_OPPONENT) {
-                alert(`⚠️ দুঃখিত! চলতি ফেজে আপনি এই অপোনেন্টের সাথে সর্বোচ্চ ${MAX_MATCHES_PER_OPPONENT}টি ম্যাচ খেলে ফেলেছেন। নতুন ফেজ শুরু না হওয়া পর্যন্ত এই অপোনেন্টের সাথে আর ম্যাচ সাবমিট করা যাবে না।`);
-                return;
+                if (matchCount >= MAX_MATCHES_PER_OPPONENT) {
+                    alert(`⚠️ দুঃখিত! চলতি ফেজে আপনি এই অপোনেন্টের সাথে সর্বোচ্চ ${MAX_MATCHES_PER_OPPONENT}টি ম্যাচ খেলে ফেলেছেন।`);
+                    return;
+                }
             }
 
             const matchData = {
@@ -1196,7 +1259,7 @@
             if (supabaseClient) {
                 const { error } = await supabaseClient.from('match_results').insert([matchData]);
                 if (error) {
-                    alert('রেজাল্ট জমা দিতে সমস্যা হয়েছে: ' + error.message);
+                    alert('রেজাল্ট জমা দিতে সমস্যা হয়েছে: ' + error.message);
                     submitBtn.disabled = false;
                     submitBtn.innerText = 'রেজাল্ট জমা দিন (Pending Review)';
                     return;
@@ -1205,14 +1268,14 @@
                 pendingMatchesList.push(matchData);
             }
 
-            alert('ম্যাচ রেজাল্ট এডমিনের কাছে সফলভাবে জমা দেওয়া হয়েছে! এডমিন স্ক্রিনশট ও স্কোর যাচাই করে অ্যাপ্রুভ করলে পয়েন্ট যোগ হবে।');
+            alert('ম্যাচ রেজাল্ট এডমিনের কাছে সফলভাবে জমা দেওয়া হয়েছে! এডমিন স্ক্রিনশট ও স্কোর যাচাই করে অ্যাপ্রুভ করলে পয়েন্ট যোগ হবে।');
             e.target.reset();
             submitBtn.disabled = false;
             submitBtn.innerText = 'রেজাল্ট জমা দিন (Pending Review)';
             showPage('home-view');
         }
 
-        // 🏆 টাই-ব্রেকার সর্টিং (পয়েন্ট -> গোল ব্যবধান -> মোট জয়)
+        // 🏆 টাই-ব্রেকার সর্টিং (পয়েন্ট -> গোল ব্যবধান -> মোট জয়)
         function sortPlayersByPoints(playerList) {
             return playerList.sort((a, b) => {
                 const pointsDiff = (b.points || 0) - (a.points || 0);
@@ -1221,7 +1284,7 @@
                 const gdA = (a.goals_for || 0) - (a.goals_against || 0);
                 const gdB = (b.goals_for || 0) - (b.goals_against || 0);
                 const gdDiff = gdB - gdA;
-                if (gdDiff !== 0) return gdDiff; // গোল ডিফারেন্স বেশি হলে শীর্ষে যাবে
+                if (gdDiff !== 0) return gdDiff;
 
                 const winsDiff = (b.wins || 0) - (a.wins || 0);
                 if (winsDiff !== 0) return winsDiff;
@@ -1235,8 +1298,9 @@
             approved = sortPlayersByPoints(approved);
 
             const tbody = document.getElementById('weekly-rank-body');
+            if (!tbody) return;
             if (approved.length === 0) {
-                tbody.innerHTML = `<tr><td colspan="10" style="text-align:center; color: var(--text-muted); padding:20px;">এখনো কোনো উইকলি পয়েন্ট ডাটা পাওয়া যায়নি।</td></tr>`;
+                tbody.innerHTML = `<tr><td colspan="10" style="text-align:center; color: var(--text-muted); padding:20px;">এখনো কোনো উইকলি পয়েন্ট ডাটা পাওয়া যায়নি।</td></tr>`;
                 return;
             }
             tbody.innerHTML = approved.map((p, idx) => {
@@ -1265,8 +1329,9 @@
             approved = sortPlayersByPoints(approved);
 
             const tbody = document.getElementById('overall-rank-body');
+            if (!tbody) return;
             if (approved.length === 0) {
-                tbody.innerHTML = `<tr><td colspan="10" style="text-align:center; color: var(--text-muted); padding:20px;">এখনো কোনো ওভারঅল ডাটা পাওয়া যায়নি।</td></tr>`;
+                tbody.innerHTML = `<tr><td colspan="10" style="text-align:center; color: var(--text-muted); padding:20px;">এখনো কোনো ওভারঅল ডাটা পাওয়া যায়নি।</td></tr>`;
                 return;
             }
             tbody.innerHTML = approved.map((p, idx) => {
@@ -1313,7 +1378,7 @@
             if (supabaseClient) {
                 const { error } = await supabaseClient.from('players').insert([newPlayer]);
                 if (error) {
-                    alert('রেজিস্ট্রেশনে সমস্যা হয়েছে: ' + error.message);
+                    alert('রেজিস্ট্রেশনে সমস্যা হয়েছে: ' + error.message);
                     return;
                 }
             } else {
@@ -1321,7 +1386,7 @@
             }
 
             closeModal('signup-modal');
-            alert('আপনার রেজিস্ট্রেশন সফলভাবে জমা হয়েছে! এডমিন ম্যানুয়ালি অ্যাপ্রুভ করার পর আপনি লগইন করতে পারবেন।');
+            alert('আপনার রেজিস্ট্রেশন সফলভাবে জমা হয়েছে! এডমিন ম্যানুয়ালি অ্যাপ্রুভ করার পর আপনি লগইন করতে পারবেন।');
         }
 
         async function handleLogin(e) {
@@ -1336,12 +1401,12 @@
             }
 
             if (!found) {
-                alert('ইমেইল অথবা পাসওয়ার্ড সঠিক নয়!');
+                alert('ইমেইল অথবা পাসওয়ার্ড সঠিক নয়!');
                 return;
             }
 
             if (!found.is_approved) {
-                alert('আপনার একাউন্টটি এখনো এডমিন কর্তৃক অ্যাপ্রুভ করা হয়নি। অনুগ্রহ করে অপেক্ষা করুন!');
+                alert('আপনার একাউন্টটি এখনো এডমিন কর্তৃক অ্যাপ্রুভ করা হয়নি। অনুগ্রহ করে অপেক্ষা করুন!');
                 return;
             }
 
@@ -1353,7 +1418,7 @@
 
         function updateAuthUI() {
             const area = document.getElementById('auth-area');
-            if (loggedInPlayer) {
+            if (loggedInPlayer && area) {
                 area.innerHTML = `
                     <div style="font-size: 12px; color: var(--gold-primary); font-weight: bold; background: rgba(255,215,0,0.1); padding: 6px 12px; border-radius: 6px; border: 1px solid var(--border-gold);">
                         <i class="fas fa-user-circle"></i> ${loggedInPlayer.player_name}
@@ -1362,16 +1427,19 @@
             }
         }
 
-        document.getElementById('admin-trigger-zone').addEventListener('click', () => {
-            tapCount++;
-            clearTimeout(tapTimer);
-            if (tapCount >= 2) {
-                openModal('admin-modal');
-                tapCount = 0;
-            } else {
-                tapTimer = setTimeout(() => { tapCount = 0; }, 400);
-            }
-        });
+        const triggerZone = document.getElementById('admin-trigger-zone');
+        if (triggerZone) {
+            triggerZone.addEventListener('click', () => {
+                tapCount++;
+                clearTimeout(tapTimer);
+                if (tapCount >= 2) {
+                    openModal('admin-modal');
+                    tapCount = 0;
+                } else {
+                    tapTimer = setTimeout(() => { tapCount = 0; }, 400);
+                }
+            });
+        }
 
         function handleAdminLogin(e) {
             e.preventDefault();
@@ -1381,7 +1449,7 @@
                 document.getElementById('admin-controls').style.display = 'block';
                 renderAdminDashboard();
             } else {
-                alert('ভুল সিক্রেট পাসওয়ার্ড!');
+                alert('ভুল সিক্রেট পাসওয়ার্ড!');
             }
         }
 
@@ -1392,13 +1460,15 @@
             document.getElementById('admin-tab-matches-view').style.display = tab === 'matches' ? 'block' : 'none';
         }
 
-        // 🌟 এডমিন ড্যাশবোর্ডে অপোনেন্টের আসল নাম সহ প্রদর্শন
+        // 🌟 সিক্রেট এডমিন ড্যাশবোর্ড (পেন্ডিং ম্যাচের জন্য স্ক্রিনশট লোড ও লাল ফ্লাগ এলার্ট)
         async function renderAdminDashboard() {
             if (supabaseClient) {
-                const { data: pPlayers } = await supabaseClient.from('players').select('*').eq('is_approved', false);
+                // ১. সকল প্লেয়ার লোড (গ্লোবাল প্লেয়ার লিস্ট বজায় রাখা)
+                const { data: allP } = await supabaseClient.from('players').select('*');
+                if (allP) registeredPlayers = allP;
+
+                // ২. পেন্ডিং ম্যাচের জন্য স্ক্রিনশট সহ ফুল ডাটা লোড
                 const { data: pMatches } = await supabaseClient.from('match_results').select('*').eq('status', 'pending');
-                
-                if (pPlayers) registeredPlayers = pPlayers;
                 if (pMatches) pendingMatchesList = pMatches;
             }
 
@@ -1408,7 +1478,7 @@
 
             const pContainer = document.getElementById('admin-pending-players-list');
             if (pendingPlayers.length === 0) {
-                pContainer.innerHTML = '<p style="color:var(--text-muted);">কোনো পেন্ডিং প্লেয়ার নেই।</p>';
+                pContainer.innerHTML = '<p style="color:var(--text-muted);">কোনো পেন্ডিং প্লেয়ার নেই।</p>';
             } else {
                 pContainer.innerHTML = pendingPlayers.map(p => `
                     <div class="admin-card-item">
@@ -1425,11 +1495,35 @@
                 mContainer.innerHTML = '<p style="color:var(--text-muted);">কোনো পেন্ডিং ম্যাচ রেজাল্ট নেই।</p>';
             } else {
                 mContainer.innerHTML = pendingMatchesList.map((m, idx) => {
-                    const oppPlayer = registeredPlayers.find(x => x.game_uid === m.opponent_id);
+                    const oppPlayer = registeredPlayers.find(x => String(x.game_uid) === String(m.opponent_id) || String(x.id) === String(m.opponent_id));
                     const oppName = oppPlayer ? oppPlayer.player_name : m.opponent_id;
 
+                    // সেম স্কোর ও সেম অপোনেন্টের জন্য লাল ফ্লাগ চেক
+                    const isPotentialDuplicate = [...approvedMatchesList, ...pendingMatchesList].some(other => {
+                        if (other.id && m.id && other.id === m.id) return false;
+                        
+                        const sameSub = String(other.submitter_id).toLowerCase() === String(m.submitter_id).toLowerCase();
+                        const sameOpp = String(other.opponent_id).toLowerCase() === String(m.opponent_id).toLowerCase();
+                        const reverseSubOpp = String(other.submitter_id).toLowerCase() === String(m.opponent_id).toLowerCase() && 
+                                              String(other.opponent_id).toLowerCase() === String(m.submitter_id).toLowerCase();
+
+                        if (sameSub && sameOpp) {
+                            return Number(other.submitter_score) === Number(m.submitter_score) && Number(other.opponent_score) === Number(m.opponent_score);
+                        }
+                        if (reverseSubOpp) {
+                            return Number(other.submitter_score) === Number(m.opponent_score) && Number(other.opponent_score) === Number(m.submitter_score);
+                        }
+                        return false;
+                    });
+
                     return `
-                        <div class="admin-card-item">
+                        <div class="admin-card-item" style="${isPotentialDuplicate ? 'border: 1px solid var(--danger); background: rgba(239, 68, 68, 0.08);' : ''}">
+                            ${isPotentialDuplicate ? `
+                                <div style="background: rgba(239, 68, 68, 0.2); color: #ff6b6b; padding: 5px 10px; border-radius: 4px; font-size: 11px; font-weight: bold; margin-bottom: 8px;">
+                                    ⚠️ সম্ভাব্য ডুপ্লিকেট ম্যাচ! (একই অপোনেন্ট ও স্কোরের আগের রেকর্ড রয়েছে)
+                                </div>
+                            ` : ''}
+                            
                             <div>সাবমিটার: <strong>${m.submitter_name || 'Player'}</strong> vs অপোনেন্ট: <strong style="color:var(--gold-primary);">${oppName}</strong> (UID: ${m.opponent_id})</div>
                             <div style="font-size:14px; font-weight:bold; color:var(--cyan-accent); margin:6px 0;">স্কোর: ${m.submitter_score} - ${m.opponent_score}</div>
                             
@@ -1440,7 +1534,7 @@
                                         <img src="${m.screenshot_url}" style="max-width:100%; max-height:140px; border-radius:6px; border:1px solid var(--border-gold); display:block;">
                                     </a>
                                 </div>
-                            ` : '<div style="font-size:10px; color:var(--danger);">কোনো স্ক্রিনশট পাওয়া যায়নি</div>'}
+                            ` : '<div style="font-size:10px; color:var(--danger);">কোনো স্ক্রিনশট পাওয়া যায়নি</div>'}
 
                             <button class="btn btn-gold" id="btn-app-match-${idx}" style="padding:6px 12px; font-size:11px; margin-top:6px;" onclick="approveMatch('${m.id}', ${idx}, this)">ম্যাচ অ্যাপ্রুভ করুন (Approve)</button>
                         </div>
@@ -1456,14 +1550,14 @@
                 if (supabaseClient) {
                     await supabaseClient.from('players').update({ is_approved: true }).eq('game_uid', uid);
                 }
-                alert(p.player_name + ' প্লেয়ার একাউন্ট সফলভাবে অ্যাপ্রুভ করা হয়েছে!');
+                alert(p.player_name + ' প্লেয়ার একাউন্ট সফলভাবে অ্যাপ্রুভ করা হয়েছে!');
                 await fetchPlayers();
                 await renderAdminDashboard();
                 renderPlayerCards();
             }
         }
 
-        // 🚀 সুপারফাস্ট ও পারফেক্ট গোল হিসাবসহ অ্যাপ্রুভ ফায়ার
+        // 🚀 সুপারফাস্ট ও ১০০% নিশ্চিত ডাটা সিঙ্কসহ ম্যাচ অ্যাপ্রুভ ফাংশন
         async function approveMatch(matchId, idx, btnElement) {
             if (btnElement) {
                 btnElement.disabled = true;
@@ -1474,26 +1568,33 @@
                 const m = pendingMatchesList[idx];
                 if (!m) return;
 
-                let sub = registeredPlayers.find(x => x.id === m.submitter_id || x.game_uid === m.submitter_id || x.player_name === m.submitter_name);
-                let opp = registeredPlayers.find(x => x.game_uid === m.opponent_id || x.id === m.opponent_id);
+                // ১. সকল প্লেয়ারদের তাজা ডাটা পুনর্দখল
+                const { data: freshPlayers } = await supabaseClient.from('players').select('*');
+                if (freshPlayers) registeredPlayers = freshPlayers;
+
+                let sub = registeredPlayers.find(x => String(x.id) === String(m.submitter_id) || String(x.game_uid) === String(m.submitter_id) || x.player_name === m.submitter_name);
+                let opp = registeredPlayers.find(x => String(x.game_uid) === String(m.opponent_id) || String(x.id) === String(m.opponent_id));
 
                 if (supabaseClient && matchId) {
                     await supabaseClient.from('match_results').update({ status: 'approved' }).eq('id', matchId);
 
                     if (sub && opp) {
+                        const subScore = parseInt(m.submitter_score) || 0;
+                        const oppScore = parseInt(m.opponent_score) || 0;
+
                         sub.matches_played = (sub.matches_played || 0) + 1;
                         opp.matches_played = (opp.matches_played || 0) + 1;
 
-                        sub.goals_for = (sub.goals_for || 0) + m.submitter_score;
-                        sub.goals_against = (sub.goals_against || 0) + m.opponent_score;
+                        sub.goals_for = (sub.goals_for || 0) + subScore;
+                        sub.goals_against = (sub.goals_against || 0) + oppScore;
 
-                        opp.goals_for = (opp.goals_for || 0) + m.opponent_score;
-                        opp.goals_against = (opp.goals_against || 0) + m.submitter_score;
+                        opp.goals_for = (opp.goals_for || 0) + oppScore;
+                        opp.goals_against = (opp.goals_against || 0) + subScore;
 
-                        if (m.submitter_score > m.opponent_score) {
+                        if (subScore > oppScore) {
                             sub.wins = (sub.wins || 0) + 1; sub.points = (sub.points || 0) + 4;
                             opp.losses = (opp.losses || 0) + 1; opp.points = (opp.points || 0) + 1;
-                        } else if (m.submitter_score < m.opponent_score) {
+                        } else if (subScore < oppScore) {
                             opp.wins = (opp.wins || 0) + 1; opp.points = (opp.points || 0) + 4;
                             sub.losses = (sub.losses || 0) + 1; sub.points = (sub.points || 0) + 1;
                         } else {
@@ -1501,36 +1602,47 @@
                             opp.draws = (opp.draws || 0) + 1; opp.points = (opp.points || 0) + 2;
                         }
 
+                        // সাবমিটার ডাটাবেজ আপডেট (id এবং game_uid উভয় সাপেক্ষে নিরাপদ আপডেট)
                         await supabaseClient.from('players').update({
                             matches_played: sub.matches_played, wins: sub.wins, draws: sub.draws, losses: sub.losses, 
                             goals_for: sub.goals_for, goals_against: sub.goals_against, points: sub.points
-                        }).eq('game_uid', sub.game_uid);
+                        }).eq('id', sub.id);
 
+                        // অপোনেন্ট ডাটাবেজ আপডেট
                         await supabaseClient.from('players').update({
                             matches_played: opp.matches_played, wins: opp.wins, draws: opp.draws, losses: opp.losses, 
                             goals_for: opp.goals_for, goals_against: opp.goals_against, points: opp.points
-                        }).eq('game_uid', opp.game_uid);
+                        }).eq('id', opp.id);
                     }
                 }
 
                 pendingMatchesList.splice(idx, 1);
                 await fetchPlayers();
                 await renderAdminDashboard();
-                alert('✅ ম্যাচ সফলভাবে অ্যাপ্রুভ হয়েছে এবং পয়েন্ট টেবিলে গোল সহ যোগ হয়েছে!');
+                renderWeeklyTable();
+                renderOverallTable();
+                renderPlayerCards();
+                alert('✅ ম্যাচ সফলভাবে অ্যাপ্রুভ হয়েছে এবং পয়েন্ট টেবিলে গোল সহ যোগ হয়েছে!');
             } catch (err) {
-                alert('অ্যাপ্রুভ করতে সমস্যা হয়েছে: ' + err.message);
+                alert('অ্যাপ্রুভ করতে সমস্যা হয়েছে: ' + err.message);
+                if (btnElement) {
+                    btnElement.disabled = false;
+                    btnElement.innerText = "ম্যাচ অ্যাপ্রুভ করুন (Approve)";
+                }
             }
         }
 
         function startPhaseTimer() {
             function updateTimer() {
                 const phase = getPhaseInfo();
-                document.getElementById('current-phase-number').innerText = `Week ${phase.currentWeek}`;
+                const weekNumElem = document.getElementById('current-phase-number');
+                if (weekNumElem) weekNumElem.innerText = `Week ${phase.currentWeek}`;
 
                 const options = { month: 'short', day: 'numeric', year: 'numeric', hour: '2-digit', minute: '2-digit', hour12: true };
                 const startStr = phase.startDate.toLocaleDateString('en-US', options);
                 const endStr = phase.endDate.toLocaleDateString('en-US', options);
-                document.getElementById('phase-date-range').innerText = `${startStr} — ${endStr}`;
+                const rangeElem = document.getElementById('phase-date-range');
+                if (rangeElem) rangeElem.innerText = `${startStr} — ${endStr}`;
 
                 const now = new Date();
                 const diff = phase.endDate - now;
@@ -1541,10 +1653,15 @@
                     const mins = Math.floor((diff / (1000 * 60)) % 60);
                     const secs = Math.floor((diff / 1000) % 60);
 
-                    document.getElementById('timer-days').innerText = String(days).padStart(2, '0');
-                    document.getElementById('timer-hours').innerText = String(hours).padStart(2, '0');
-                    document.getElementById('timer-mins').innerText = String(mins).padStart(2, '0');
-                    document.getElementById('timer-secs').innerText = String(secs).padStart(2, '0');
+                    const dElem = document.getElementById('timer-days');
+                    const hElem = document.getElementById('timer-hours');
+                    const mElem = document.getElementById('timer-mins');
+                    const sElem = document.getElementById('timer-secs');
+
+                    if (dElem) dElem.innerText = String(days).padStart(2, '0');
+                    if (hElem) hElem.innerText = String(hours).padStart(2, '0');
+                    if (mElem) mElem.innerText = String(mins).padStart(2, '0');
+                    if (sElem) sElem.innerText = String(secs).padStart(2, '0');
                 }
             }
             updateTimer();
@@ -1556,6 +1673,20 @@
             await fetchPlayers();
             renderDynamicChampions();
             renderPlayerCards();
+            renderWeeklyTable();
+            renderOverallTable();
+
+            const regForm = document.getElementById('signup-form');
+            if (regForm) regForm.addEventListener('submit', handleSignup);
+
+            const loginForm = document.getElementById('login-form');
+            if (loginForm) loginForm.addEventListener('submit', handleLogin);
+
+            const matchForm = document.getElementById('match-submit-form');
+            if (matchForm) matchForm.addEventListener('submit', handleMatchSubmit);
+
+            const adminForm = document.getElementById('admin-login-form');
+            if (adminForm) adminForm.addEventListener('submit', handleAdminLogin);
         };
     </script>
 </body>
